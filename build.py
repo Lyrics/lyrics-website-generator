@@ -64,10 +64,10 @@ def printLyrics(text):
     regex = re.compile(r'_+\n(.*)$', re.DOTALL)
     text = regex.sub(r'<div class="metadata">\1</div>', text)
     # Separate text into paragraphs
-    text = re.sub('\n\n+', '</p><p>', text)
+    text = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', text)
     # Convert newline characters into linebreaks
-    text = re.sub('\n', '<br/>', text)
-    return '<p>' + text + '</p>'
+    text = re.sub('\n', '<span><br/></span>', text)
+    return '<blockquote id="lyrics">' + text + '</blockquote>'
 
 def printDescriptionList(items):
     return ', '.join(items[:24])
@@ -163,7 +163,7 @@ for letter in sorted(os.listdir(srcDir)):
                                 # Populate it with lyrics
                                 content = tLayout.replace('{{title}}', artist + ' – ' + song + ' | ' + siteName)
                                 content = content.replace('{{breadcrumbs}}', printBreadcrumbs(letter, artist, album, song))
-                                content = content.replace('{{content}}', '<article id="lyrics">' + printLyrics(lyrics) + '</article>')
+                                content = content.replace('{{content}}', printLyrics(lyrics))
                                 content = content.replace('{{description}}', printDescriptionText(lyrics))
                                 songPathFile.write(content)
                                 sitemapXML += printSitemapURL(safeSongPath, 1)
