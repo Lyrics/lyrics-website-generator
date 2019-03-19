@@ -14,7 +14,3 @@ then can be uploaded to a server.
 ## Run a local web-server
 
     make serve
-
-## Quickly update the website
-
-    make download clean build deploy
