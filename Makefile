@@ -2,6 +2,8 @@
 
 SASS_OPTS = --style compressed
 CSS_FILE = www/s.css
+ASSETS_FILES = src/assets
+
 
 all: clean build
 
@@ -9,7 +11,7 @@ clean:
 	rm -rf www
 
 build: www css
-	cd www && python ../build.py
+	cd www && python ../build.py && cp -r ../${ASSETS_FILES}/* .
 
 www:
 	mkdir -p www/db
