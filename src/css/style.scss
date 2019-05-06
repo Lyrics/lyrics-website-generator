@@ -198,10 +198,18 @@ nav,
 .homepage,
 .not-found {
     text-align: left;
-}
-.homepage a,
-.not-found a {
-    text-decoration: underline;
+
+    a {
+        text-decoration: underline;
+    }
+
+    ul {
+        padding-left: 20px;
+
+        li {
+            display: list-item;
+        }
+    }
 }
 
 
