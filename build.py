@@ -73,7 +73,10 @@ def printDescriptionList(items):
     return ', '.join(items[:24])
 
 def printDescriptionText(text):
-    return re.sub(' +', ' ', text.replace('\n', ' / ')[:220]).strip()
+    text = re.sub('\n+', ' / ', text)
+    text = re.sub(' +', ' ', text)
+    text = text[:220]
+    return text.strip()
 
 def mkdir(path):
     try:
