@@ -345,8 +345,11 @@ form {
 
         .homepage,
         ul {
-            padding: 0 .7rem;
-            padding-bottom: 6em;
+            padding: 0 .7rem 6em .7rem;
+        }
+
+        .homepage ul {
+            padding-left: 1.7rem;
         }
 
         li {
