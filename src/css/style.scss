@@ -1,10 +1,10 @@
-$color-navbar-bg: #333;
-$vertical-spacing: 1.1em;
-$shadow-width: 3em;
-$header-height: 1.1rem;
-$website-width: 900px;
-$header-vertical-overflow: 0.5rem;
 $bottom-lyrics-padding-mobile: 2.4rem;
+$color-navbar-bg: #333;
+$header-height: 1.1rem;
+$header-vertical-overflow: 0.5rem;
+$shadow-width: 3em;
+$vertical-spacing: 1.1em;
+$website-width: 900px;
 
 /*
  * Purpose: hide selection highlight from certain elements
@@ -22,16 +22,16 @@ html {
 }
 
 body {
-    color: #111;
-    min-height: 100%;
     background: #f2f2f2;
+    color: #111;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
+    min-height: 100%;
 }
 
 ul {
-    list-style: none;
     line-height: 20px;
+    list-style: none;
     margin: 0;
     padding: 0;
 }
@@ -41,9 +41,9 @@ li {
 }
 
 a {
-    text-decoration: none;
-    opacity: .9;
     color: #000;
+    opacity: .9;
+    text-decoration: none;
 
     &:hover {
         opacity: 1;
@@ -54,8 +54,8 @@ h1,
 h2,
 h3,
 h4 {
-    margin-top: 2rem;
     margin-bottom: 1rem;
+    margin-top: 2rem;
 
     &:first-child {
         margin-top: 0;
@@ -63,25 +63,25 @@ h4 {
 }
 
 p {
-    margin-top: 0;
     margin-bottom: .5rem;
+    margin-top: 0;
 }
 
 #header {
     background-color: $color-navbar-bg;
-    white-space: nowrap;
     line-height: $header-height;
+    white-space: nowrap;
 }
 
 nav {
     a {
+        box-sizing: border-box;
         color: #eee;
         display: inline-block;
-        min-width: 19px;
         font-size: 0.8em;
+        min-width: 19px;
         padding: 12px 9px;
         text-align: center;
-        box-sizing: border-box;
 
         &#home {
             padding-right: 1rem;
@@ -94,13 +94,13 @@ form {
 }
 
 input {
-    width: 130px;
+    border: none;
     border-radius: 1rem;
+    font-size: 1rem;
     outline: 0;
     padding: .13rem .666rem;
-    border: none;
-    font-size: 1rem;
     vertical-align: middle;
+    width: 130px;
 }
 
 nav,
@@ -126,32 +126,32 @@ nav,
         display: inline-block;
 
         span:after {
-            content: '→';
             color: rgba(0, 0, 0, .3);
-            padding: 0 4px 0 3px;
+            content: '→';
+            padding: 0 4px 0 0;
         }
     }
 }
 
 
 #lyrics {
-    padding: 20px;
-    margin: 0;
-    overflow: auto;
     background: #fff;
     border: solid 1px #f2f2f2;
-    color: #222;
-    line-height: 1.5;
-    display: inline-block;
     box-shadow: 4px 4px 20px rgba(0, 0, 0, .1);
+    color: #222;
+    display: inline-block;
+    line-height: 1.5;
+    margin: 0;
+    overflow: auto;
+    padding: 20px;
     text-align: left;
 
     p {
         padding-bottom: 1rem;
 
         &:last-child {
-            padding-bottom: 0;
             margin-bottom: 0;
+            padding-bottom: 0;
         }
     }
 }
@@ -162,8 +162,14 @@ nav,
  *
  */
 .metadata {
-    opacity: 0.4;
+    display: inline-block;
     font-size: 75%;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+
+    &:hover {
+        opacity: 0.7;
+    }
 }
 
 
@@ -174,15 +180,15 @@ nav,
 
 .view {
     color: #222;
-    text-align: center;
     padding-top: $vertical-spacing;
     padding-bottom: 6em;
+    text-align: center;
 
     ul {
         display: block;
         line-height: 1.9;
-        text-align: left;
         list-style: none;
+        text-align: left;
     }
 
     li {
@@ -204,8 +210,8 @@ nav,
     }
 
     ul {
-        padding-left: 20px;
         list-style: disc;
+        padding-left: 20px;
 
         li {
             display: list-item;
@@ -275,22 +281,22 @@ form {
     }
 
     nav {
-        text-align: left;
         margin: $header-vertical-overflow 0;
         margin-right: $shadow-width + 1em;
+        text-align: left;
 
         /* Purpose: add inner shadow to the right side of navbar to hint user that
             they can hold scroll the alphabet horizontally on mobile */
         &:after {
-            position: absolute;
-            content: '';
-            top: 0;
-            right: 0;
-            width: $shadow-width;
-            height: 4rem;
             background: -moz-linear-gradient(deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             background: -webkit-linear-gradient(deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            content: '';
+            height: 4rem;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: $shadow-width;
     
             /* Purpose: make it possible to click on alphabet letters beneath */
             pointer-events: none;
@@ -298,10 +304,10 @@ form {
 
         a {
             display: inline-block;
-            padding: 1.3rem .5rem;
-            margin: .2rem;
             font-weight: bold;
+            margin: .2rem;
             min-width: 40px;
+            padding: 1.3rem .5rem;
 
             &#home {
                 padding: 1.3rem .5rem;
@@ -318,9 +324,9 @@ form {
     }
 
     #content {
-        width: 100%;
         background: inherit;
         padding: 0;
+        width: 100%;
     }
 
     #breadcrumbs {
@@ -340,8 +346,8 @@ form {
     }
 
     .view {
-        padding-top: $vertical-spacing;
         padding-bottom: 0;
+        padding-top: $vertical-spacing;
 
         .homepage,
         ul {
@@ -364,8 +370,8 @@ form {
     #lyrics {
 
         span {
-            display: block;
             border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            display: block;
             margin: 0 0 -1px 0;
 
             br {
@@ -378,8 +384,8 @@ form {
             }
 
             .metadata & {
-                margin: 0;
                 display: inline;
+                margin: 0;
 
                 br {
                     display: auto;
@@ -399,15 +405,15 @@ form {
 @media print {
 
     body {
-        margin: 0;
         font-size: 14px;
+        margin: 0;
     }
 
     ul {
+        line-height: 20px;
+        list-style: none;
         margin: 0;
         padding: 0;
-        list-style: none;
-        line-height: 20px;
     }
 
     a {

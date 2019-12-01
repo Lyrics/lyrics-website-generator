@@ -56,13 +56,13 @@ def printBreadcrumbs(*items):
         output += printAnchor(base, item, depth)
         depth += 1
         if depth < len(items):
-          output += '<li><span> </span></li>'
+          output += '<li><span>&nbsp;</span></li>'
     return output
 
 def printLyrics(text):
     # Wrap metadata into a container
     regex = re.compile(r'_+\n(.*)$', re.DOTALL)
-    text = regex.sub(r'<div class="metadata">\1</div>', text)
+    text = regex.sub(r'<br /><div class="metadata">\1</div>', text)
     # Separate text into paragraphs
     text = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', text)
     # Convert newline characters into linebreaks
