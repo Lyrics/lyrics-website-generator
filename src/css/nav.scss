@@ -1,0 +1,93 @@
+nav {
+    /* Hide selection highlight */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* IE/Edge */
+
+    margin: 0 auto;
+    width: $website-width;
+
+    a {
+        box-sizing: border-box;
+        color: #eee;
+        display: inline-block;
+        font-size: 0.8em;
+        min-width: 19px;
+        padding: 12px 9px;
+        text-align: center;
+    }
+}
+
+#home {
+    padding-left: 0;
+    padding-right: 1rem;
+}
+
+form {
+    display: none;
+    padding-left: 1rem;
+}
+
+.js form {
+    // Purpose: reveal the search field if JS is on
+    display: inline-block;
+
+    // Purpose: make the navbar's inner shadow stay below the search field
+    position: relative;
+    z-index: 1;
+}
+
+input {
+    border: none;
+    border-radius: 1rem;
+    font-size: 1rem;
+    outline: 0;
+    padding: .13rem .666rem;
+    vertical-align: middle;
+    width: 130px;
+}
+
+// Mobile CSS
+@media only screen and (max-width: $mobile-breakpoint) {
+
+    nav {
+        margin: $header-vertical-overflow 0;
+        margin-right: $shadow-width + 1em;
+        text-align: left;
+
+        /* Purpose: add inner shadow to the right side of navbar to hint user that
+            they can hold scroll the alphabet horizontally on mobile */
+        &:after {
+            background: -moz-linear-gradient(deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            background: -webkit-linear-gradient(deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            content: '';
+            height: 4rem;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: $shadow-width;
+    
+            /* Purpose: make it possible to click on alphabet letters beneath the shadow */
+            pointer-events: none;
+        }
+
+        a {
+            display: inline-block;
+            font-weight: bold;
+            margin: .2rem;
+            min-width: 40px;
+            padding: 1.3rem .5rem;
+
+            &#home {
+                padding: 1.3rem .5rem;
+            }
+        }
+    }
+
+    input {
+        margin: 4px 1rem;
+    }
+
+}

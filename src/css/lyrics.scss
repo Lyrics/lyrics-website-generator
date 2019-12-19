@@ -1,0 +1,98 @@
+
+#lyrics {
+    background: #fff;
+    border: solid 1px #f2f2f2;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, .1);
+    color: #222;
+    display: inline-block;
+    line-height: 1.5;
+    margin: 0;
+    overflow: auto;
+    padding: 20px;
+    text-align: left;
+
+    p {
+        padding-bottom: 1rem;
+
+        &:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    }
+}
+
+/*
+ * Purpose: make metadata look different from the song text
+ *
+ */
+#metadata {
+    display: inline-block;
+    font-size: 75%;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+
+    // Purpose: add more spacing between lyrics and meta-data
+    margin-top: $bottom-lyrics-padding-mobile;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+
+// Mobile CSS
+@media only screen and (max-width: $mobile-breakpoint) {
+
+    #lyrics {
+        display: block;
+        padding: .4rem .7rem;
+
+        // Purpose: hide the paper sheet's shadow on mobile
+        box-shadow: none;
+
+        // Purpose: add a bit of spacing to the bottom of the sheet
+        padding-bottom: $bottom-lyrics-padding-mobile;
+
+        /*
+        * Purpose: Make paper lined to ensure readabilety when lines get wrapped
+        *
+        */
+        & > span {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            display: block;
+            margin: 0 0 -1px 0;
+
+            br {
+                display: none;
+            }
+
+            &.g {
+                margin-top: 1.4rem;
+                margin-top: calc(1.58rem - 1px);
+            }
+        }
+    }
+
+    #metadata {
+        &,
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+}
+
+
+// Paper CSS
+@media print {
+
+    #lyrics {
+        border: none;
+        box-shadow: none;
+    }
+
+    #metadata {
+        opacity: 1;
+    }
+
+}

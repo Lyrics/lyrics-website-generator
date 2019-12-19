@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="/s.css"/>
+<title>{{title}}</title>
+<meta name="description" content="{{description}}"/>
+<meta name="google" content="notranslate"/>
+
+<div id="header">
+    <nav><a href="/" id="home">Lyrics</a>{{#navigation}}<a href="{{path}}">{{label}}</a>{{/navigation}}<form action="/search.html"><input id="query" name="q" type="search" placeholder="Search"/></form></nav>
+</div>
+<div id="content">
+    <ul id="breadcrumbs">{{#breadcrumbs}}{{#link}}<li><a href="{{link}}">{{label}}</a></li>{{/link}}{{^link}} {{/link}}{{/breadcrumbs}}</ul>
+    <div class="view">{{{content}}}</div>
+</div>
+<script>document.body.className="js"</script>
