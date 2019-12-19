@@ -1,211 +1,243 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
 import re
-from urllib import quote
-from xml.sax.saxutils import escape
+import sys
+import pystache
+from urllib.parse import quote
 
+# Config
 siteURL = 'https://lyrics.github.io'
 siteName = 'Lyrics'
 srcDir = '../../lyrics.git/database'
 dbDir = 'db'
-
+# File names
 indexFileName = 'index.html'
-sitemapFileName = 'sitemap.xml'
+notFoundFileName = '404.html'
 searchFileName = 'search.html'
+sitemapFileName = 'sitemap.xml'
 
-tLayout = open('../src/templates/layout.hbs', 'r').read()
-tHome = open('../src/templates/home.hbs', 'r').read()
-tSearch = open('../src/templates/search.hbs', 'r').read()
-t404 = open('../src/templates/404.hbs', 'r').read()
+# Templates
+t404 = open('../src/templates/404.mustache', 'r').read()
+tHome = open('../src/templates/home.mustache', 'r').read()
+tLayout = open('../src/templates/layout.mustache', 'r').read()
+tList = open('../src/templates/list.mustache', 'r').read()
+tSearch = open('../src/templates/search.mustache', 'r').read()
+tSitemap = open('../src/templates/sitemap.mustache', 'r').read()
 
-def safePath(path):
-    return path.lower().replace(' ', '-')
+# Dictionary of letters (used for global navigation)
+abc = []
+for letter in list(map(chr, range(ord('a'), ord('z')+1))):
+    abc.append({ 'path': '/' + dbDir + '/' + letter, 'label': letter.upper() })
 
-def encodeURL(path):
-    return escape(quote(path, safe='/,@&\'"<>!():='))
+# List of URLs to be added to the sitemap file
+sitemapURLs = []
 
-def createHTML(path, filename):
-    return open(os.path.join(path, filename), 'w')
+def getSafePath(input):
+    input = input.lower()
+    # Treat commas as spaces
+    input = input.replace(',', ' ')
+    # Represent "&" as "and"
+    input = input.replace('&', 'and')
+    # Replace all spaces with dashes
+    input = input.replace(' ', '-')
+    # Get rid of unwanted characters
+    input = re.sub(r'[\'"\.\[\]\(\)]', '', input)
+    # Ensure there're no multiple dashes side-by-side
+    input = re.sub(r'-+', '-', input)
+    return input
 
-def createXML():
-    return open(sitemapFileName, 'w')
+def mkfile(where='', filename=indexFileName):
+    return open(os.path.join(where, filename), 'w')
 
-def createSearch():
-    return open(searchFileName, 'w')
+def getLink(target, text, depth):
+    return { 'link': '/' + quote(target) + '/', 'label': text, 'type': depth }
 
-def printAnchor(target, content, depth):
-    return '<li><a href="/' + encodeURL(target) + '/">' + content + '</a></li>'
-
-def printSitemapURL(target, priority):
-    URL = siteURL + '/' + encodeURL(target)
+def getSitemapURL(target=''):
+    URL = siteURL + '/' + target
     if target:
         URL += '/'
-    comeBack = 'daily'
-    if priority < .8:
-        comeBack = 'weekly'
-    return '  <url>\n    <loc>' + URL + '</loc>\n  </url>\n'
+    return quote(URL)
 
-def printBreadcrumbs(*items):
-    output = ""
+def getBreadcrumbs(*items):
+    output = []
     depth = 0
     base = dbDir
     for item in items:
-        base = os.path.join(base, safePath(item))
-        output += printAnchor(base, item, depth)
+        base = os.path.join(base, getSafePath(item))
+        output.append(getLink(base, item, depth))
         depth += 1
         if depth < len(items):
-          output += '<li><span>&nbsp;</span></li>'
+            output.append(None)
     return output
 
-def printLyrics(text):
-    # Wrap metadata into a container
-    regex = re.compile(r'_+\n(.*)$', re.DOTALL)
-    text = regex.sub(r'<br /><div class="metadata">\1</div>', text)
+def getLyrics(text):
+    regex = re.compile(r'(.*)\n+_+\n(.*)$', re.DOTALL)
+    # Extract the song text
+    lyricsText = regex.sub(r'\1', text)
     # Separate text into paragraphs
-    text = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', text)
+    lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
     # Convert newline characters into linebreaks
-    text = re.sub('\n', '<span><br/></span>', text)
-    return '<blockquote id="lyrics">' + text + '</blockquote>'
+    lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
+    # Take care of the metadata
+    metaData = regex.sub(r'\2', text)
+    metaData = re.sub('\n', '<br/>', metaData)
+    return '<blockquote id="lyrics">' + lyricsText + '<div id="metadata">' + metaData + '</div></blockquote>'
 
-def printDescriptionList(items):
+def getDescriptionList(items):
     return ', '.join(items[:24])
 
-def printDescriptionText(text):
+def getDescriptionText(text):
     text = re.sub('\n+', ' / ', text)
     text = re.sub(' +', ' ', text)
     text = text[:220]
     return text.strip()
 
 def mkdir(path):
-    try:
-        os.mkdir(path)
-    except OSError, e:
-        if e.errno != os.errno.EEXIST:
-            raise
-        pass
+    os.makedirs(path, exist_ok=True)
 
 # 0. Create the root index file
-main = createHTML('', indexFileName)
-content = tLayout.replace('{{title}}', siteName)
-content = content.replace('{{breadcrumbs}}', "")
-content = content.replace('{{content}}', tHome)
-content = content.replace('{{description}}', "Web interface to the lyrics database hosted on GitHub")
-main.write(content)
+html = pystache.render(tLayout, {
+    'title': siteName,
+    'description': "Web interface to the lyrics database hosted on GitHub",
+    'navigation': abc,
+    'content': pystache.render(tHome)
+})
+homepageFile = mkfile()
+homepageFile.write(html)
+homepageFile.close()
 
-# 0x. Define initial sitemap code
-sitemapXML = '<?xml version="1.0" encoding="UTF-8"?>\n'
-sitemapXML += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-sitemapXML += printSitemapURL('', .31)
+# Create the 404 page
+html = pystache.render(tLayout, {
+    'title': "Page not found" + " | " + siteName,
+    'description': "Error 404: page not found",
+    'navigation': abc,
+    'content': pystache.render(t404)
+})
+notFoundFile = mkfile('', notFoundFileName)
+notFoundFile.write(html)
+notFoundFile.close()
+
+# Create the search page
+html = pystache.render(tLayout, {
+    'title': "Search" + " | " + siteName,
+    'description': "Find lyrics using GitHub's code search engine",
+    'navigation': abc,
+    'content': pystache.render(tSearch)
+})
+searchFile = mkfile('', searchFileName)
+searchFile.write(html)
+searchFile.close()
+
+# Add root URL to the list of sitemap links
+sitemapURLs.append(getSitemapURL())
 
 # 1. Loop through letters in the database
-for letter in sorted(os.listdir(srcDir)):
-    print letter
+# for letter in sorted(os.listdir(srcDir)):
+for letter in sorted(next(os.walk(srcDir))[1]):
+    # Output progress status
+    print(letter, end=" ", file=sys.stderr)
+    sys.stderr.flush()
+
     letterPath = os.path.join(srcDir, letter)
-    if not os.path.isdir(letterPath):
-        print letterPath + " is not a dir! 0x01"
-    else:
-        safeLetterPath = safePath(os.path.join(dbDir, letter))
-        # Create db/x/
-        mkdir(safeLetterPath)
-        # Create db/x/index.html
-        letterPathFile = createHTML(safeLetterPath, indexFileName)
-        letters = sorted(os.listdir(letterPath), key=str.lower)
-        letterList = ""
-        sitemapXML += printSitemapURL(safeLetterPath, .56)
+    safeLetterPath = getSafePath(os.path.join(dbDir, letter))
+    sitemapURLs.append(getSitemapURL(safeLetterPath))
+    # Create db/x/
+    mkdir(safeLetterPath)
+    # Create db/x/index.html
+    letterPathFile = mkfile(safeLetterPath)
+    letters = sorted(next(os.walk(letterPath))[1], key=str.lower)
+    artistList = []
 
-        # 2. Loop through artists starting with letter x
-        for artist in letters:
-            artistPath = os.path.join(letterPath, artist)
-            if not os.path.isdir(artistPath):
-                print artistPath + " is not a dir! 0x02"
-            else:
-                safeArtistPath = safePath(os.path.join(dbDir, letter, artist))
-                # Append artist link to db/x/index.html
-                letterList += printAnchor(safeArtistPath, artist, 1)
-                # Create db/x/artist/
-                mkdir(safeArtistPath)
-                # Create db/x/artist/index.html
-                artistPathFile = createHTML(safeArtistPath, indexFileName)
-                albums = sorted(os.listdir(artistPath), key=str.lower)
-                albumList = ""
-                sitemapXML += printSitemapURL(safeArtistPath, .85)
+    # 2. Loop through artists starting with letter x
+    for artist in letters:
+        artistPath = os.path.join(letterPath, artist)
+        safeArtistPath = getSafePath(os.path.join(dbDir, letter, artist))
+        sitemapURLs.append(getSitemapURL(safeArtistPath))
+        # Create db/x/artist/
+        mkdir(safeArtistPath)
+        # Create db/x/artist/index.html
+        artistPathFile = mkfile(safeArtistPath)
+        # Append artist link to db/x/index.html
+        artistList.append(getLink(safeArtistPath, artist, 1))
+        albums = sorted(next(os.walk(artistPath))[1], key=str.lower)
+        albumList = []
 
-                # 3. Loop through artist's albums
-                for album in albums:
-                    albumPath = os.path.join(artistPath, album)
-                    if not os.path.isdir(albumPath):
-                        print albumPath + " is not a dir! 0x03"
-                    else:
-                        safeAlbumPath = safePath(os.path.join(dbDir, letter, artist, album))
-                        # Append album link to db/x/artist/index.html
-                        albumList += printAnchor(safeAlbumPath, album, 2)
-                        # Create db/x/artist/album/
-                        mkdir(safeAlbumPath)
-                        # Create db/x/artist/album/index.htm
-                        albumPathFile = createHTML(safeAlbumPath, indexFileName)
-                        songs = sorted(os.listdir(albumPath), key=str.lower)
-                        songList = ""
-                        sitemapXML += printSitemapURL(safeAlbumPath, .93)
+        # 3. Loop through artist's albums
+        for album in albums:
+            albumPath = os.path.join(artistPath, album)
+            safeAlbumPath = getSafePath(os.path.join(dbDir, letter, artist, album))
+            sitemapURLs.append(getSitemapURL(safeAlbumPath))
+            # Create db/x/artist/album/
+            mkdir(safeAlbumPath)
+            # Create db/x/artist/album/index.html
+            albumPathFile = mkfile(safeAlbumPath)
+            # Append album link to db/x/artist/index.html
+            albumList.append(getLink(safeAlbumPath, album, 2))
+            songs = sorted(next(os.walk(albumPath))[2], key=str.lower)
+            songList = []
 
-                        # 4. Loop through songs
-                        for song in songs:
-                            songPath = os.path.join(albumPath, song)
-                            if not os.path.isfile(songPath):
-                                print songPath + " is not a file! 0x04"
-                            else:
-                                lyrics = open(songPath, 'r').read().strip()
-                                safeSongPath = safePath(os.path.join(dbDir, letter, artist, album, song))
-                                # Append song link to db/x/artist/album/index.html
-                                songList += printAnchor(safeSongPath, song, 3)
-                                # Create db/x/artist/album/song/
-                                mkdir(safeSongPath)
-                                # Create db/x/artist/album/song/index.html
-                                songPathFile = createHTML(safeSongPath, indexFileName)
-                                # Populate it with lyrics
-                                content = tLayout.replace('{{title}}', artist + ' – ' + song + ' | ' + siteName)
-                                content = content.replace('{{breadcrumbs}}', printBreadcrumbs(letter, artist, album, song))
-                                content = content.replace('{{content}}', printLyrics(lyrics))
-                                content = content.replace('{{description}}', printDescriptionText(lyrics))
-                                songPathFile.write(content)
-                                sitemapXML += printSitemapURL(safeSongPath, 1)
+            # 4. Loop through songs
+            for song in songs:
+                songPath = os.path.join(albumPath, song)
+                if not os.path.isfile(songPath):
+                    print(songPath + " is not a file! 0x04")
+                else:
+                    safeSongPath = getSafePath(os.path.join(dbDir, letter, artist, album, song))
+                    sitemapURLs.append(getSitemapURL(safeSongPath))
+                    # Create db/x/artist/album/song/
+                    mkdir(safeSongPath)
+                    # Create db/x/artist/album/song/index.html
+                    songPathFile = mkfile(safeSongPath)
+                    # Append song link to db/x/artist/album/index.html
+                    songList.append(getLink(safeSongPath, song, 3))
+                    # Read the lyrics file
+                    lyrics = open(songPath, 'r').read().strip()
+                    html = pystache.render(tLayout, {
+                        'title': artist + ' – ' + song + ' | ' + siteName,
+                        'description': getDescriptionText(lyrics),
+                        'navigation': abc,
+                        'breadcrumbs': getBreadcrumbs(letter, artist, album, song),
+                        'content': getLyrics(lyrics),
+                    })
+                    songPathFile.write(html)
+                    songPathFile.close()
 
-                        content = tLayout.replace('{{title}}', 'Album "' + album + '" by ' + artist + ' | ' + siteName)
-                        content = content.replace('{{breadcrumbs}}', printBreadcrumbs(letter, artist, album))
-                        content = content.replace('{{content}}', '<ul>' + songList + '</ul>')
-                        content = content.replace('{{description}}', printDescriptionList(songs))
-                        albumPathFile.write(content)
+            html = pystache.render(tLayout, {
+                'title': 'Album "' + album + '" by ' + artist + ' | ' + siteName,
+                'description': getDescriptionList(songs),
+                'navigation': abc,
+                'breadcrumbs': getBreadcrumbs(letter, artist, album),
+                'content': pystache.render(tList, {'links': songList}),
+            })
+            albumPathFile.write(html)
+            albumPathFile.close()
 
-                content = tLayout.replace('{{title}}', artist + ' | ' + siteName)
-                content = content.replace('{{breadcrumbs}}', printBreadcrumbs(letter, artist))
-                content = content.replace('{{content}}', '<ul>' + albumList + '</ul>')
-                content = content.replace('{{description}}', printDescriptionList(albums))
-                artistPathFile.write(content)
+        html = pystache.render(tLayout, {
+            'title': artist + ' | ' + siteName,
+            'description': getDescriptionList(albums),
+            'navigation': abc,
+            'breadcrumbs': getBreadcrumbs(letter, artist),
+            'content': pystache.render(tList, {'links': albumList}),
+        })
+        artistPathFile.write(html)
+        artistPathFile.close()
 
-        content = tLayout.replace('{{title}}', 'Artists starting with ' + letter + ' | ' + siteName)
-        content = content.replace('{{breadcrumbs}}', printBreadcrumbs(letter))
-        content = content.replace('{{content}}', '<ul>' + letterList + '</ul>')
-        content = content.replace('{{description}}', printDescriptionList(letters))
-        letterPathFile.write(content)
+    html = pystache.render(tLayout, {
+        'title': 'Artists starting with ' + letter + ' | ' + siteName,
+        'description': getDescriptionList(letters),
+        'navigation': abc,
+        'breadcrumbs': getBreadcrumbs(letter),
+        'content': pystache.render(tList, {'links': artistList}),
+    })
+    letterPathFile.write(html)
+    letterPathFile.close()
 
-# 1x. Write the sitemap file
-sitemapFile = createXML()
-sitemapXML += '</urlset>\n'
-sitemapFile.write(sitemapXML.encode('utf-8'))
+# Write the sitemap file
+sitemapFile = mkfile('', sitemapFileName)
+xml = pystache.render(tSitemap, {'links': sitemapURLs})
+sitemapFile.write(xml)
+sitemapFile.close()
 
-# 1s. Generate the search page
-search = createSearch()
-content = tLayout.replace('{{title}}', 'Search' + ' | ' + siteName)
-content = content.replace('{{breadcrumbs}}', '')
-content = content.replace('{{content}}', tSearch)
-content = content.replace('{{description}}', "Find lyrics using GitHub's code search engine")
-search.write(content)
-
-# 0e. Create the 404 page
-four0four = createHTML('', '404.html')
-content = tLayout.replace('{{title}}', siteName)
-content = content.replace('{{breadcrumbs}}', '')
-content = content.replace('{{content}}', t404)
-content = content.replace('{{description}}', "Error 404: page not found")
-four0four.write(content)
+print(file=sys.stderr)

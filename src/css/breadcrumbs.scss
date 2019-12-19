@@ -1,0 +1,40 @@
+#breadcrumbs {
+    display: block;
+    font-size: 0;
+    list-style: none;
+    padding-top: $vertical-spacing;
+
+    li {
+        display: inline-block;
+        font-size: $font-size;
+
+        &:not(:first-child):before {
+            color: rgba(0, 0, 0, .3);
+            content: '→';
+            padding: 0 4px;
+        }
+    }
+
+    &:empty {
+        display: none;
+    }
+}
+
+// Mobile CSS
+@media only screen and (max-width: $mobile-breakpoint) {
+
+    #breadcrumbs {
+        padding-left: .7rem;
+        padding-right: .7rem;
+    }
+
+}
+
+// Paper CSS
+@media print {
+
+    #breadcrumbs {
+        display: none;
+    }
+
+}
