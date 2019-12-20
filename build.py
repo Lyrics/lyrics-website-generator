@@ -35,17 +35,18 @@ for letter in list(map(chr, range(ord('a'), ord('z')+1))):
 sitemapURLs = []
 
 def getSafePath(input):
+    # Ensure the string is lowercase
     input = input.lower()
-    # Treat commas as spaces
-    input = input.replace(',', ' ')
     # Represent "&" as "and"
     input = input.replace('&', 'and')
-    # Replace all spaces with dashes
-    input = input.replace(' ', '-')
     # Get rid of unwanted characters
-    input = re.sub(r'[\'"\.\[\]\(\)]', '', input)
-    # Ensure there're no multiple dashes side-by-side
-    input = re.sub(r'-+', '-', input)
+    input = re.sub(r'[^\w /]', '', input)
+    # Trim the string
+    input = input.strip()
+    # Trim spaces around slashes
+    input = re.sub(r'\s*\/\s*', '/', input)
+    # Replace all spaces with dashes
+    input = re.sub(r'\s+', '-', input)
     return input
 
 def mkfile(where='', filename=indexFileName):
