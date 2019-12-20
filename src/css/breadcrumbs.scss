@@ -8,10 +8,18 @@
         display: inline-block;
         font-size: $font-size;
 
-        &:not(:first-child):before {
-            color: rgba(0, 0, 0, .3);
-            content: '→';
-            padding: 0 4px;
+        &:not(:first-child) {
+            margin-left: 20px;
+            position: relative;
+
+            &:before {
+                color: rgba(0, 0, 0, .3);
+                content: '→';
+                font-size: 12px;
+                left: -16px;
+                position: absolute;
+                top: 2px;
+            }
         }
     }
 

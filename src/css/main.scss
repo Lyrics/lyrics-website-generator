@@ -21,10 +21,14 @@ body {
 }
 
 ul {
-    line-height: 20px;
     list-style: none;
     margin: 0;
     padding: 0;
+
+    &#ls {
+        margin-top: -9px;
+        line-height: 30px;
+    }
 }
 
 li {
@@ -70,10 +74,6 @@ p {
 
 @import "lyrics.scss";
 
-.error {
-    color: #c00;
-}
-
 .view {
     color: #222;
     padding-top: $vertical-spacing;
@@ -82,7 +82,6 @@ p {
 
     ul {
         display: block;
-        line-height: 1.9;
         list-style: none;
         text-align: left;
     }
@@ -129,11 +128,11 @@ p {
         padding-top: $vertical-spacing;
 
         .homepage,
-        ul {
+        ul#ls {
             padding: 0 .7rem 6em .7rem;
         }
 
-        .homepage ul {
+        .homepage ul#ls {
             padding-left: 1.7rem;
         }
 
@@ -154,13 +153,6 @@ p {
     body {
         font-size: 14px;
         margin: 0;
-    }
-
-    ul {
-        line-height: 20px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
     }
 
     a {
