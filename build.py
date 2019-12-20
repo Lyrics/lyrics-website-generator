@@ -40,7 +40,7 @@ def getSafePath(input):
     # Represent "&" as "and"
     input = input.replace('&', 'and')
     # Get rid of unwanted characters
-    input = re.sub(r'[^\w /]', '', input)
+    input = re.sub(r'[^\w0-9 /]', '', input)
     # Trim the string
     input = input.strip()
     # Trim spaces around slashes
