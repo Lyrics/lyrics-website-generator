@@ -1,4 +1,3 @@
-
 #lyrics {
     background: #fff;
     border: solid 1px #f2f2f2;
@@ -11,31 +10,37 @@
     padding: 20px;
     text-align: left;
 
-    p {
-        padding-bottom: 1rem;
+    span {
+        display: block;
+        margin: 0 0 -1px 0;
 
-        &:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
+        br {
+            display: none;
+        }
+
+        &.g br {
+            display: block;
         }
     }
-}
 
-/*
- * Purpose: make metadata look different from the song text
- *
- */
-#metadata {
-    display: inline-block;
-    font-size: 75%;
-    opacity: 0.4;
-    transition: opacity 0.3s;
 
-    // Purpose: add more spacing between lyrics and meta-data
-    margin-top: $bottom-lyrics-padding-mobile;
+    hr {
+        border: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        margin: 0;
+    }
 
-    &:hover {
-        opacity: 0.7;
+    // Purpose: make metadata look different from the song text
+    p {
+        font-size: 75%;
+        margin: 0;
+        opacity: 0.4;
+        padding-top: 10px;
+        transition: opacity 0.3s;
+
+        &:hover {
+            opacity: 0.7;
+        }
     }
 }
 
@@ -53,30 +58,17 @@
         // Purpose: add a bit of spacing to the bottom of the sheet
         padding-bottom: $bottom-lyrics-padding-mobile;
 
-        /*
-        * Purpose: Make paper lined to ensure readabilety when lines get wrapped
-        *
-        */
-        & > span {
+        // Purpose: Make paper lined to ensure readabilety when text gets wrapped
+        span {
             border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-            display: block;
-            margin: 0 0 -1px 0;
-
-            br {
-                display: none;
-            }
-
-            &.g {
-                margin-top: 1.4rem;
-                margin-top: calc(1.58rem - 1px);
-            }
         }
-    }
 
-    #metadata {
-        &,
-        &:hover {
-            opacity: 0.7;
+        // Purpose: make metadata easier to read on mobile
+        p {
+            &,
+            &:hover {
+                opacity: 0.7;
+            }
         }
     }
 
@@ -91,10 +83,11 @@
         box-shadow: none;
         margin: 0;
         width: 100%;
-    }
 
-    #metadata {
-        opacity: 1;
+        // Purpose: make metadata easier to read on paper
+        p {
+            opacity: 1;
+        }
     }
 
 }
