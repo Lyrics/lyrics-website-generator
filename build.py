@@ -28,25 +28,13 @@ tSitemap = open('../src/templates/sitemap.mustache', 'r').read()
 
 # Dictionary of letters (used for global navigation)
 abc = []
-for letter in list(map(chr, range(ord('a'), ord('z')+1))):
-    abc.append({ 'path': '/' + dbDir + '/' + letter, 'label': letter.upper() })
+for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
+    abc.append({ 'path': '/' + dbDir + '/' + letter, 'label': letter })
 
 # List of URLs to be added to the sitemap file
 sitemapURLs = []
 
 def getSafePath(input):
-    # Ensure the string is lowercase
-    input = input.lower()
-    # Represent "&" as "and"
-    input = input.replace('&', 'and')
-    # Get rid of unwanted characters
-    input = re.sub(r'[^\w0-9 /]', '', input)
-    # Trim the string
-    input = input.strip()
-    # Trim spaces around slashes
-    input = re.sub(r'\s*\/\s*', '/', input)
-    # Replace all spaces with dashes
-    input = re.sub(r'\s+', '-', input)
     return input
 
 def mkfile(where='', filename=indexFileName):
@@ -56,10 +44,10 @@ def getLink(target, text, depth):
     return { 'link': '/' + quote(target) + '/', 'label': text, 'type': depth }
 
 def getSitemapURL(target=''):
-    URL = siteURL + '/' + target
+    URL = siteURL + '/' + quote(target)
     if target:
         URL += '/'
-    return quote(URL)
+    return URL
 
 def getBreadcrumbs(*items):
     output = []
