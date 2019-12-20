@@ -72,7 +72,7 @@ def getLyrics(text):
     # Take care of the metadata
     metaData = regex.sub(r'\2', text)
     metaData = re.sub('\n', '<br/>', metaData)
-    return '<blockquote id="lyrics">' + lyricsText + '<div id="metadata">' + metaData + '</div></blockquote>'
+    return '<blockquote id="lyrics">' + lyricsText + '<br/><br/><br/><hr/><p>' + metaData + '</p></blockquote>'
 
 def getDescriptionList(items):
     return ', '.join(items[:24])
