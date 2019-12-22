@@ -20,21 +20,6 @@ body {
     overflow-y: scroll;
 }
 
-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    &#ls {
-        margin-top: -9px;
-        line-height: 30px;
-    }
-}
-
-li {
-    padding-left: 0;
-}
-
 a {
     color: #000;
     opacity: .9;
@@ -42,6 +27,28 @@ a {
 
     &:hover {
         opacity: 1;
+    }
+}
+
+ul {
+    margin: 0;
+    padding: 0 0 0 20px;
+
+    &#ls {
+        list-style: none;
+        margin-top: -9px; // purpose: less space between breadcrumbs and list items
+        padding: 0;
+        line-height: 30px;
+        text-align: left;
+
+        li {
+            padding-left: 0;
+        }
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+        }
     }
 }
 
@@ -63,6 +70,8 @@ p {
 }
 
 @import "header.scss";
+@import "breadcrumbs.scss";
+@import "lyrics.scss";
 
 #content {
     margin: 0 auto;
@@ -70,49 +79,21 @@ p {
     width: $website-width;
 }
 
-@import "breadcrumbs.scss";
-
-@import "lyrics.scss";
-
-.view {
+#view {
     color: #222;
-    padding-top: $vertical-spacing;
+    min-height: $header-vertical-overflow; // Purpose: if the element is empty at least cover the guts of the nav bar
     padding-bottom: 6em;
-    text-align: center;
-
-    ul {
-        display: block;
-        list-style: none;
-        text-align: left;
-    }
-
-    li {
-        display: block;
-
-        a {
-            display: inline-block;
-        }
-    }
-}
-
-.homepage,
-.not-found {
-    text-align: left;
+    padding-top: $vertical-spacing;
+    text-align: center; // Purpose: float the lyrics sheet in the center
 
     a {
         text-decoration: underline;
     }
-
-    ul {
-        list-style: disc;
-        padding-left: 20px;
-
-        li {
-            display: list-item;
-        }
-    }
 }
 
+.homepage {
+    text-align: left;
+}
 
 // Mobile CSS
 @media only screen and (max-width: $mobile-breakpoint) {
@@ -123,24 +104,22 @@ p {
         width: 100%;
     }
 
-    .view {
+    #view {
         padding-bottom: 0;
-        padding-top: $vertical-spacing;
+        padding-top: 10px;
 
         .homepage,
-        ul#ls {
-            padding: 0 .7rem 6em .7rem;
+        #ls {
+            padding: 0 $mobile-horizontal-spacing 6em $mobile-horizontal-spacing;
         }
 
-        .homepage ul#ls {
-            padding-left: 1.7rem;
-        }
+        #ls {
+            margin-top: 4px;
 
-        li {
-            // Purpose: give more space to links on smartphones
-            line-height: 40px;
-
-            margin-bottom: 4px;
+            li {
+                // Purpose: give more space to links on smartphones
+                line-height: 40px;
+            }
         }
     }
 
@@ -152,12 +131,19 @@ p {
 
     body {
         font-size: 14px;
-        margin: 0;
     }
 
     a {
         color: #000;
         text-decoration: none;
+    }
+
+    #view {
+        padding: 0;
+    }
+
+    #content {
+        margin: 0;
     }
 
 }
