@@ -4,7 +4,20 @@
     list-style: none;
     padding-top: $vertical-spacing;
 
-    li {
+    &:empty {
+        display: none;
+    }
+
+    span {
+        /* Purpose: hide selection highlight for tiny arrows */
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Safari */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* IE/Edge */
+        user-select: none;
+    }
+
+    a {
         display: inline-block;
         font-size: $font-size;
 
@@ -22,18 +35,20 @@
             }
         }
     }
-
-    &:empty {
-        display: none;
-    }
 }
 
 // Mobile CSS
 @media only screen and (max-width: $mobile-breakpoint) {
 
     #breadcrumbs {
-        padding-left: .7rem;
-        padding-right: .7rem;
+        padding-left: $mobile-horizontal-spacing;
+        padding-right: $mobile-horizontal-spacing;
+        padding-top: 10px;
+
+        a {
+            // Purpose: give more space to links on smartphones
+            line-height: 30px;
+        }
     }
 
 }

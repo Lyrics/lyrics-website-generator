@@ -1,26 +1,61 @@
-#header {
+form {
     background-color: $color-navbar-bg;
-    line-height: $header-height;
+    font-size: 0;
+    line-height: 17px;
     white-space: nowrap;
+}
+
+input {
+    border: none;
+    border-radius: 1rem;
+    display: none;
+    font-size: $header-font-size;
+    outline: 0;
+    padding: .13rem .666rem;
+    margin: 0 0 8px 7px;
+    vertical-align: middle;
+    width: 130px;
+    -webkit-appearance: none;
+
+    // Purpose: make the navbar's inner shadow stay below the search field
+    position: relative;
+    z-index: 1;
+}
+
+.js input {
+    // Purpose: reveal the search field if JS is on
+    display: inline-block;
 }
 
 @import "nav.scss";
 
+
 // Mobile CSS
 @media only screen and (max-width: $mobile-breakpoint) {
 
-    #header {
+    form {
         margin: -$header-vertical-overflow 0;
         overflow-x: auto;
         overflow-y: hidden;
+
+        // Purpose: make the scrollbar invisible
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    input {
+        margin-left: 1.5rem;
+        margin-right: 1.1rem;
     }
 
 }
 
+
 // Paper CSS
 @media print {
 
-    #header {
+    form {
         display: none;
     }
 
