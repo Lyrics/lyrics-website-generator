@@ -31,7 +31,7 @@ input {
 
 
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
 
     form {
         margin: -$header-vertical-overflow 0;
@@ -53,7 +53,7 @@ input {
 
 
 // Paper CSS
-@media print {
+@include print {
 
     form {
         display: none;

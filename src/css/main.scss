@@ -1,4 +1,5 @@
-@import "vars.scss";
+@import "vars";
+@import "mixins";
 
 html {
     height: 100%;
@@ -95,8 +96,13 @@ p {
     text-align: left;
 }
 
+
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
+
+    a {
+        opacity: 1;
+    }
 
     #content {
         background: inherit;
@@ -127,7 +133,7 @@ p {
 
 
 // Paper CSS
-@media print {
+@include print {
 
     body {
         font-size: 14px;
@@ -135,6 +141,7 @@ p {
 
     a {
         color: #000;
+        opacity: 1;
         text-decoration: none;
     }
 

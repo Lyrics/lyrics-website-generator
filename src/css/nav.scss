@@ -11,7 +11,7 @@ nav {
 
     a {
         box-sizing: border-box;
-        color: #eee;
+        color: #fff;
         display: inline-block;
         font-size: $header-font-size;
         min-width: 19px;
@@ -27,7 +27,7 @@ nav {
 
 
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
     nav {
         margin: $header-vertical-overflow 0;
         margin-right: $shadow-width + 10px;

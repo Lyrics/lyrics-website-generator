@@ -46,7 +46,7 @@
 
 
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
 
     #lyrics {
         display: block;
@@ -76,7 +76,7 @@
 
 
 // Paper CSS
-@media print {
+@include print {
 
     #lyrics {
         border: none;
