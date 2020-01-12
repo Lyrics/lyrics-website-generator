@@ -34,22 +34,22 @@ a {
 ul {
     margin: 0;
     padding: 0 0 0 20px;
+}
 
-    &#ls {
-        list-style: none;
-        margin-top: -9px; // purpose: less space between breadcrumbs and list items
-        padding: 0;
-        line-height: 30px;
-        text-align: left;
+#ls {
+    list-style: none;
+    margin-top: -9px; // purpose: less space between breadcrumbs and list items
+    padding: 0;
+    line-height: 30px;
+    text-align: left;
 
-        li {
-            padding-left: 0;
-        }
+    li {
+        padding-left: 0;
+    }
 
-        a {
-            display: inline-block;
-            text-decoration: none;
-        }
+    a {
+        display: inline-block;
+        text-decoration: none;
     }
 }
 
@@ -125,6 +125,11 @@ p {
             li {
                 // Purpose: give more space to links on smartphones
                 line-height: 40px;
+
+                // Purpose: make it easier to tap list items on small screens
+                a {
+                    min-width: 50%;
+                }
             }
         }
     }
