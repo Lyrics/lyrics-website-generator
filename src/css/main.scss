@@ -83,7 +83,6 @@ p {
     color: #222;
     min-height: $header-vertical-overflow; // Purpose: if the element is empty at least cover the guts of the nav bar
     padding-bottom: 6em;
-    padding-top: $vertical-spacing;
     text-align: center; // Purpose: float the lyrics sheet in the center
 
     p {
@@ -113,7 +112,6 @@ p {
 
     #view {
         padding-bottom: 0;
-        padding-top: 10px;
 
         .homepage,
         #ls {
@@ -121,8 +119,6 @@ p {
         }
 
         #ls {
-            margin-top: 4px;
-
             li {
                 // Purpose: give more space to links on smartphones
                 line-height: 40px;

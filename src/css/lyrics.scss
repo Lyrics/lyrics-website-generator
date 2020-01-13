@@ -18,8 +18,8 @@
             display: none;
         }
 
-        &.g br {
-            display: block;
+        &.g {
+            margin-top: $font-size + 8px;
         }
     }
 

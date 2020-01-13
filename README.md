@@ -12,7 +12,7 @@ then can be uploaded to a server.
 
 ## Build
 
-    make
+    make clean all
 
 ## Run a local web-server
 
