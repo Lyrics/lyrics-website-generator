@@ -3,10 +3,6 @@
     font-size: 0;
     list-style: none;
 
-    &:empty {
-        display: none;
-    }
-
     > span {
         display: inline-block;
         font-size: $font-size;
@@ -21,6 +17,7 @@
                 font-size: 12px;
                 left: -16px;
                 position: absolute;
+                top: 1px;
             }
         }
     }
