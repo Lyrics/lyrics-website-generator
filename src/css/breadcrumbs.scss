@@ -38,7 +38,7 @@
 }
 
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
 
     #breadcrumbs {
         padding-left: $mobile-horizontal-spacing;
@@ -54,7 +54,7 @@
 }
 
 // Paper CSS
-@media print {
+@include print {
 
     #breadcrumbs {
         display: none;

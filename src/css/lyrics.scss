@@ -23,7 +23,6 @@
         }
     }
 
-
     hr {
         border: none;
         border-top: 1px solid rgba(0, 0, 0, 0.3);
@@ -46,7 +45,7 @@
 
 
 // Mobile CSS
-@media only screen and (max-width: $mobile-breakpoint) {
+@include mobile {
 
     #lyrics {
         display: block;
@@ -76,7 +75,7 @@
 
 
 // Paper CSS
-@media print {
+@include print {
 
     #lyrics {
         border: none;

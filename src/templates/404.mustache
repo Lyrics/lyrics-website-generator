@@ -1,13 +1,14 @@
-<div class="not-found">
-    <h3>Not found</h3>
-    <p>The resource you've requested had to be moved or possibly never existed at all</p>
-    <br/>
-    <p>Please click <a href="../">here</a> to go one level up</p>
-</div>
-
 <script>
 // Automatically search the database for this resource in case its path was changed
 var query = (''+window.location).substr(window.location.origin.length + 6)
 query = query.replace(/[\/-]/g, ' ').trim().replace(/\s+/g, '%20')
 window.location = '/search.html?q=' + query
 </script>
+<noscript>
+    <div class="not-found">
+        <h3>Not found</h3>
+        <p>The resource you've requested had to be moved or possibly never existed at all</p>
+        <br/>
+        <p>Please click <a href="../">here</a> to go one level up</p>
+    </div>
+</noscript>
