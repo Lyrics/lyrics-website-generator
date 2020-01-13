@@ -21,7 +21,7 @@ www/db: www
 serve: www
 	@cd www/ && \
         echo "Starting local server at http://0.0.0.0:8100" && \
-        python -m SimpleHTTPServer 8100
+        python3 -m http.server 8100
 
 css: www
 	@which sassc > /dev/null &2> /dev/null && \

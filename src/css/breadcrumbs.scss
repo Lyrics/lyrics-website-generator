@@ -2,22 +2,12 @@
     display: block;
     font-size: 0;
     list-style: none;
-    padding-top: $vertical-spacing;
 
     &:empty {
         display: none;
     }
 
-    span {
-        /* Purpose: hide selection highlight for tiny arrows */
-        -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none;   /* Safari */
-        -moz-user-select: none;      /* Firefox */
-        -ms-user-select: none;       /* IE/Edge */
-        user-select: none;
-    }
-
-    a {
+    > span {
         display: inline-block;
         font-size: $font-size;
 
@@ -31,7 +21,6 @@
                 font-size: 12px;
                 left: -16px;
                 position: absolute;
-                top: 2px;
             }
         }
     }
@@ -45,7 +34,7 @@
         padding-right: $mobile-horizontal-spacing;
         padding-top: 10px;
 
-        a {
+        > span {
             // Purpose: give more space to links on smartphones
             line-height: 30px;
         }
