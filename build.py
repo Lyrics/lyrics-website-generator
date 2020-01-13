@@ -18,13 +18,18 @@ notFoundFileName = '404.html'
 searchFileName = 'search.html'
 sitemapFileName = 'sitemap.xml'
 
+# Shrinkwrap the templates
+def optimizeTemplate(code):
+    return re.sub(r'\n\s*', '', code)
+
 # Templates
-t404 = open('../src/templates/404.mustache', 'r').read()
-tHome = open('../src/templates/home.mustache', 'r').read()
-tLayout = open('../src/templates/layout.mustache', 'r').read()
-tList = open('../src/templates/list.mustache', 'r').read()
-tSearch = open('../src/templates/search.mustache', 'r').read()
-tSitemap = open('../src/templates/sitemap.mustache', 'r').read()
+t404 = optimizeTemplate(open('../src/templates/404.mustache', 'r').read())
+tHome = optimizeTemplate(open('../src/templates/home.mustache', 'r').read())
+tLayout = optimizeTemplate(open('../src/templates/layout.mustache', 'r').read())
+tList = optimizeTemplate(open('../src/templates/list.mustache', 'r').read())
+tSearch = optimizeTemplate(open('../src/templates/search.mustache', 'r').read())
+tSitemap = optimizeTemplate(open('../src/templates/sitemap.mustache', 'r').read())
+tBreadcrumbs = optimizeTemplate(open('../src/templates/breadcrumbs.mustache', 'r').read())
 
 # Dictionary of letters (used for global navigation)
 abc = []
@@ -59,7 +64,9 @@ def getBreadcrumbs(*items):
         depth += 1
         if depth < len(items):
             output.append(None)
-    return output
+    return pystache.render(tBreadcrumbs, {
+        'breadcrumbs': output,
+    })
 
 def getLyrics(text):
     regex = re.compile(r'(.*)\n+_+\n(.*)$', re.DOTALL)

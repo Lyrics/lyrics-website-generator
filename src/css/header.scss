@@ -8,7 +8,6 @@ form {
 input {
     border: none;
     border-radius: 1rem;
-    display: none;
     font-size: $header-font-size;
     outline: 0;
     padding: .13rem .666rem;
@@ -20,11 +19,6 @@ input {
     // Purpose: make the navbar's inner shadow stay below the search field
     position: relative;
     z-index: 1;
-}
-
-.js input {
-    // Purpose: reveal the search field if JS is on
-    display: inline-block;
 }
 
 @import "nav.scss";
