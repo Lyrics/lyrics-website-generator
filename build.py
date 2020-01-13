@@ -8,27 +8,27 @@ import pystache
 from urllib.parse import quote
 
 # Config
-siteURL = 'https://lyrics.github.io'
+siteURL  = 'https://lyrics.github.io'
 siteName = 'Lyrics'
-srcDir = '../../lyrics.git/database'
-dbDir = 'db'
+srcDir   = '../../lyrics.git/database'
+dbDir    = 'db'
 # File names
-indexFileName = 'index.html'
+indexFileName    = 'index.html'
 notFoundFileName = '404.html'
-searchFileName = 'search.html'
-sitemapFileName = 'sitemap.xml'
+searchFileName   = 'search.html'
+sitemapFileName  = 'sitemap.xml'
 
 # Shrinkwrap the templates
 def optimizeTemplate(code):
     return re.sub(r'\n\s*', '', code)
 
 # Templates
-t404 = optimizeTemplate(open('../src/templates/404.mustache', 'r').read())
-tHome = optimizeTemplate(open('../src/templates/home.mustache', 'r').read())
-tLayout = optimizeTemplate(open('../src/templates/layout.mustache', 'r').read())
-tList = optimizeTemplate(open('../src/templates/list.mustache', 'r').read())
-tSearch = optimizeTemplate(open('../src/templates/search.mustache', 'r').read())
-tSitemap = optimizeTemplate(open('../src/templates/sitemap.mustache', 'r').read())
+t404         = optimizeTemplate(open('../src/templates/404.mustache', 'r').read())
+tHome        = optimizeTemplate(open('../src/templates/home.mustache', 'r').read())
+tLayout      = optimizeTemplate(open('../src/templates/layout.mustache', 'r').read())
+tList        = optimizeTemplate(open('../src/templates/list.mustache', 'r').read())
+tSearch      = optimizeTemplate(open('../src/templates/search.mustache', 'r').read())
+tSitemap     = optimizeTemplate(open('../src/templates/sitemap.mustache', 'r').read())
 tBreadcrumbs = optimizeTemplate(open('../src/templates/breadcrumbs.mustache', 'r').read())
 
 # Dictionary of letters (used for global navigation)
@@ -72,14 +72,16 @@ def getLyrics(text):
     regex = re.compile(r'(.*)\n+_+\n(.*)$', re.DOTALL)
     # Extract the song text
     lyricsText = regex.sub(r'\1', text)
-    # Separate text into paragraphs
+    # Trim the text
+    lyricsText = lyricsText.strip()
+    # Separate the text into paragraphs
     lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
     # Convert newline characters into linebreaks
     lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
     # Take care of the metadata
     metaData = regex.sub(r'\2', text)
     metaData = re.sub('\n', '<br/>', metaData)
-    return '<blockquote id="lyrics">' + lyricsText + '<br/><br/><hr/><p>' + metaData + '</p></blockquote>'
+    return '<br/><blockquote id="lyrics">' + lyricsText + '<br/><br/><br/><hr/><p>' + metaData + '</p></blockquote>'
 
 def getDescriptionList(items):
     return ', '.join(items[:24])

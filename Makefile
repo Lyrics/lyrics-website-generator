@@ -4,7 +4,7 @@ ASSETS_FILES = src/assets
 CSS_FILE = www/s.css
 SASS_OPTS = --style compressed
 
-all: clean build
+all: build
 
 clean:
 	@rm -rf www
