@@ -49,7 +49,6 @@ ul {
 
     a {
         display: inline-block;
-        text-decoration: none;
     }
 }
 
@@ -87,8 +86,10 @@ p {
     padding-top: $vertical-spacing;
     text-align: center; // Purpose: float the lyrics sheet in the center
 
-    a {
-        text-decoration: underline;
+    p {
+        a {
+            text-decoration: underline;
+        }
     }
 }
 
