@@ -1,5 +1,5 @@
 <script>
-// Automatically search the database for this resource in case its path was changed
+/* Automatically search the database for this resource in case its path was changed */
 var query = (''+window.location).substr(window.location.origin.length + 6)
 query = query.replace(/[\/-]/g, ' ').trim().replace(/\s+/g, '%20')
 window.location = '/search.html?q=' + query
