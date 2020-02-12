@@ -1,7 +1,7 @@
 #lyrics {
     background: #fff;
     border: solid 1px #f2f2f2;
-    box-shadow: 4px 4px 20px rgba(0, 0, 0, .1);
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
     color: #222;
     display: inline-block;
     line-height: 1.5;
@@ -23,6 +23,7 @@
         }
     }
 
+    // Purpose: separate lyrics from metadata
     hr {
         border: none;
         border-top: 1px solid rgba(0, 0, 0, 0.3);

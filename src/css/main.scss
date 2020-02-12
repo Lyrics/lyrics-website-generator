@@ -52,6 +52,22 @@ ul {
     }
 }
 
+.t1,
+.t2,
+.t3 {
+    padding-left: 15px;
+    background: transparent none no-repeat left 9px;
+}
+.t1 {
+    background-image: url(/1.svg);
+}
+.t2 {
+    background-image: url(/2.svg);
+}
+.t3 {
+    background-image: url(/3.svg);
+}
+
 h1,
 h2,
 h3,
@@ -129,6 +145,12 @@ p {
                 }
             }
         }
+    }
+
+    .t1,
+    .t2,
+    .t3 {
+        background-position: left 14px;
     }
 
 }
