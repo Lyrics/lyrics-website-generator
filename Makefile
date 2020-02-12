@@ -1,31 +1,43 @@
 #!/usr/bin/make -f
 
-ASSETS_FILES = src/assets
-CSS_FILE = www/s.css
+ASSETS_DIR = src/assets
 SASS_OPTS = --style compressed
+WWW_DIR=www
+CSS_FILE = $(WWW_DIR)/s.css
+DB_DIR = $(WWW_DIR)/db
+FAVICON_FILE = favicon.ico
 
 all: build
+.PHONY: all
 
 clean:
-	@rm -rf www
+	@rm -rf $(WWW_DIR)
+.PHONY: clean
 
-build: www/db css
-	@cd www && python3 ../build.py && cp -r ../${ASSETS_FILES}/* .
+build: $(DB_DIR) $(CSS_FILE) $(FAVICON_FILE)
+	@cd $(WWW_DIR) && \
+    python3 ../build.py && \
+    cp -r ../${ASSETS_DIR}/js . && \
+    cp ../${ASSETS_DIR}/icons/artist.svg 1.svg && \
+    cp ../${ASSETS_DIR}/icons/album.svg 2.svg && \
+    cp ../${ASSETS_DIR}/icons/song.svg 3.svg
+.PHONY: build
 
-www:
-	@mkdir www
+$(WWW_DIR):
+	@mkdir $(WWW_DIR)
 
-www/db: www
-	@mkdir www/db
+$(DB_DIR): $(WWW_DIR)
+	@mkdir $(DB_DIR)
 
-serve: www
-	@cd www/ && \
-        echo "Starting local server at http://0.0.0.0:8100" && \
-        python3 -m http.server 8100
+serve: $(WWW_DIR)
+	@cd $(WWW_DIR) && \
+    echo "Starting local server at http://0.0.0.0:8100" && \
+    python3 -m http.server 8100
+.PHONY: serve
 
-css: www
+$(CSS_FILE): $(WWW_DIR)
 	@which sassc > /dev/null &2> /dev/null && \
-         sassc ${SASS_OPTS} src/css/main.scss $(CSS_FILE) \
-         || echo -n ''
+    sassc ${SASS_OPTS} src/css/main.scss $(CSS_FILE) ||  echo -n ''
 
-.PHONY: all clean build serve css
+$(FAVICON_FILE): $(WWW_DIR)
+	@cp ${ASSETS_DIR}/icons/$(FAVICON_FILE) $(WWW_DIR)/
