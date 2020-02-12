@@ -1,13 +1,14 @@
-#lyrics {
+pre {
     background: #fff;
     border: solid 1px #f2f2f2;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
     color: #222;
     display: inline-block;
+    font-family: inherit;
     line-height: 1.5;
     margin: -1px 0 0 0;
     overflow: auto;
-    padding: 20px;
+    padding: 16px;
     text-align: left;
 
     span {
@@ -48,7 +49,7 @@
 // Mobile CSS
 @include mobile {
 
-    #lyrics {
+    pre {
         display: block;
         padding: .4rem .7rem;
 
@@ -78,7 +79,7 @@
 // Paper CSS
 @include print {
 
-    #lyrics {
+    pre {
         border: none;
         box-shadow: none;
         margin: 0;
