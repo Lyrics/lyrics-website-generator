@@ -1,6 +1,7 @@
 #breadcrumbs {
     display: block;
     font-size: 0;
+    line-height: 30px;
     list-style: none;
 
     > span {
@@ -16,10 +17,15 @@
                 content: '→';
                 font-size: 12px;
                 left: -16px;
+                line-height: 27px;
                 position: absolute;
                 top: 1px;
             }
         }
+    }
+
+    a {
+        display: inline-block;
     }
 }
 
@@ -27,12 +33,12 @@
 @include mobile {
 
     #breadcrumbs {
+        line-height: 40px; // Purpose: give more space to links on smartphones
         padding-left: $mobile-horizontal-spacing;
         padding-right: $mobile-horizontal-spacing;
 
-        > span {
-            // Purpose: give more space to links on smartphones
-            line-height: 30px;
+        > span:not(:first-child):before {
+            line-height: 36px;
         }
     }
 
