@@ -97,7 +97,7 @@ p {
 
 #view {
     color: #222;
-    min-height: $header-vertical-overflow; // Purpose: if the element is empty at least cover the guts of the nav bar
+    min-height: 20px; // Purpose: if the element is empty at least cover the guts of the nav bar
     padding-bottom: 6em;
     text-align: center; // Purpose: float the lyrics sheet in the center
 

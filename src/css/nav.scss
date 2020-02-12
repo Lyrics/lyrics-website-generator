@@ -29,7 +29,6 @@ nav {
 // Mobile CSS
 @include mobile {
     nav {
-        margin: $header-vertical-overflow 0;
         margin-right: $shadow-width + 10px;
         text-align: left;
 
