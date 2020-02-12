@@ -28,11 +28,13 @@ input {
 @include mobile {
 
     form {
-        margin: -$header-vertical-overflow 0;
         overflow-x: auto;
         overflow-y: hidden;
 
-        // Purpose: make the scrollbar invisible
+        /* Purpose: make the horizontal scrollbar invisible */
+        scrollbar-width: none; // FF
+        -ms-overflow-style: none; // IEdge
+        // Chrome, Safari and Opera
         &::-webkit-scrollbar {
             display: none;
         }
