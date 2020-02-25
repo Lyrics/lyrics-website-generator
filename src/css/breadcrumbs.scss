@@ -22,6 +22,10 @@
                 top: 1px;
             }
         }
+
+        &:last-child {
+            margin-right: $mobile-horizontal-spacing;
+        }
     }
 
     a {
@@ -36,6 +40,32 @@
         line-height: 40px; // Purpose: give more space to links on smartphones
         padding-left: $mobile-horizontal-spacing;
         padding-right: $mobile-horizontal-spacing;
+
+        // Purpose: make scrollable
+        overflow-x: auto;
+        white-space: nowrap;
+
+        // Purpose: make the horizontal scrollbar invisible
+        scrollbar-width: none; // FF
+        -ms-overflow-style: none; // IEdge
+        // Chrome, Safari and Opera
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Purpose: add inner shadow to the right side of breadcrumbs to hint user that
+            they can hold scroll the breadcrumbs horizontally on mobile */
+        &:after {
+            background: linear-gradient(90deg, rgba($color-bg, 0) 0%, $color-bg 100%);
+            content: '';
+            height: 30px;
+            position: fixed;
+            right: 0;
+            width: $mobile-horizontal-spacing;
+
+            // Purpose: make it possible to click on links beneath the shadow
+            pointer-events: none;
+        }
 
         > span:not(:first-child):before {
             line-height: 36px;
