@@ -23,10 +23,8 @@ input {
 
 @import "nav.scss";
 
-
 // Mobile CSS
 @include mobile {
-
     form {
         overflow-x: auto;
         overflow-y: hidden;
@@ -44,15 +42,11 @@ input {
         margin-left: 1.5rem;
         margin-right: 1.1rem;
     }
-
 }
-
 
 // Paper CSS
 @include print {
-
     form {
         display: none;
     }
-
 }
