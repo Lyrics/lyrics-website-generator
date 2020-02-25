@@ -10,8 +10,10 @@ pre {
     overflow: auto;
     padding: 16px;
     text-align: left;
+    white-space: pre-line;
 
     span {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
         display: block;
         margin: 0 0 -1px 0;
 
@@ -45,10 +47,8 @@ pre {
     }
 }
 
-
 // Mobile CSS
 @include mobile {
-
     pre {
         display: block;
         padding: .4rem .7rem;
@@ -59,11 +59,6 @@ pre {
         // Purpose: add a bit of spacing to the bottom of the sheet
         padding-bottom: $bottom-lyrics-padding-mobile;
 
-        // Purpose: Make paper lined to ensure readabilety when text gets wrapped
-        span {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-        }
-
         // Purpose: make metadata easier to read on mobile
         p {
             &,
@@ -72,13 +67,10 @@ pre {
             }
         }
     }
-
 }
-
 
 // Paper CSS
 @include print {
-
     pre {
         border: none;
         box-shadow: none;
@@ -90,5 +82,4 @@ pre {
             opacity: 1;
         }
     }
-
 }

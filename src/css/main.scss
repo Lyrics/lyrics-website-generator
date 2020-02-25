@@ -112,10 +112,8 @@ p {
     text-align: left;
 }
 
-
 // Mobile CSS
 @include mobile {
-
     a {
         opacity: 1;
     }
@@ -152,13 +150,11 @@ p {
     .t3 {
         background-position: left 14px;
     }
-
 }
 
 
 // Paper CSS
 @include print {
-
     body {
         font-size: 14px;
     }
@@ -176,5 +172,4 @@ p {
     #content {
         margin: 0;
     }
-
 }
