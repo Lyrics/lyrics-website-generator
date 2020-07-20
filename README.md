@@ -17,7 +17,7 @@ then can be uploaded to a server.
     make clean all
 
 
-## Run a local web-server
+## Run local web server
 
     make serve
 
@@ -36,7 +36,7 @@ General
  - [ ] pages with breadcrumbs should use breadcrumb schema
 Mobile
  - [x] it should be possible to navigate the website and read lyrics using tablet or smartphone
- - [ ] whle on mobile, all navigation items should be at least 40px wide/tall
+ - [ ] while on mobile, all navigation items should be at least 40px wide/tall
 Lyrics page
  - [x] lyrics sheet should preserve newline characters, but wrap onto the next line if wider than the viewport (to avoid having a horizontal scroll bar)
  - [x] lyrics sheet should have visible but very light full-width horizontal separators between lines
