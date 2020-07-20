@@ -12,6 +12,7 @@ siteURL  = 'https://lyrics.github.io'
 siteName = 'Lyrics'
 srcDir   = '../../lyrics.git/database'
 dbDir    = 'db'
+
 # File names
 indexFileName    = 'index.html'
 notFoundFileName = '404.html'
@@ -69,19 +70,32 @@ def getBreadcrumbs(*items):
     })
 
 def getLyrics(text):
-    regex = re.compile(r'(.*)\n+_+\n(.*)$', re.DOTALL)
-    # Extract the song text
-    lyricsText = regex.sub(r'\1', text)
-    # Trim the text
+    lyricsText = ""
+    lyricsMetaData = ""
+    partials = re.split('_+', text)
+    if len(partials) > 1:
+        lyricsText = partials[0]
+        lyricsMetaData = partials[1]
+    else:
+        lyricsText = text
+    # Trim text
     lyricsText = lyricsText.strip()
-    # Separate the text into paragraphs
+    # Separate text into paragraphs
     lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
     # Convert newline characters into linebreaks
     lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
-    # Take care of the metadata
-    metaData = regex.sub(r'\2', text)
-    metaData = re.sub('\n', '<br/>', metaData)
-    return '<br/><div id="lyrics">' + lyricsText + '<br/><br/><br/><hr/><p>' + metaData + '</p></div>'
+    # Trim metadata
+    lyricsMetaData = lyricsMetaData.strip()
+    # Format metadata
+    lyricsMetaData = re.sub('\n', '<br/>', lyricsMetaData)
+    result = '<br/>' # margin for cli browsers
+    result += '<div id="lyrics">'
+    result += lyricsText + '<br/><br/><br/>'
+    if lyricsMetaData:
+        result += '<hr/>'
+        result += '<p>' + lyricsMetaData + '</p>'
+    result += '</div>'
+    return result
 
 def getDescriptionList(items):
     return ', '.join(items[:24])
