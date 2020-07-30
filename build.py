@@ -82,6 +82,8 @@ def getText(lyricsFileContents):
         lyricsText = lyricsFileContents
     ## Trim text
     lyricsText = lyricsText.strip()
+    ## Add newline at end of text
+    lyricsText += "\n"
     return lyricsText
 
 def getMetadata(lyricsFileContents):
@@ -112,7 +114,7 @@ def parseMetadata(metadata):
         else:
           ## The value is split between multiple lines,
           ## append this line to the previous one
-          datalines[len(datalines) - 1] += line
+          datalines[-1] += line
       else:
         datalines.append(line)
     dictionary = {}
@@ -134,7 +136,8 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadata):
     html += '<br/>'
     ## Construct HTML
     html += '<div id="lyrics">'
-    html += lyricsText + '<br/><br/><br/>'
+    html += lyricsText
+    html += '<br/><br/>'
     if lyricsMetadata:
         lyricsMetadata = re.sub('\n', '<br/>', lyricsMetadata)
         html += '<hr/>'
