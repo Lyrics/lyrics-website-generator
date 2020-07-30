@@ -22,7 +22,7 @@ body {
 }
 
 a {
-    color: #000;
+    color: $color-link;
     opacity: .9;
     text-decoration: none;
 
@@ -49,6 +49,10 @@ ul {
 
     a {
         display: inline-block;
+
+        span {
+            color: $color-list-id;
+        }
     }
 }
 
@@ -160,7 +164,7 @@ p {
     }
 
     a {
-        color: #000;
+        color: $color-link;
         opacity: 1;
         text-decoration: none;
     }
