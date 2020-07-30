@@ -152,6 +152,11 @@ def sortListItems(link):
     else:
         return 3000 ## Push albums without year or songs without number to the bottom
 
+def formatAlbumYear(a):
+    if 'id' in a:
+        a['id'] = '(' + str(a['id']) + ')'
+    return a
+
 ## 0. Create the root index file
 html = pystache.render(tLayout, {
     'title': siteName,
@@ -283,6 +288,8 @@ for letter in sorted(next(os.walk(srcDir))[1]):
 
         ## Sort albums by year
         albumList.sort(key=sortListItems)
+        ## Wrap album years in parens
+        albumList = list(map(formatAlbumYear, albumList))
         ## Render and write artist page contents
         html = pystache.render(tLayout, {
             'title': artist + ' | ' + siteName,
