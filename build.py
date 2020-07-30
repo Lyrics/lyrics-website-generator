@@ -157,6 +157,11 @@ def formatAlbumYear(a):
         a['id'] = '(' + str(a['id']) + ')'
     return a
 
+def formatSongNumber(s):
+    if 'id' in s:
+        s['id'] = '' + str(s['id']) + '.'
+    return s
+
 ## 0. Create the root index file
 html = pystache.render(tLayout, {
     'title': siteName,
@@ -275,6 +280,8 @@ for letter in sorted(next(os.walk(srcDir))[1]):
 
             ## Sort songs by number
             songList.sort(key=sortListItems)
+            ## Add dots to song numbers
+            songList = list(map(formatSongNumber, songList))
             ## Render and write album page contents
             html = pystache.render(tLayout, {
                 'title': 'Album "' + album + '" by ' + artist + ' | ' + siteName,
