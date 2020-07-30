@@ -58,18 +58,16 @@ def getSitemapURL(target=''):
         URL += '/'
     return URL
 
-def getBreadcrumbs(*items):
-    output = []
+def getBreadcrumbs(*links):
+    items = []
     depth = 0
-    base = dbDir
-    for item in items:
-        base = os.path.join(base, getSafePath(item))
-        output.append(getLink(base, item, depth))
+    for link in links:
+        items.append(link)
         depth += 1
-        if depth < len(items):
-            output.append(None)
+        if depth < len(links):
+            items.append(None)
     return pystache.render(tBreadcrumbs, {
-        'breadcrumbs': output,
+        'breadcrumbs': items,
     })
 
 def splitLyricsIntoTextAndMetadata(lyricsFileContents):
@@ -152,6 +150,16 @@ def sortListItems(link):
     else:
         return 3000 ## Push albums without year or songs without number to the bottom
 
+def formatAlbumYear(a):
+    if 'id' in a:
+        a['id'] = '(' + str(a['id']) + ')'
+    return a
+
+def formatSongNumber(s):
+    if 'id' in s:
+        s['id'] = '' + str(s['id']) + '.'
+    return s
+
 ## 0. Create the root index file
 html = pystache.render(tLayout, {
     'title': siteName,
@@ -197,16 +205,17 @@ for letter in sorted(next(os.walk(srcDir))[1]):
 
     letterPath = os.path.join(srcDir, letter)
     safeLetterPath = getSafePath(os.path.join(dbDir, letter))
+    letterLink = getLink(safeLetterPath, letter, 0)
     sitemapURLs.append(getSitemapURL(safeLetterPath))
     ## Create db/x/
     mkdir(safeLetterPath)
     ## Create db/x/index.html
     letterPathFile = mkfile(safeLetterPath)
-    letters = sorted(next(os.walk(letterPath))[1], key=str.lower)
+    artists = sorted(next(os.walk(letterPath))[1], key=str.lower)
     artistList = []
 
     ## 2. Loop through artists starting with letter x
-    for artist in letters:
+    for artist in artists:
         artistPath = os.path.join(letterPath, artist)
         safeArtistPath = getSafePath(os.path.join(dbDir, letter, artist))
         sitemapURLs.append(getSitemapURL(safeArtistPath))
@@ -252,17 +261,23 @@ for letter in sorted(next(os.walk(srcDir))[1]):
                     lyricsText = getText(lyricsFileContents)
                     lyricsMetadata = getMetadata(lyricsFileContents)
                     lyricsMetadataDictionary = parseMetadata(lyricsMetadata)
-                    ## Use metadata values
+                    ## Make use of any available metadata values
+                    if 'Name' in lyricsMetadataDictionary:
+                        songList[-1]['label'] = lyricsMetadataDictionary['Name'][0]
+                    if 'Artist' in lyricsMetadataDictionary:
+                        artistList[-1]['label'] = lyricsMetadataDictionary['Artist'][0]
+                    if 'Album' in lyricsMetadataDictionary:
+                        albumList[-1]['label'] = lyricsMetadataDictionary['Album'][0]
                     if 'Track no' in lyricsMetadataDictionary:
-                        songList[len(songList) - 1]['id'] = int(lyricsMetadataDictionary['Track no'][0])
+                        songList[-1]['id'] = int(lyricsMetadataDictionary['Track no'][0])
                     if 'Year' in lyricsMetadataDictionary:
-                        albumList[len(albumList) - 1]['id'] = int(lyricsMetadataDictionary['Year'][0])
+                        albumList[-1]['id'] = int(lyricsMetadataDictionary['Year'][0])
                     ## Render and write song page contents
                     html = pystache.render(tLayout, {
-                        'title': artist + ' – ' + song + ' | ' + siteName,
+                        'title': artistList[-1]['label'] + ' – ' + songList[-1]['label'] + ' | ' + siteName,
                         'description': getDescriptionText(lyricsText),
                         'navigation': abc,
-                        'breadcrumbs': getBreadcrumbs(letter, artist, album, song),
+                        'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], songList[-1]),
                         'content': formatLyricsAndMetadata(lyricsText, lyricsMetadata),
                     })
                     songPathFile.write(html)
@@ -270,12 +285,14 @@ for letter in sorted(next(os.walk(srcDir))[1]):
 
             ## Sort songs by number
             songList.sort(key=sortListItems)
+            ## Add dots to song numbers
+            songList = list(map(formatSongNumber, songList))
             ## Render and write album page contents
             html = pystache.render(tLayout, {
-                'title': 'Album "' + album + '" by ' + artist + ' | ' + siteName,
+                'title': 'Album "' + albumList[-1]['label'] + '" by ' + artistList[-1]['label'] + ' | ' + siteName,
                 'description': getDescriptionList(songs),
                 'navigation': abc,
-                'breadcrumbs': getBreadcrumbs(letter, artist, album),
+                'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
                 'content': pystache.render(tList, {'links': songList}),
             })
             albumPathFile.write(html)
@@ -283,12 +300,14 @@ for letter in sorted(next(os.walk(srcDir))[1]):
 
         ## Sort albums by year
         albumList.sort(key=sortListItems)
+        ## Wrap album years in parens
+        albumList = list(map(formatAlbumYear, albumList))
         ## Render and write artist page contents
         html = pystache.render(tLayout, {
-            'title': artist + ' | ' + siteName,
+            'title': artistList[-1]['label'] + ' | ' + siteName,
             'description': getDescriptionList(albums),
             'navigation': abc,
-            'breadcrumbs': getBreadcrumbs(letter, artist),
+            'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
             'content': pystache.render(tList, {'links': albumList}),
         })
         artistPathFile.write(html)
@@ -297,9 +316,9 @@ for letter in sorted(next(os.walk(srcDir))[1]):
     ## Render and write letter page contents
     html = pystache.render(tLayout, {
         'title': 'Artists starting with ' + letter + ' | ' + siteName,
-        'description': getDescriptionList(letters),
+        'description': getDescriptionList(artists),
         'navigation': abc,
-        'breadcrumbs': getBreadcrumbs(letter),
+        'breadcrumbs': getBreadcrumbs(letterLink),
         'content': pystache.render(tList, {'links': artistList}),
     })
     letterPathFile.write(html)
