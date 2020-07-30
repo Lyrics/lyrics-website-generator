@@ -84,10 +84,6 @@ def getText(lyricsFileContents):
         lyricsText = lyricsFileContents
     ## Trim text
     lyricsText = lyricsText.strip()
-    ## Separate text into paragraphs
-    lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
-    ## Convert newline characters into linebreaks
-    lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
     return lyricsText
 
 def getMetadata(lyricsFileContents):
@@ -131,18 +127,30 @@ def parseMetadata(metadata):
     return dictionary
 
 def formatLyricsAndMetadata(lyricsText, lyricsMetadata):
-    result = ''
+    ## Separate text into paragraphs
+    lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
+    ## Convert newline characters into linebreaks
+    lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
+    html = ''
     ## Add margin for cli browsers
-    result += '<br/>'
-    ## Construct and output the result
-    result += '<div id="lyrics">'
-    result += lyricsText + '<br/><br/><br/>'
+    html += '<br/>'
+    ## Construct HTML
+    html += '<div id="lyrics">'
+    html += lyricsText + '<br/><br/><br/>'
     if lyricsMetadata:
         lyricsMetadata = re.sub('\n', '<br/>', lyricsMetadata)
-        result += '<hr/>'
-        result += '<p>' + lyricsMetadata + '</p>'
-    result += '</div>'
-    return result
+        html += '<hr/>'
+        html += '<p>' + lyricsMetadata + '</p>'
+    html += '</div>'
+    return html
+
+## Sorting function for album and song lists
+def sortListItems(link):
+    if 'id' in link:
+        ## Sort albums by year, songs by number
+        return link['id']
+    else:
+        return 3000 ## Push albums without year or songs without number to the bottom
 
 ## 0. Create the root index file
 html = pystache.render(tLayout, {
@@ -244,6 +252,12 @@ for letter in sorted(next(os.walk(srcDir))[1]):
                     lyricsText = getText(lyricsFileContents)
                     lyricsMetadata = getMetadata(lyricsFileContents)
                     lyricsMetadataDictionary = parseMetadata(lyricsMetadata)
+                    ## Use metadata values
+                    if 'Track no' in lyricsMetadataDictionary:
+                        songList[len(songList) - 1]['id'] = int(lyricsMetadataDictionary['Track no'][0])
+                    if 'Year' in lyricsMetadataDictionary:
+                        albumList[len(albumList) - 1]['id'] = int(lyricsMetadataDictionary['Year'][0])
+                    ## Render and write song page contents
                     html = pystache.render(tLayout, {
                         'title': artist + ' – ' + song + ' | ' + siteName,
                         'description': getDescriptionText(lyricsText),
@@ -254,6 +268,9 @@ for letter in sorted(next(os.walk(srcDir))[1]):
                     songPathFile.write(html)
                     songPathFile.close()
 
+            ## Sort songs by number
+            songList.sort(key=sortListItems)
+            ## Render and write album page contents
             html = pystache.render(tLayout, {
                 'title': 'Album "' + album + '" by ' + artist + ' | ' + siteName,
                 'description': getDescriptionList(songs),
@@ -264,6 +281,9 @@ for letter in sorted(next(os.walk(srcDir))[1]):
             albumPathFile.write(html)
             albumPathFile.close()
 
+        ## Sort albums by year
+        albumList.sort(key=sortListItems)
+        ## Render and write artist page contents
         html = pystache.render(tLayout, {
             'title': artist + ' | ' + siteName,
             'description': getDescriptionList(albums),
@@ -274,6 +294,7 @@ for letter in sorted(next(os.walk(srcDir))[1]):
         artistPathFile.write(html)
         artistPathFile.close()
 
+    ## Render and write letter page contents
     html = pystache.render(tLayout, {
         'title': 'Artists starting with ' + letter + ' | ' + siteName,
         'description': getDescriptionList(letters),
