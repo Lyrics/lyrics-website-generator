@@ -82,8 +82,9 @@ def getText(lyricsFileContents):
         lyricsText = lyricsFileContents
     ## Trim text
     lyricsText = lyricsText.strip()
-    ## Add newline at end of text
-    lyricsText += "\n"
+    ## Add newline at end of text (unless it's empty)
+    if lyricsText != "":
+        lyricsText += "\n"
     return lyricsText
 
 def getMetadata(lyricsFileContents):
