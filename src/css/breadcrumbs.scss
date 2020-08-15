@@ -13,7 +13,7 @@
             position: relative;
 
             &:before {
-                color: rgba(0, 0, 0, .3);
+                color: $color-breadcrumbs-arrow;
                 content: '→';
                 font-size: 12px;
                 left: -16px;
