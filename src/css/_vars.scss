@@ -1,9 +1,24 @@
 $color-bg: #fafafa;
+$color-fg: #222;
 $color-link: #000;
 $color-list-id: #bbb;
 $color-navbar-bg: #333;
+$color-navbar-fg: #fff;
+$color-breadcrumbs-arrow: rgba(0, 0, 0, .3);
+$color-lyrics-bg: #fff;
+$color-lyrics-fg: #222;
+$color-lyrics-border: #f2f2f2;
 
-$bottom-lyrics-padding-mobile: 2.4rem;
+$dark-color-bg: #000;
+$dark-color-fg: #eee;
+$dark-color-link: #fff;
+$dark-color-list-id: #555;
+$dark-color-navbar-bg: #050505;
+$dark-color-navbar-fg: #fff;
+$dark-color-breadcrumbs-arrow: rgba(255, 255, 255, .3);
+$dark-color-lyrics-bg: #070707;
+$dark-color-lyrics-fg: #fff;
+$dark-color-lyrics-border: #111;
 
 $font-size: 16px;
 $header-font-size: 14px;
@@ -13,8 +28,10 @@ $shadow-width: 40px; // Note: shadow on the right needs to hint at the possibili
 $vertical-spacing: 20px;
 $website-width: 900px;
 
-$list-item-min-width: 40px;
+// Define minimal list item with
+$list-item-min-width: 90px;
 $mobile-list-item-min-width: 65%;
 
 $mobile-breakpoint: 920px;
 $mobile-horizontal-spacing: 10px;
+$bottom-lyrics-padding-mobile: 2.4rem;

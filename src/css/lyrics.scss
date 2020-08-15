@@ -1,8 +1,8 @@
 #lyrics {
-    background: #fff;
-    border: solid 1px #f2f2f2;
+    background: $color-lyrics-bg;
+    border: solid 1px $color-lyrics-border;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
-    color: #222;
+    color: $color-lyrics-fg;
     display: inline-block;
     font-family: inherit;
     line-height: 1.5;
@@ -52,6 +52,9 @@
     #lyrics {
         display: block;
         padding: .4rem .7rem;
+
+        // Purpose: don't show border on mobile
+        border: none;
 
         // Purpose: hide the paper sheet's shadow on mobile
         box-shadow: none;
