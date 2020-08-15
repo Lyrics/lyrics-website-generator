@@ -41,7 +41,7 @@
         padding-left: $mobile-horizontal-spacing;
         padding-right: $mobile-horizontal-spacing;
 
-        // Purpose: make scrollable
+        // Purpose: make horizontally scrollable
         overflow-x: auto;
         white-space: nowrap;
 
@@ -54,17 +54,29 @@
         }
 
         /* Purpose: add inner shadow to the right side of breadcrumbs to hint user that
-            they can hold scroll the breadcrumbs horizontally on mobile */
-        &:after {
-            background: linear-gradient(90deg, rgba($color-bg, 0) 0%, $color-bg 100%);
-            content: '';
-            height: 30px;
-            position: fixed;
-            right: 0;
-            width: $mobile-horizontal-spacing;
+            they can scroll it horizontally on mobile */
+        > span:first-child {
+            &:before,
+            &:after {
+                content: '';
+                height: 30px;
+                position: absolute;
+                width: $mobile-horizontal-spacing;
+                z-index: 1;
 
-            // Purpose: make it possible to click on links beneath the shadow
-            pointer-events: none;
+                // Purpose: make it possible to click on links beneath the shadow
+                pointer-events: none;
+            }
+
+            &:before {
+                background: linear-gradient(270deg, rgba($color-bg, 0) 0%, $color-bg 100%);
+                left: 0;
+            }
+
+            &:after {
+                background: linear-gradient(90deg, rgba($color-bg, 0) 0%, $color-bg 100%);
+                right: 0;
+            }
         }
 
         > span:not(:first-child):before {
