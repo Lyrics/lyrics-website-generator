@@ -147,12 +147,19 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadata):
     return html
 
 ## Sorting function for album and song lists
-def sortListItems(link):
+def sortListItems123(link):
     if 'id' in link:
         ## Sort albums by year, songs by number
-        return link['id']
+        return int(link['id'])
     else:
         return 3000 ## Push albums without year or songs without number to the bottom
+
+def sortListItemsABC(link):
+    if 'id' in link:
+        ## Sort songs by letter
+        return link['id']
+    else:
+        return 'Z' ## Push songs without letter to the bottom
 
 def formatAlbumYear(a):
     if 'id' in a:
@@ -273,9 +280,9 @@ for letter in sorted(next(os.walk(srcDir))[1]):
                     if 'Album' in lyricsMetadataDictionary:
                         albumList[-1]['label'] = lyricsMetadataDictionary['Album'][0]
                     if 'Track no' in lyricsMetadataDictionary:
-                        songList[-1]['id'] = int(lyricsMetadataDictionary['Track no'][0])
+                        songList[-1]['id'] = lyricsMetadataDictionary['Track no'][0]
                     if 'Year' in lyricsMetadataDictionary:
-                        albumList[-1]['id'] = int(lyricsMetadataDictionary['Year'][0])
+                        albumList[-1]['id'] = lyricsMetadataDictionary['Year'][0]
                     ## Render and write song page contents
                     html = pystache.render(tLayout, {
                         'title': artistList[-1]['label'] + ' – ' + songList[-1]['label'] + ' | ' + siteName,
@@ -287,8 +294,14 @@ for letter in sorted(next(os.walk(srcDir))[1]):
                     songPathFile.write(html)
                     songPathFile.close()
 
-            ## Sort songs by number
-            songList.sort(key=sortListItems)
+            ## Sort songs
+            if len(songList) > 0:
+                if songList[0] is int:
+                    # By number (CDs, WEB releases)
+                    songList.sort(key=sortListItems123)
+                else:
+                    # By letter (LPs, cassette tapes)
+                    songList.sort(key=sortListItemsABC)
             ## Add dots to song numbers
             songList = list(map(formatSongNumber, songList))
             ## Render and write album page contents
@@ -303,7 +316,7 @@ for letter in sorted(next(os.walk(srcDir))[1]):
             albumPathFile.close()
 
         ## Sort albums by year
-        albumList.sort(key=sortListItems)
+        albumList.sort(key=sortListItems123)
         ## Wrap album years in parens
         albumList = list(map(formatAlbumYear, albumList))
         ## Render and write artist page contents
