@@ -32,18 +32,30 @@
         border-top: 1px solid rgba(0, 0, 0, 0.3);
         margin: 0;
     }
+}
 
-    // Purpose: make metadata look different from the song text
-    p {
-        font-size: 75%;
-        margin: 0;
-        opacity: 0.4;
-        padding-top: 10px;
-        transition: opacity 0.3s;
+// Purpose: make metadata look different from the song text
+table {
+    font-size: 75%;
+    margin: 0;
+    opacity: 0.5;
+    padding-top: 10px;
+    transition: opacity 0.1s;
 
-        &:hover {
-            opacity: 0.7;
-        }
+    &:hover {
+        opacity: 0.7;
+    }
+
+    // Purpose: highlight item names by making them bold,
+    //          add extra spacing between item names and item values
+    td:first-child {
+        font-size: bold;
+        padding-right: 1rem;
+    }
+
+    // Purpose: underline metadata links
+    a {
+        text-decoration: underline;
     }
 }
 
@@ -61,13 +73,13 @@
 
         // Purpose: add a bit of spacing to the bottom of the sheet
         padding-bottom: $bottom-lyrics-padding-mobile;
+    }
 
-        // Purpose: make metadata easier to read on mobile
-        p {
-            &,
-            &:hover {
-                opacity: 0.7;
-            }
+    // Purpose: make metadata easier to read on mobile
+    table {
+        &,
+        &:hover {
+            opacity: 0.7;
         }
     }
 }
@@ -79,10 +91,10 @@
         box-shadow: none;
         margin: 0;
         width: 100%;
+    }
 
-        // Purpose: make metadata easier to read on paper
-        p {
-            opacity: 1;
-        }
+    // Purpose: make metadata easier to read on paper
+    table {
+        opacity: 1;
     }
 }

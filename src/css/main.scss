@@ -36,30 +36,6 @@ ul {
     padding: 0 0 0 20px;
 }
 
-#ls {
-    list-style: none;
-    margin-top: -9px; // Purpose: less space between breadcrumbs and list items
-    padding: 0;
-    line-height: 30px;
-    text-align: left;
-
-    li {
-        padding-left: 0;
-    }
-
-    a {
-        display: inline-block;
-
-        // Purpose: make it easier to click short list items
-        min-width: $list-item-min-width;
-
-        // Purpose: make the album year or track number/letter look different
-        span {
-            color: $color-list-id;
-        }
-    }
-}
-
 .t1,
 .t2,
 .t3 {
@@ -93,10 +69,6 @@ p {
     margin-top: 0;
 }
 
-@import "header.scss";
-@import "breadcrumbs.scss";
-@import "lyrics.scss";
-
 #content {
     margin: 0 auto;
     position: relative;
@@ -106,19 +78,28 @@ p {
 #view {
     color: $color-fg;
     min-height: 20px; // Purpose: if the element is empty at least cover the guts of the nav bar
-    padding-bottom: 6em;
     text-align: center; // Purpose: float the lyrics sheet in the center
+}
 
-    p {
-        a {
-            text-decoration: underline;
-        }
-    }
+// Purpose: add shadow to the bottom of the page so that the user would see right away that it's possible to scroll down and there's more content
+html:after {
+    content: '';
+    position: fixed;
+    display: block;
+    width: 100%;
+    height: 6em;
+    bottom: 0;
+    background: linear-gradient(0deg, $color-bg 0%, rgba($color-bg, 0) 100%);
 }
 
 .homepage {
     text-align: left;
 }
+
+@import "header.scss";
+@import "breadcrumbs.scss";
+@import "list.scss";
+@import "lyrics.scss";
 
 // Mobile CSS
 @include mobile {
@@ -133,22 +114,12 @@ p {
     }
 
     #view {
-        padding-bottom: 0;
-
-        .homepage,
-        #ls {
+        .homepage {
             padding: 0 $mobile-horizontal-spacing 6em $mobile-horizontal-spacing;
-        }
 
-        #ls {
-            li {
-                // Purpose: give more space to links on smartphones
-                line-height: 40px;
-            }
-
-            // Purpose: make it easier to tap list items on small screens
+            // Purpose: links on the landing page
             a {
-                min-width: $mobile-list-item-min-width;
+                text-decoration: underline;
             }
         }
     }
@@ -172,6 +143,10 @@ p {
 
     form {
         background-color: $dark-color-navbar-bg;
+    }
+
+    html:after {
+        background: linear-gradient(0deg, $dark-color-bg 0%, rgba($dark-color-bg, 0) 100%);
     }
 
     @include mobile {
@@ -221,11 +196,11 @@ p {
         box-shadow: none;
 
         span {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.045);
         }
 
         hr {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.085);
         }
     }
 }

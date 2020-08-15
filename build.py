@@ -130,7 +130,7 @@ def parseMetadata(metadata):
       dictionary[key] = valuepartials
     return dictionary
 
-def formatLyricsAndMetadata(lyricsText, lyricsMetadata):
+def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
     ## Separate text into paragraphs
     lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
     ## Convert newline characters into linebreaks
@@ -142,10 +142,21 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadata):
     html += '<div id="lyrics">'
     html += lyricsText
     html += '<br/><br/>'
-    if lyricsMetadata:
-        lyricsMetadata = re.sub('\n', '<br/>', lyricsMetadata)
+    if len(lyricsMetadataDictionary) > 0:
         html += '<hr/>'
-        html += '<p>' + lyricsMetadata + '</p>'
+        items = []
+        for key, value in lyricsMetadataDictionary.items():
+            items.append({
+                'key': key,
+                'value': ',  '.join(value)
+            })
+            # Post-process metadata keys and values
+            if key == 'Track no':
+                items[-1]['key'] = 'Track number'
+            if key == 'MusicBrainz ID':
+                items[-1]['key'] = 'MusicBrainz recording ID'
+                items[-1]['value'] = '<a href="https://musicbrainz.org/recording/' + value[0] + '">' + value[0] + '</a>'
+        html += pystache.render(templates['metadata'], items)
     html += '</div>'
     return html
 
@@ -299,7 +310,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                         'description': getDescriptionText(lyricsText),
                         'navigation': abc,
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], songList[-1]),
-                        'content': formatLyricsAndMetadata(lyricsText, lyricsMetadata),
+                        'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary),
                     })
                     songPathFile.write(html)
                     songPathFile.close()
