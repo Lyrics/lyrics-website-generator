@@ -33,17 +33,25 @@ nav {
 
         /* Purpose: add inner shadow to the right side of navbar to hint user that
             they can scroll the alphabet horizontally on mobile */
+        &:before,
         &:after {
-            background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             content: '';
             height: 4rem;
             position: absolute;
-            right: 0;
             top: 0;
-            width: $shadow-width;
     
             /* Purpose: make it possible to click on alphabet letters beneath the shadow */
             pointer-events: none;
+        }
+        &:before {
+            background: linear-gradient(270deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            left: 0;
+            width: 9px;
+        }
+        &:after {
+            background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            right: 0;
+            width: $shadow-width;
         }
 
         a {

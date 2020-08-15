@@ -1,12 +1,20 @@
-$bottom-lyrics-padding-mobile: 2.4rem;
-$color-bg: #f2f2f2;
+$color-bg: #fafafa;
 $color-link: #000;
-$color-list-id: #BBB;
+$color-list-id: #bbb;
 $color-navbar-bg: #333;
+
+$bottom-lyrics-padding-mobile: 2.4rem;
+
 $font-size: 16px;
 $header-font-size: 14px;
-$shadow-width: 40px;
+
+$shadow-width: 40px; // Note: shadow on the right needs to hint at the possibility to scroll
+
 $vertical-spacing: 20px;
 $website-width: 900px;
+
+$list-item-min-width: 40px;
+$mobile-list-item-min-width: 65%;
+
 $mobile-breakpoint: 920px;
 $mobile-horizontal-spacing: 10px;
