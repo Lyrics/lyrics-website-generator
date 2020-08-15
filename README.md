@@ -5,6 +5,7 @@ This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to cr
 
 ## Requirements
 
+    sudo apt-get install sassc
     pip3 install pystache simple-http-server
 
 
