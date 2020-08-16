@@ -18,7 +18,4 @@ jobs:
       run: git clone "https://github.com/Lyrics/lyrics.git" ../lyrics.git
 
     - name: Generate website files
-      run: |
-        sudo apt-get install python3-setuptools sassc
-        pip3 install pystache
-        make
+      run: sudo apt-get install python3-setuptools sassc && pip3 install pystache && make
