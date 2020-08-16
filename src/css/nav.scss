@@ -28,7 +28,7 @@ nav {
 // Mobile CSS
 @include mobile {
     nav {
-        margin-right: $shadow-width + 10px;
+        margin-right: $header-shadow-right-width + 10px;
         text-align: left;
 
         /* Purpose: add inner shadow to the right side of navbar to hint user that
@@ -39,8 +39,8 @@ nav {
             height: 4rem;
             position: absolute;
             top: 0;
-    
-            /* Purpose: make it possible to click on alphabet letters beneath the shadow */
+
+            // Purpose: make it possible to click on alphabet letters beneath the shadow
             pointer-events: none;
         }
         &:before {
@@ -51,7 +51,7 @@ nav {
         &:after {
             background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             right: 0;
-            width: $shadow-width;
+            width: $header-shadow-right-width;
         }
 
         a {

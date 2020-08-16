@@ -85,9 +85,9 @@ def getText(lyricsFileContents):
         lyricsText = lyricsFileContents
     ## Trim text
     lyricsText = lyricsText.strip()
-    ## Add newline at end of text (unless it's empty)
+    ## Add newlines at end of text (unless it's empty)
     if lyricsText != "":
-        lyricsText += "\n"
+        lyricsText += "\n\n"
     return lyricsText
 
 def getMetadata(lyricsFileContents):
@@ -132,16 +132,18 @@ def parseMetadata(metadata):
 
 def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
     ## Separate text into paragraphs
-    lyricsText = re.sub('\n\n+', '<span><br/></span><span class="g"><br/></span>', lyricsText)
+    lyricsText = re.sub('\n\n+', '<br/><span></span><br/><span></span>', lyricsText)
     ## Convert newline characters into linebreaks
-    lyricsText = re.sub('\n', '<span><br/></span>', lyricsText)
+    lyricsText = re.sub('\n', '\n<br/><span></span>', lyricsText)
+    ## Bring back newline paragraph separation
+    # lyricsText = re.sub('\r', '\n', lyricsText)
     html = ''
     ## Add margin for cli browsers
     html += '<br/>'
-    ## Construct HTML
-    html += '<div id="lyrics">'
-    html += lyricsText
-    html += '<br/><br/>'
+    html += '<div id="lyrics-container">'
+    ## Construct lyrics block
+    html += '<div id="lyrics">' + lyricsText + '<br/>' + '</div>'
+    # Add metadata table below lyrics block
     if len(lyricsMetadataDictionary) > 0:
         html += '<hr/>'
         items = []
@@ -151,12 +153,15 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
                 'value': ',  '.join(value)
             })
             # Post-process metadata keys and values
+            if key == 'Name':
+                items[-1]['key'] = 'Song name'
             if key == 'Track no':
                 items[-1]['key'] = 'Track number'
             if key == 'MusicBrainz ID':
-                items[-1]['key'] = 'MusicBrainz recording ID'
+                items[-1]['key'] = 'Link to MusicBrainz'
                 items[-1]['value'] = '<a href="https://musicbrainz.org/recording/' + value[0] + '">' + value[0] + '</a>'
         html += pystache.render(templates['metadata'], items)
+    # Close the lyrics container
     html += '</div>'
     return html
 
@@ -197,6 +202,7 @@ html = pystache.render(templates['layout'], {
     'title': siteName,
     'description': "Web interface to the lyrics database hosted on GitHub",
     'navigation': abc,
+    'name': 'home',
     'content': pystache.render(templates['home'])
 })
 homepageFile = mkfile()
@@ -208,6 +214,7 @@ html = pystache.render(templates['layout'], {
     'title': "Page not found" + " | " + siteName,
     'description': "Error 404: page not found",
     'navigation': abc,
+    'name': 'error',
     'content': pystache.render(templates['404'])
 })
 notFoundFile = mkfile('', notFoundFileName)
@@ -219,6 +226,7 @@ html = pystache.render(templates['layout'], {
     'title': "Search" + " | " + siteName,
     'description': "Find lyrics using GitHub's code search engine",
     'navigation': abc,
+    'name': 'search',
     'content': pystache.render(templates['search'])
 })
 searchFile = mkfile('', searchFileName)
@@ -310,6 +318,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                         'description': getDescriptionText(lyricsText),
                         'navigation': abc,
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], songList[-1]),
+                        'name': 'song',
                         'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary),
                     })
                     songPathFile.write(html)
@@ -337,6 +346,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                 'description': getDescriptionList(songs),
                 'navigation': abc,
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
+                'name': 'album',
                 'content': pystache.render(templates['list'], {'links': songList}),
             })
             albumPathFile.write(html)
@@ -352,6 +362,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
             'description': getDescriptionList(albums),
             'navigation': abc,
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
+            'name': 'artist',
             'content': pystache.render(templates['list'], {'links': albumList}),
         })
         artistPathFile.write(html)
@@ -363,6 +374,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
         'description': getDescriptionList(artists),
         'navigation': abc,
         'breadcrumbs': getBreadcrumbs(letterLink),
+        'name': 'letter',
         'content': pystache.render(templates['list'], {'links': artistList}),
     })
     letterPathFile.write(html)
