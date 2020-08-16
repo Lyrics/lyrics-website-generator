@@ -90,6 +90,7 @@ p {
 }
 
 // Purpose: add shadow to the bottom of the page so that the user would see right away that it's possible to scroll down and there's more content
+/*
 html:after {
     content: '';
     position: fixed;
@@ -100,6 +101,7 @@ html:after {
     background: linear-gradient(0deg, $color-bg 0%, rgba($color-bg, 0) 100%);
     pointer-events: none;
 }
+*/
 
 @import "header.scss";
 @import "breadcrumbs.scss";
@@ -143,9 +145,11 @@ html:after {
         background-color: $dark-color-navbar-bg;
     }
 
+/*
     html:after {
         background: linear-gradient(0deg, $dark-color-bg 0%, rgba($dark-color-bg, 0) 100%);
     }
+*/
 
     @include mobile {
         nav {

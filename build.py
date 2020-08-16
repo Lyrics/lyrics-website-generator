@@ -8,7 +8,7 @@ import pystache
 from urllib.parse import quote
 
 ## Config
-siteName          = 'Lyrics'
+siteName          = 'Open Lyrics Database'
 siteURL           = 'https://lyrics.github.io'
 destDatabaseDir   = 'db'
 sourceDatabaseDir = os.path.join('..', '..', 'lyrics.git', 'database')
@@ -158,7 +158,6 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
             if key == 'Track no':
                 items[-1]['key'] = 'Track number'
             if key == 'MusicBrainz ID':
-                items[-1]['key'] = 'Link to MusicBrainz'
                 items[-1]['value'] = '<a href="https://musicbrainz.org/recording/' + value[0] + '">' + value[0] + '</a>'
         html += pystache.render(templates['metadata'], items)
     # Close the lyrics container
@@ -211,7 +210,7 @@ homepageFile.close()
 
 ## Create the 404 page
 html = pystache.render(templates['layout'], {
-    'title': "Page not found" + " | " + siteName,
+    'title': "Page not found",
     'description': "Error 404: page not found",
     'navigation': abc,
     'name': 'error',
@@ -223,7 +222,7 @@ notFoundFile.close()
 
 ## Create the search page
 html = pystache.render(templates['layout'], {
-    'title': "Search" + " | " + siteName,
+    'title': "Search",
     'description': "Find lyrics using GitHub's code search engine",
     'navigation': abc,
     'name': 'search',
@@ -314,7 +313,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                         albumList[-1]['id'] = lyricsMetadataDictionary['Year'][0]
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
-                        'title': artistList[-1]['label'] + ' – ' + songList[-1]['label'] + ' | ' + siteName,
+                        'title': artistList[-1]['label'] + ' – ' + songList[-1]['label'],
                         'description': getDescriptionText(lyricsText),
                         'navigation': abc,
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], songList[-1]),
@@ -342,7 +341,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
             songList = list(map(formatSongNumber, songList))
             ## Render and write album page contents
             html = pystache.render(templates['layout'], {
-                'title': 'Album "' + albumList[-1]['label'] + '" by ' + artistList[-1]['label'] + ' | ' + siteName,
+                'title': 'Album "' + albumList[-1]['label'] + '" by ' + artistList[-1]['label'],
                 'description': getDescriptionList(songs),
                 'navigation': abc,
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
@@ -358,7 +357,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
         albumList = list(map(formatAlbumYear, albumList))
         ## Render and write artist page contents
         html = pystache.render(templates['layout'], {
-            'title': artistList[-1]['label'] + ' | ' + siteName,
+            'title': artistList[-1]['label'],
             'description': getDescriptionList(albums),
             'navigation': abc,
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
@@ -370,7 +369,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
 
     ## Render and write letter page contents
     html = pystache.render(templates['layout'], {
-        'title': 'Artists starting with ' + letter + ' | ' + siteName,
+        'title': 'Artists starting with ' + letter,
         'description': getDescriptionList(artists),
         'navigation': abc,
         'breadcrumbs': getBreadcrumbs(letterLink),
