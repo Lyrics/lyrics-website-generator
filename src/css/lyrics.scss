@@ -1,8 +1,9 @@
 #lyrics-container {
     margin: 0 auto;
-    max-width: 100%;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
     width: min-content;
+    min-width: 50%;
+    max-width: 100%;
 
     display: flex;
     flex-direction: column;
