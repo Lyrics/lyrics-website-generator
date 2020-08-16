@@ -21,7 +21,7 @@ This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to cr
 
 ## Checklist
 
-General
+#### General
  - [x] all pages should render and be accessible without JavaScript (Unobtrusive JS)
  - [x] light and dark color modes should be available and support `prefers-color-scheme` CSS media query
  - [ ] should be possible to switch between light and dark color schemes using a global color mode toggle switch that retains state between pages
@@ -36,14 +36,18 @@ General
  - [ ] every page passes W3M CSS3 test
  - [ ] website should never have full-page horizontal scroll
  - [ ] AAA constrasts
-Mobile
+
+#### Mobile
  - [x] it should be possible to navigate the website and read lyrics using tablet or smartphone
  - [ ] while on mobile, all navigation items should be at least 40px wide/tall
-Lyrics page
+
+#### Lyrics page
  - [x] lyrics sheet should preserve newline characters, but wrap onto the next line if wider than the viewport (to avoid having a horizontal scroll bar)
  - [x] lyrics sheet should have visible but very light full-width horizontal separators between lines (to make lyrics readable when wrapped)
  - [ ] when copied, lyrics text should retain the same amount newlines when pasted into a plaintext environment as seen in the browser
-Search
+
+#### Search
  - [x] search should return the list of songs found using GitHub search API
-SEO
+
+#### SEO
  - [ ] has a valid sitemap.xml file that contains all website URLs
