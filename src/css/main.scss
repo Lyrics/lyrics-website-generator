@@ -73,12 +73,20 @@ p {
     margin: 0 auto;
     position: relative;
     width: $website-width;
+
+    &.home {
+        text-align: left;
+
+        // Purpose: underline links on the home page
+        a {
+            text-decoration: underline;
+        }
+    }
 }
 
 #view {
     color: $color-fg;
-    min-height: 20px; // Purpose: if the element is empty at least cover the guts of the nav bar
-    text-align: center; // Purpose: float the lyrics sheet in the center
+    // min-height: 20px; // Purpose: if the element is empty at least cover the guts of the nav bar
 }
 
 // Purpose: add shadow to the bottom of the page so that the user would see right away that it's possible to scroll down and there's more content
@@ -90,10 +98,7 @@ html:after {
     height: 6em;
     bottom: 0;
     background: linear-gradient(0deg, $color-bg 0%, rgba($color-bg, 0) 100%);
-}
-
-.homepage {
-    text-align: left;
+    pointer-events: none;
 }
 
 @import "header.scss";
@@ -111,16 +116,9 @@ html:after {
         background: inherit;
         padding: 0;
         width: 100%;
-    }
 
-    #view {
-        .homepage {
+        &.home {
             padding: 0 $mobile-horizontal-spacing 6em $mobile-horizontal-spacing;
-
-            // Purpose: links on the landing page
-            a {
-                text-decoration: underline;
-            }
         }
     }
 
@@ -185,22 +183,31 @@ html:after {
         color: $dark-color-fg;
     }
 
-    #ls a span {
+    #l a span {
         color: $dark-color-list-id;
+    }
+
+    #lyrics-container {
+        box-shadow: none;
     }
 
     #lyrics {
         background: $dark-color-lyrics-bg;
         color: $dark-color-lyrics-fg;
         border-color: $dark-color-lyrics-border;
-        box-shadow: none;
 
         span {
             border-bottom: 1px solid rgba(255, 255, 255, 0.045);
         }
+    }
 
-        hr {
-            border-top: 1px solid rgba(255, 255, 255, 0.085);
+    table {
+        background-color: $dark-color-metadata-bg;
+        color: $dark-color-metadata-fg;
+        border-color: $dark-color-metadata-bg;
+
+        a {
+            color: $dark-color-metadata-fg;
         }
     }
 }
