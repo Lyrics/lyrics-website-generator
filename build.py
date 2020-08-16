@@ -341,7 +341,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
             songList = list(map(formatSongNumber, songList))
             ## Render and write album page contents
             html = pystache.render(templates['layout'], {
-                'title': 'Album "' + albumList[-1]['label'] + '" by ' + artistList[-1]['label'],
+                'title': 'Album “' + albumList[-1]['label'] + '” by ' + artistList[-1]['label'],
                 'description': getDescriptionList(songs),
                 'navigation': abc,
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
