@@ -25,7 +25,7 @@
 // Mobile CSS
 @include mobile {
     #l {
-        padding: 0 $mobile-horizontal-spacing 6em $mobile-horizontal-spacing;
+        padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
 
         li {
             // Purpose: give more space to links on smartphones
