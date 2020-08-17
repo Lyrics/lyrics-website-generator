@@ -73,6 +73,7 @@ p {
     margin: 0 auto;
     position: relative;
     width: $website-width;
+    box-sizing: border-box;
 
     &.home {
         text-align: left;
@@ -86,22 +87,10 @@ p {
 
 #view {
     color: $color-fg;
-    // min-height: 20px; // Purpose: if the element is empty at least cover the guts of the nav bar
-}
 
-// Purpose: add shadow to the bottom of the page so that the user would see right away that it's possible to scroll down and there's more content
-/*
-html:after {
-    content: '';
-    position: fixed;
-    display: block;
-    width: 100%;
-    height: 6em;
-    bottom: 0;
-    background: linear-gradient(0deg, $color-bg 0%, rgba($color-bg, 0) 100%);
-    pointer-events: none;
+    // Purpose: 
+    padding-bottom: 6em;
 }
-*/
 
 @import "header.scss";
 @import "breadcrumbs.scss";
@@ -120,7 +109,7 @@ html:after {
         width: 100%;
 
         &.home {
-            padding: 0 $mobile-horizontal-spacing 6em $mobile-horizontal-spacing;
+            padding: 0 $mobile-horizontal-spacing 6rem $mobile-horizontal-spacing;
         }
     }
 
@@ -144,12 +133,6 @@ html:after {
     form {
         background-color: $dark-color-navbar-bg;
     }
-
-/*
-    html:after {
-        background: linear-gradient(0deg, $dark-color-bg 0%, rgba($dark-color-bg, 0) 100%);
-    }
-*/
 
     @include mobile {
         nav {
