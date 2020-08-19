@@ -28,21 +28,6 @@ def shrinkwrapTemplate(code):
 def getTemplateContents(templateFileName):
     return shrinkwrapTemplate(open(os.path.join(templatesPath, templateFileName), 'r').read())
 
-## Read and store template files
-templates = {}
-templatesFileNames = next(os.walk(templatesPath))[2]
-for templateFileName in templatesFileNames:
-    (templateName, _) = os.path.splitext(templateFileName)
-    templates[templateName] = getTemplateContents(templateFileName)
-
-## Dictionary of letters (used for navigating the website)
-abc = []
-for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
-    abc.append({ 'path': '/' + destDatabaseDir + '/' + letter, 'label': letter })
-
-## List of URLs to be added to the sitemap file
-sitemapURLs = []
-
 def getSafePath(input):
     return input
 
@@ -190,11 +175,24 @@ def formatSongNumber(s):
         s['id'] = '' + str(s['id']) + '.'
     return s
 
+## Read and store template files
+templates = {}
+templatesFileNames = next(os.walk(templatesPath))[2]
+for templateFileName in templatesFileNames:
+    (templateName, _) = os.path.splitext(templateFileName)
+    templates[templateName] = getTemplateContents(templateFileName)
+
 ###################################
-#                                 #
 #  The build process starts here  #
-#                                 #
 ###################################
+
+## Dictionary of letters (used for navigating the website)
+abc = []
+for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
+    abc.append({ 'path': '/' + destDatabaseDir + '/' + letter, 'label': letter })
+
+## List of URLs to be added to the sitemap file
+sitemapURLs = []
 
 ## 0. Create the root index file
 html = pystache.render(templates['layout'], {
@@ -357,7 +355,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
         albumList = list(map(formatAlbumYear, albumList))
         ## Render and write artist page contents
         html = pystache.render(templates['layout'], {
-            'title': artistList[-1]['label'],
+            'title': 'Albums by ' + artistList[-1]['label'],
             'description': getDescriptionList(albums),
             'navigation': abc,
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
@@ -386,9 +384,7 @@ sitemapFile.write(xml)
 sitemapFile.close()
 
 #################################
-#                               #
 #  The build process ends here  #
-#                               #
 #################################
 
 ## Print newline
