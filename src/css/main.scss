@@ -88,8 +88,8 @@ p {
 #view {
     color: $color-fg;
 
-    // Purpose: 
-    padding-bottom: 6em;
+    // Purpose: make it easy to tap and read items on the very bottom of every page
+    padding-bottom: 8rem;
 }
 
 @import "header.scss";
