@@ -36,20 +36,20 @@ ul {
     padding: 0 0 0 20px;
 }
 
-.t1,
 .t2,
-.t3 {
+.t3,
+.t4 {
     padding-left: 15px;
-    background: transparent none no-repeat left 9px;
-}
-.t1 {
-    background-image: url(/1.svg);
+    background: transparent none no-repeat left 0.4rem;
 }
 .t2 {
     background-image: url(/2.svg);
 }
 .t3 {
     background-image: url(/3.svg);
+}
+.t4 {
+    background-image: url(/4.svg);
 }
 
 h1,
@@ -85,11 +85,19 @@ p {
     }
 }
 
+b {
+    color: #414141;
+    display: inline-block;
+    font-weight: normal;
+    text-align: right;
+    width: 22px;
+}
+
 #view {
     color: $color-fg;
 
-    // Purpose: make it easy to tap and read items on the very bottom of every page
-    padding-bottom: 8rem;
+    // Purpose: add extra scroll travel to make it easy to read and tap items on tho bottom of the page
+    padding-bottom: $bottom-extra-space;
 }
 
 @import "header.scss";
@@ -103,20 +111,20 @@ p {
         opacity: 1;
     }
 
+    .t2,
+    .t3,
+    .t4 {
+        background-position-y: 1rem;
+    }
+
     #content {
         background: inherit;
         padding: 0;
         width: 100%;
 
         &.home {
-            padding: 0 $mobile-horizontal-spacing 6rem $mobile-horizontal-spacing;
+            padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
         }
-    }
-
-    .t1,
-    .t2,
-    .t3 {
-        background-position: left 14px;
     }
 }
 

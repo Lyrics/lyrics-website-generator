@@ -20,9 +20,9 @@ build: $(DB_DIR) $(CSS_FILE) $(FAVICON_FILE)
 	@cd $(WWW_DIR) && \
         python3 ../build.py && \
         cp -r ../${ASSETS_DIR}/js . && \
-        cp ../${ASSETS_DIR}/icons/artist.svg 1.svg && \
-        cp ../${ASSETS_DIR}/icons/album.svg 2.svg && \
-        cp ../${ASSETS_DIR}/icons/song.svg 3.svg
+        cp ../${ASSETS_DIR}/icons/artist.svg 2.svg && \
+        cp ../${ASSETS_DIR}/icons/album.svg 3.svg && \
+        cp ../${ASSETS_DIR}/icons/recording.svg 4.svg
 .PHONY: build
 
 $(WWW_DIR):
