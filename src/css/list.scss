@@ -1,8 +1,8 @@
 #l {
     list-style: none;
-    margin-top: -9px; // Purpose: less space between breadcrumbs and list items
+    margin-top: -6px; // Purpose: less space between breadcrumbs and list items
     padding: 0;
-    line-height: 30px;
+    line-height: 150%;
     text-align: left;
 
     li {
@@ -15,7 +15,7 @@
         // Purpose: make it easier to click short list items
         min-width: $list-item-min-width;
 
-        // Purpose: make the album year or track number/letter look different
+        // Purpose: make the album year look different
         span {
             color: $color-list-id;
         }
@@ -27,14 +27,14 @@
     #l {
         padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
 
-        li {
-            // Purpose: give more space to links on smartphones
-            line-height: 40px;
-        }
-
-        // Purpose: make it easier to tap list items on small screens
         a {
+            // Purpose: make it easier to tap list items on small screens
             min-width: $mobile-list-item-min-width;
+
+            // Purpose: give more space to links on smartphones
+            // line-height: 40px;
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
     }
 }

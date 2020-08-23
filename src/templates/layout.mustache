@@ -8,7 +8,7 @@
 <meta name="google" content="notranslate">
 
 <form action="/search.html">
-    <nav><a href="/" id="home">Lyrics</a> {{#navigation}}<a href="{{path}}">{{label}}</a> {{/navigation}}</nav>
+    <nav><a href="/" id="home">Lyrics</a> {{#navigation}}<a href="{{href}}">{{label}}</a> {{/navigation}}</nav>
 </form>
 <div id="content" class="{{name}}">
     <br />
@@ -16,9 +16,9 @@
     <div id="view">{{{content}}}</div>
 </div>
 <script>
-    var input=document.createElement("input");
-    input.name="q";
-    input.type="search";
-    input.placeholder="Search";
-    document.getElementsByTagName("nav")[0].appendChild(input)
+    var i=document.createElement("input");
+    i.name="q";
+    i.type="search";
+    i.placeholder="Search";
+    document.body.getElementsByTagName("nav")[0].appendChild(i)
 </script>

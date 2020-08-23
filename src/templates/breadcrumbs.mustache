@@ -1,13 +1,14 @@
 <div id="breadcrumbs" itemscope itemtype="http://schema.org/BreadcrumbList">
     {{#breadcrumbs}}
-        {{#link}}
+        {{#href}}
             <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                <a class="t{{type}}" href="{{link}}" itemid="{{link}}" itemprop="item" itemscope itemtype="http://schema.org/Thing">
+                <a href="{{href}}" class="t{{type}} itemid="{{href}}" itemprop="item" itemscope itemtype="http://schema.org/Thing">
+                    {{#prefix}}<b>{{prefix}}</b> {{/prefix}}
                     <span itemprop="name">{{label}}</span>
                 </a>
                 <meta itemprop="position" content="{{type}}" />
             </span>
-        {{/link}}
-        {{^link}} → {{/link}}
+        {{/href}}
+        {{^href}} → {{/href}}
     {{/breadcrumbs}}
 </div>
