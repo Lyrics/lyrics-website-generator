@@ -34,7 +34,7 @@ This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to cr
  - [ ] pages with breadcrumbs should use breadcrumb schema
  - [ ] every page passes W3M HTML5 test
  - [ ] every page passes W3M CSS3 test
- - [ ] website should never have full-page horizontal scroll
+ - [x] website should never have full-page horizontal scroll
  - [ ] AAA contrasts
 
 #### Mobile
