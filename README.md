@@ -50,4 +50,4 @@ This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to cr
  - [x] search should return the list of songs found using GitHub search API
 
 #### SEO
- - [ ] has a valid sitemap.xml file that contains all website URLs
+ - [x] has a valid sitemap.xml file that contains all website URLs
