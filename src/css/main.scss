@@ -19,6 +19,9 @@ body {
     *
     */
     overflow-y: scroll;
+
+    // Ensure the horizontal scrolling is never there
+    overflow-x: hidden;
 }
 
 a {
