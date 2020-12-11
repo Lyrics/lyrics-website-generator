@@ -2,11 +2,13 @@
 
 This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to create static HTML files in `./www/`. The contents of that directory can then be uploaded to a server to become a fully functional lyrics website.
 
-
 ## Requirements
 
     sudo apt-get install sassc
     pip3 install pystache simple-http-server
+
+The lyrics database repository (or your fork) must exist one directory
+level up from this repo.
 
 
 ## Build
