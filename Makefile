@@ -42,5 +42,5 @@ serve: $(WWW_DIR)
 .PHONY: serve
 
 install-dependencies:
-	pip3 install pystache simple-http-server
+	pip3 install --user pystache simple-http-server
 .PHONY: install-dependencies
