@@ -4,21 +4,27 @@
 import os
 import re
 import sys
+import configparser
 import pystache
 from urllib.parse import quote
 
+scriptPath = os.path.dirname(os.path.realpath(__file__))
+configFile = os.path.join(scriptPath, 'config.ini')
+templatesPath = os.path.join(scriptPath, 'src', 'templates')
+
 ## Config
-siteName          = 'Open Lyrics Database'
-siteURL           = 'https://lyrics.github.io'
-destDatabaseDir   = 'db'
-sourceDatabaseDir = os.path.join('..', '..', 'lyrics.git', 'database')
-templatesPath     = os.path.join('..', 'src', 'templates')
-instrumentalLabel = '(instrumental)'
+config = configparser.ConfigParser()
+if os.path.isfile(configFile):
+    config.read(configFile)
+else:
+    print("Error: config.ini does not exist")
+    exit()
+config['Filesystem']['SourcePath'] = os.path.join(scriptPath, config['Filesystem']['SourcePath'])
 
 ## File names
 indexFileName    = 'index.html'
 notFoundFileName = '404.html'
-searchFileName   = 'search.html'
+searchFileName   = 's.htm'
 sitemapFileName  = 'sitemap.xml'
 
 ## Breadcrumb and list item link types
@@ -48,7 +54,7 @@ def getLink(target, label, type=0):
     return { 'href': quote(target), 'label': label, 'type': type }
 
 def getSitemapURL(target=''):
-    URL = siteURL + '/' + quote(target)
+    URL = config['Site']['URL'] + '/' + quote(target)
     if target:
         URL += '/'
     return URL
@@ -215,18 +221,19 @@ for templateFileName in templatesFileNames:
 ## A-Z letter lihks for top navigation
 abc = []
 for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
-    abc.append(getLink('/' + destDatabaseDir + '/' + letter, letter))
+    abc.append(getLink('/' + config['Site']['DbPath'] + '/' + letter, letter))
 
 ## List of URLs to be added to the sitemap file
 sitemapURLs = []
 
-## 0. Create the root index file
+## Create the root index file
 html = pystache.render(templates['layout'], {
-    'title': siteName,
+    'title': config['Site']['Name'],
     'description': "Web interface to the lyrics database hosted on GitHub",
     'navigation': abc,
     'name': 'home',
-    'content': pystache.render(templates['home'])
+    'content': pystache.render(templates['home']),
+    'search': searchFileName,
 })
 homepageFile = mkfile()
 homepageFile.write(html)
@@ -238,7 +245,8 @@ html = pystache.render(templates['layout'], {
     'description': "Error 404: page not found",
     'navigation': abc,
     'name': 'error',
-    'content': pystache.render(templates['404'])
+    'content': pystache.render(templates['404']),
+    'search': searchFileName,
 })
 notFoundFile = mkfile('', notFoundFileName)
 notFoundFile.write(html)
@@ -250,7 +258,8 @@ html = pystache.render(templates['layout'], {
     'description': "Find lyrics using GitHub's code search engine",
     'navigation': abc,
     'name': 'search',
-    'content': pystache.render(templates['search'])
+    'content': pystache.render(templates['search']),
+    'search': searchFileName,
 })
 searchFile = mkfile('', searchFileName)
 searchFile.write(html)
@@ -259,15 +268,17 @@ searchFile.close()
 ## Add root URL to the list of sitemap links
 sitemapURLs.append(getSitemapURL())
 
+## Create directories to accommodate website database path
+mkdir(config['Site']['DbPath'])
+
 ## 1. Loop through letters in the database
-## for letter in sorted(os.listdir(sourceDatabaseDir)):
-for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
+for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
     ## Output progress status
     print(letter, end=" ", file=sys.stderr)
     sys.stderr.flush()
 
-    letterPath = os.path.join(sourceDatabaseDir, letter)
-    safeLetterPath = getSafePath(os.path.join(destDatabaseDir, letter))
+    letterPath = os.path.join(config['Filesystem']['SourcePath'], letter)
+    safeLetterPath = getSafePath(os.path.join(config['Site']['DbPath'], letter))
     letterLink = getLink(getSafePath(letter), letter)
     sitemapURLs.append(getSitemapURL(safeLetterPath))
     ## Create db/x/
@@ -280,7 +291,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
     ## 2. Loop through artists starting with letter x
     for artist in artists:
         artistPath = os.path.join(letterPath, artist)
-        safeArtistPath = getSafePath(os.path.join(destDatabaseDir, letter, artist))
+        safeArtistPath = getSafePath(os.path.join(config['Site']['DbPath'], letter, artist))
         sitemapURLs.append(getSitemapURL(safeArtistPath))
         ## Create db/x/artist/
         mkdir(safeArtistPath)
@@ -294,7 +305,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
         ## 3. Loop through artist's albums
         for album in albums:
             albumPath = os.path.join(artistPath, album)
-            safeAlbumPath = getSafePath(os.path.join(destDatabaseDir, letter, artist, album))
+            safeAlbumPath = getSafePath(os.path.join(config['Site']['DbPath'], letter, artist, album))
             sitemapURLs.append(getSitemapURL(safeAlbumPath))
             ## Create db/x/artist/album/
             mkdir(safeAlbumPath)
@@ -311,7 +322,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                 if not os.path.isfile(songPath):
                     print('Warning: ' + songPath + " is not a file!")
                 else:
-                    safeSongPath = getSafePath(os.path.join(destDatabaseDir, letter, artist, album, song))
+                    safeSongPath = getSafePath(os.path.join(config['Site']['DbPath'], letter, artist, album, song))
                     sitemapURLs.append(getSitemapURL(safeSongPath))
                     ## Create db/x/artist/album/song/
                     mkdir(safeSongPath)
@@ -337,7 +348,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                         albumList[-1]['year'] = lyricsMetadataDictionary['Year'][0]
                     ## Mark instrumental texts within the list
                     if len(lyricsText) == 0:
-                        recordingList[-1]['postfix'] = instrumentalLabel
+                        recordingList[-1]['postfix'] = config['Site']['InstrumentalLabel']
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
                         'title': artistList[-1]['label'] + ' – ' + recordingList[-1]['label'],
@@ -346,6 +357,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], recordingList[-1]),
                         'name': 'recording',
                         'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary),
+                        'search': searchFileName,
                     })
                     songPathFile.write(html)
                     songPathFile.close()
@@ -374,6 +386,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
                 'name': 'album',
                 'content': pystache.render(templates['list'], {'links': recordingList}),
+                'search': searchFileName,
             })
             albumPathFile.write(html)
             albumPathFile.close()
@@ -390,6 +403,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
             'name': 'artist',
             'content': pystache.render(templates['list'], {'links': albumList}),
+            'search': searchFileName,
         })
         artistPathFile.write(html)
         artistPathFile.close()
@@ -402,6 +416,7 @@ for letter in sorted(next(os.walk(sourceDatabaseDir))[1]):
         'breadcrumbs': getBreadcrumbs(letterLink),
         'name': 'letter',
         'content': pystache.render(templates['list'], {'links': artistList}),
+        'search': searchFileName,
     })
     letterPathFile.write(html)
     letterPathFile.close()
