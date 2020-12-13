@@ -40,7 +40,3 @@ serve: $(WWW_DIR)
         echo "Starting local server at http://0.0.0.0:8100" && \
         python3 -m http.server 8100
 .PHONY: serve
-
-install-dependencies:
-	pip3 install --user pystache simple-http-server
-.PHONY: install-dependencies

@@ -6,7 +6,7 @@ Build static website out of [Open Lyrics Database](https://github.com/Lyrics/lyr
 ## Installing dependencies
 
     sudo apt-get install sassc
-    make install-dependencies
+    pip3 install --user pystache simple-http-server
 
 
 ## Build
