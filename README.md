@@ -1,17 +1,17 @@
 # Open Lyrics Database website generator
 
-This build tool compliments [lyrics.git](https://github.com/Lyrics/lyrics) to create static HTML files in `./www/`. The contents of that directory can then be uploaded to a server to become a fully functional lyrics website.
+Build static website out of [Open Lyrics Database](https://github.com/Lyrics/lyrics).
 
 
-## Requirements
+## Installing dependencies
 
     sudo apt-get install sassc
-    pip3 install pystache simple-http-server
+    pip3 install --user pystache simple-http-server
 
 
 ## Build
 
-    make clean all
+    make clean build
 
 
 ## Run local web server
