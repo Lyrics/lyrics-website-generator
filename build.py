@@ -176,7 +176,7 @@ def sortAlbumsYear123(link, key='year'):
     else:
         return 3000 ## Push albums without year to the bottom
 
-## Sorting function for recording lists
+## Sorting function for lists of recordings
 def sortRecordingsByTrackNumber(link, key='track_no'):
     if key in link:
         ## Sort recordings by number
@@ -184,7 +184,7 @@ def sortRecordingsByTrackNumber(link, key='track_no'):
     else:
         return 1000 ## Push recordings without number to the bottom
 
-## Alphabetical sorting function for song lists (LPs, cassettes)
+## Alphabetical sorting function for lists of recordings (LPs, cassettes)
 def sortRecordingsByTrackLetter(link, key='track_no'):
     if key in link:
         ## Sort recordings by letter
@@ -314,7 +314,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
             ## Append album link to db/x/artist/index.html
             albumList.append(getLink(getSafePath(album), album, TYPE_ALBUM))
             songs = sorted(next(os.walk(albumPath))[2], key=str.lower)
-            recordingList = []
+            recordingsLists = [[]] # One list per disc
 
             ## 4. Loop through songs
             for song in songs:
@@ -328,33 +328,40 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     mkdir(safeSongPath)
                     ## Create db/x/artist/album/song/index.html
                     songPathFile = mkfile(safeSongPath)
-                    ## Append song link to db/x/artist/album/index.html
-                    recordingList.append(getLink(getSafePath(song), song, TYPE_RECORDING))
-                    ## Read the lyrics file
+                    ## Read lyrics file
                     lyricsFileContents = open(songPath, 'r').read().strip()
                     lyricsText = getText(lyricsFileContents)
                     lyricsMetadata = getMetadata(lyricsFileContents)
                     lyricsMetadataDictionary = parseMetadata(lyricsMetadata)
+                    ## Determine disc number
+                    discNo = int(lyricsMetadataDictionary['Disc no'][0]) if 'Disc no' in lyricsMetadataDictionary else 0
+                    ## Make sure there's an array for this disc
+                    while len(recordingsLists) <= discNo:
+                        recordingsLists.append([])
+                    ## Append recording link to db/x/artist/album/index.html
+                    recordingsLists[discNo].append(getLink(getSafePath(song), song, TYPE_RECORDING))
                     ## Make use of any available metadata values
                     if 'Name' in lyricsMetadataDictionary:
-                        recordingList[-1]['label'] = lyricsMetadataDictionary['Name'][0]
+                        recordingsLists[discNo][-1]['label'] = lyricsMetadataDictionary['Name'][0]
                     if 'Artist' in lyricsMetadataDictionary:
                         artistList[-1]['label'] = lyricsMetadataDictionary['Artist'][0]
                     if 'Album' in lyricsMetadataDictionary:
                         albumList[-1]['label'] = lyricsMetadataDictionary['Album'][0]
                     if 'Track no' in lyricsMetadataDictionary:
-                        recordingList[-1]['track_no'] = lyricsMetadataDictionary['Track no'][0]
+                        recordingsLists[discNo][-1]['track_no'] = lyricsMetadataDictionary['Track no'][0]
+                    if 'Disc no' in lyricsMetadataDictionary:
+                        recordingsLists[discNo][-1]['disc_no'] = lyricsMetadataDictionary['Disc no'][0]
                     if 'Year' in lyricsMetadataDictionary:
                         albumList[-1]['year'] = lyricsMetadataDictionary['Year'][0]
                     ## Mark instrumental texts within the list
                     if len(lyricsText) == 0:
-                        recordingList[-1]['postfix'] = config['Site']['InstrumentalLabel']
+                        recordingsLists[discNo][-1]['postfix'] = config['Site']['InstrumentalLabel']
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
-                        'title': artistList[-1]['label'] + ' – ' + recordingList[-1]['label'],
+                        'title': artistList[-1]['label'] + ' – ' + recordingsLists[discNo][-1]['label'],
                         'description': getDescriptionText(lyricsText),
                         'navigation': abc,
-                        'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], recordingList[-1]),
+                        'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], recordingsLists[discNo][-1]),
                         'name': 'recording',
                         'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary),
                         'search': searchFileName,
@@ -362,22 +369,28 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     songPathFile.write(html)
                     songPathFile.close()
 
-            ## Sort song list within the album by track number/letter
-            if len(recordingList) > 0:
-                # Determine if tracks bear alphabetic or decimal enumeration
-                isOrderDecimal = False
-                for song in recordingList:
-                    if 'track_no' in song and song['track_no'].isdecimal():
-                        isOrderDecimal = True
-                        break
-                if isOrderDecimal:
-                    # By number, for CDs and WEB releases
-                    recordingList.sort(key=sortRecordingsByTrackNumber)
-                else:
-                    # By letter (or letter + number, e.g. A, B1, B2), for LPs and cassette tapes
-                    recordingList.sort(key=sortRecordingsByTrackLetter)
-            ## Format song number/letter labels
-            recordingList = list(map(formatRecordingNumber, recordingList))
+            ## Render lists of recordings
+            recordingsListHTML = ''
+            for recordingsList in recordingsLists:
+                if len(recordingsList) < 1: continue
+                ## Sort recording list within the album by track number/letter
+                if len(recordingsList) > 0:
+                    # Determine if tracks bear alphabetic or decimal enumeration
+                    isOrderDecimal = False
+                    for recording in recordingsList:
+                        if 'track_no' in recording and recording['track_no'].isdecimal():
+                            isOrderDecimal = True
+                            break
+                    if isOrderDecimal:
+                        # By number, for CDs and WEB releases
+                        recordingsList.sort(key=sortRecordingsByTrackNumber)
+                    else:
+                        # By letter (or letter + number, e.g. A, B1, B2), for LPs and cassette tapes
+                        recordingsList.sort(key=sortRecordingsByTrackLetter)
+                # ## Format song number/letter labels
+                recordingsList = list(map(formatRecordingNumber, recordingsList))
+                # Render list of recordings
+                recordingsListHTML += pystache.render(templates['list'], {'links': recordingsList})
             ## Render and write album page contents
             html = pystache.render(templates['layout'], {
                 'title': 'Album “' + albumList[-1]['label'] + '” by ' + artistList[-1]['label'],
@@ -385,7 +398,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                 'navigation': abc,
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
                 'name': 'album',
-                'content': pystache.render(templates['list'], {'links': recordingList}),
+                'content': recordingsListHTML,
                 'search': searchFileName,
             })
             albumPathFile.write(html)
@@ -395,6 +408,8 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
         albumList.sort(key=sortAlbumsYear123)
         ## Wrap album years in parens
         albumList = list(map(formatAlbumYear, albumList))
+        ## Render list of albums
+        albumsListHTML = pystache.render(templates['list'], {'links': albumList})
         ## Render and write artist page contents
         html = pystache.render(templates['layout'], {
             'title': 'Albums by ' + artistList[-1]['label'],
@@ -402,12 +417,14 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
             'navigation': abc,
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
             'name': 'artist',
-            'content': pystache.render(templates['list'], {'links': albumList}),
+            'content': albumsListHTML,
             'search': searchFileName,
         })
         artistPathFile.write(html)
         artistPathFile.close()
 
+    ## Render list of artist
+    artistsListHTML = pystache.render(templates['list'], {'links': artistList})
     ## Render and write letter page contents
     html = pystache.render(templates['layout'], {
         'title': 'Artists starting with ' + letter,
@@ -415,7 +432,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
         'navigation': abc,
         'breadcrumbs': getBreadcrumbs(letterLink),
         'name': 'letter',
-        'content': pystache.render(templates['list'], {'links': artistList}),
+        'content': artistsListHTML,
         'search': searchFileName,
     })
     letterPathFile.write(html)

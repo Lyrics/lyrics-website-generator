@@ -1,4 +1,4 @@
-#l {
+.l {
     list-style: none;
     margin-top: -6px; // Purpose: less space between breadcrumbs and list items
     padding: 0;
@@ -25,7 +25,7 @@
 
 // Mobile CSS
 @include mobile {
-    #l {
+    .l {
         padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
 
         a {
