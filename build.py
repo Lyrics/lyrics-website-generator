@@ -197,15 +197,37 @@ def formatAlbumYear(a):
         a['postfix'] = '(' + str(a['year']) + ')'
     return a
 
-def formatRecordingNumber(r):
-    if 'track_no' in r:
+def formatRecordingNumber(recording):
+    if 'track_no' in recording:
         # Add padding to make record numbers appear aligned within text browsers
         leftPadding = ''
-        trackNoAsStr = str(r['track_no'])
+        trackNoAsStr = str(recording['track_no'])
         if len(trackNoAsStr) < 2:
             leftPadding = '&nbsp;'
-        r['prefix'] = leftPadding + trackNoAsStr + '.'
-    return r
+        recording['prefix'] = leftPadding + trackNoAsStr + '.'
+    return recording
+
+def fillTheGaps(recordings):
+    existingTrackNumbers = []
+    for recording in recordings:
+        if 'track_no' in recording: existingTrackNumbers.append(recording['track_no'])
+    for recording in recordings:
+        if 'track_no' in recording:
+            if recording['track_no'].isdecimal():
+                sideLetter = ''
+                trackNo = int(recording['track_no'])
+            else:
+                sideLetter = recording['track_no'][0]
+                trackNo = int(recording['track_no'][1:])
+            def missingFilter(r):
+                prevTrackNo = trackNo - 1
+                return prevTrackNo > 0 and not sideLetter + str(prevTrackNo) in existingTrackNumbers
+            while len(list(filter(missingFilter, recordings))) > 0:
+                prevTrackNoStr = sideLetter + str(trackNo - 1)
+                recordings.append(getLink('', '', TYPE_RECORDING))
+                recordings[-1]['track_no'] = prevTrackNoStr
+                existingTrackNumbers.append(prevTrackNoStr)
+    return recordings
 
 ## Read and store template files
 templates = {}
@@ -372,22 +394,24 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
             ## Render lists of recordings
             recordingsListHTML = ''
             for recordingsList in recordingsLists:
+                ## Skip if empty
                 if len(recordingsList) < 1: continue
+                ## Fill missing tracks with empty gaps
+                recordingsList = fillTheGaps(recordingsList)
+                # Determine if tracks bear alphabetic or decimal enumeration
+                isOrderDecimal = False
+                for recording in recordingsList:
+                    if 'track_no' in recording and recording['track_no'].isdecimal():
+                        isOrderDecimal = True
+                        break
                 ## Sort recording list within the album by track number/letter
-                if len(recordingsList) > 0:
-                    # Determine if tracks bear alphabetic or decimal enumeration
-                    isOrderDecimal = False
-                    for recording in recordingsList:
-                        if 'track_no' in recording and recording['track_no'].isdecimal():
-                            isOrderDecimal = True
-                            break
-                    if isOrderDecimal:
-                        # By number, for CDs and WEB releases
-                        recordingsList.sort(key=sortRecordingsByTrackNumber)
-                    else:
-                        # By letter (or letter + number, e.g. A, B1, B2), for LPs and cassette tapes
-                        recordingsList.sort(key=sortRecordingsByTrackLetter)
-                # ## Format song number/letter labels
+                if isOrderDecimal:
+                    # By number, for CDs and WEB releases
+                    recordingsList.sort(key=sortRecordingsByTrackNumber)
+                else:
+                    # By letter (or letter + number, e.g. A, B1, B2), for LPs and cassette tapes
+                    recordingsList.sort(key=sortRecordingsByTrackLetter)
+                ## Format song number/letter labels
                 recordingsList = list(map(formatRecordingNumber, recordingsList))
                 # Render list of recordings
                 recordingsListHTML += pystache.render(templates['list'], {'links': recordingsList})
