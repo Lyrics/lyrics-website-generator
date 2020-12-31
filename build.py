@@ -248,50 +248,11 @@ for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
 ## List of URLs to be added to the sitemap file
 sitemapURLs = []
 
-## Create the root index file
-html = pystache.render(templates['layout'], {
-    'title': config['Site']['Name'],
-    'description': "Web interface to the lyrics database hosted on GitHub",
-    'navigation': abc,
-    'name': 'home',
-    'content': pystache.render(templates['home']),
-    'search': searchFileName,
-})
-homepageFile = mkfile()
-homepageFile.write(html)
-homepageFile.close()
-
-## Create the 404 page
-html = pystache.render(templates['layout'], {
-    'title': "Page not found",
-    'description': "Error 404: page not found",
-    'navigation': abc,
-    'name': 'error',
-    'content': pystache.render(templates['404']),
-    'search': searchFileName,
-})
-notFoundFile = mkfile('', notFoundFileName)
-notFoundFile.write(html)
-notFoundFile.close()
-
-## Create the search page
-html = pystache.render(templates['layout'], {
-    'title': "Search",
-    'description': "Find lyrics using GitHub's code search engine",
-    'navigation': abc,
-    'name': 'search',
-    'content': pystache.render(templates['search']),
-    'search': searchFileName,
-})
-searchFile = mkfile('', searchFileName)
-searchFile.write(html)
-searchFile.close()
-
-## Add root URL to the list of sitemap links
-sitemapURLs.append(getSitemapURL())
-
 ## Create directories to accommodate website database path
 mkdir(config['Site']['DbPath'])
+
+## Accumulate total amount of texts to display it on the homepage
+totalTextCount = 0
 
 ## 1. Loop through letters in the database
 for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
@@ -378,6 +339,9 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     ## Mark instrumental texts within the list
                     if len(lyricsText) == 0:
                         recordingsLists[discNo][-1]['postfix'] = config['Site']['InstrumentalLabel']
+                    else:
+                        ## Increment total text counter
+                        totalTextCount += 1
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
                         'title': artistList[-1]['label'] + ' – ' + recordingsLists[discNo][-1]['label'],
@@ -461,6 +425,48 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
     })
     letterPathFile.write(html)
     letterPathFile.close()
+
+## Create root index file
+html = pystache.render(templates['layout'], {
+    'title': config['Site']['Name'],
+    'description': "Web interface to the lyrics database hosted on GitHub",
+    'navigation': abc,
+    'name': 'home',
+    'content': pystache.render(templates['home'], {'total': totalTextCount}),
+    'search': searchFileName,
+})
+homepageFile = mkfile()
+homepageFile.write(html)
+homepageFile.close()
+
+## Create 404 page
+html = pystache.render(templates['layout'], {
+    'title': "Page not found",
+    'description': "Error 404: page not found",
+    'navigation': abc,
+    'name': 'error',
+    'content': pystache.render(templates['404']),
+    'search': searchFileName,
+})
+notFoundFile = mkfile('', notFoundFileName)
+notFoundFile.write(html)
+notFoundFile.close()
+
+## Create search page
+html = pystache.render(templates['layout'], {
+    'title': "Search",
+    'description': "Find lyrics using GitHub's code search engine",
+    'navigation': abc,
+    'name': 'search',
+    'content': pystache.render(templates['search']),
+    'search': searchFileName,
+})
+searchFile = mkfile('', searchFileName)
+searchFile.write(html)
+searchFile.close()
+
+## Add root URL to the list of sitemap links
+sitemapURLs.append(getSitemapURL())
 
 ## Write the sitemap file
 sitemapFile = mkfile('', sitemapFileName)
