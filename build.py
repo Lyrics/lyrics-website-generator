@@ -355,6 +355,9 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     songPathFile.write(html)
                     songPathFile.close()
 
+            ## Make disc-less items appear after discs (on the bottom)
+            if len(recordingsLists) > 1:
+                recordingsLists.append(recordingsLists.pop(0))
             ## Render lists of recordings
             recordingsListHTML = ''
             for recordingsList in recordingsLists:
