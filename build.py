@@ -240,6 +240,9 @@ for templateFileName in templatesFileNames:
 #  The build process starts here  #
 ###################################
 
+## Create directories to accommodate website database path
+mkdir(config['Site']['DbPath'])
+
 ## A-Z letter lihks for top navigation
 abc = []
 for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
@@ -248,17 +251,19 @@ for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
 ## List of URLs to be added to the sitemap file
 sitemapURLs = []
 
-## Create directories to accommodate website database path
-mkdir(config['Site']['DbPath'])
-
-## Accumulate total amount of texts to display it on the homepage
+## Total amount of texts (for displaying it on the main page)
 totalTextCount = 0
+
+## List of top-level directory names
+dbLetters = []
 
 ## 1. Loop through letters in the database
 for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
     ## Output progress status
     print(letter, end=" ", file=sys.stderr)
     sys.stderr.flush()
+
+    dbLetters.append(letter)
 
     letterPath = os.path.join(config['Filesystem']['SourcePath'], letter)
     safeLetterPath = getSafePath(os.path.join(config['Site']['DbPath'], letter))
@@ -429,16 +434,29 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
     letterPathFile.write(html)
     letterPathFile.close()
 
-## Create root index file
+## Create homepage index file
 html = pystache.render(templates['layout'], {
     'title': config['Site']['Name'],
-    'description': "Web interface to the lyrics database hosted on GitHub",
+    'description': "Web interface to Open Lyrics Database",
     'navigation': abc,
     'name': 'home',
-    'content': pystache.render(templates['home'], {'total': totalTextCount}),
+    'content': pystache.render(templates['home'], {'total': totalTextCount, 'db': config['Site']['DbPath']}),
     'search': searchFileName,
 })
 homepageFile = mkfile()
+homepageFile.write(html)
+homepageFile.close()
+
+## Create DB root index file
+html = pystache.render(templates['layout'], {
+    'title': config['Site']['Name'],
+    'description': "Index of top-level database directories",
+    'navigation': abc,
+    'name': 'db',
+    'content': pystache.render(templates['db'], {'letters': dbLetters}),
+    'search': searchFileName,
+})
+homepageFile = mkfile(config['Site']['DbPath'])
 homepageFile.write(html)
 homepageFile.close()
 
@@ -468,8 +486,11 @@ searchFile = mkfile('', searchFileName)
 searchFile.write(html)
 searchFile.close()
 
-## Add root URL to the list of sitemap links
+## Add homepage URL to the sitemap
 sitemapURLs.append(getSitemapURL())
+
+## Add DB root URL to the sitemap
+sitemapURLs.append(getSitemapURL(config['Site']['DbPath']))
 
 ## Write the sitemap file
 sitemapFile = mkfile('', sitemapFileName)
