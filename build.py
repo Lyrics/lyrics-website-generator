@@ -147,7 +147,7 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
     ## Construct lyrics block
     if len(lyricsText):
         html += '<div id="lyrics">' + lyricsText + '<br/>' + '</div>'
-    # Add metadata table below lyrics block
+    ## Add metadata table below lyrics block
     if len(lyricsMetadataDictionary) > 0:
         html += '<hr/>'
         items = []
@@ -156,15 +156,22 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
                 'key': key,
                 'value': ',  '.join(value)
             })
-            # Post-process metadata keys and values
+            ## Post-process metadata keys and values
             if key == 'Name':
                 items[-1]['key'] = 'Song name'
             if key == 'Track no':
                 items[-1]['key'] = 'Track number'
             if key == 'MusicBrainz ID':
-                items[-1]['value'] = '<a href="https://musicbrainz.org/recording/' + value[0] + '">' + value[0] + '</a>'
+                items[-1]['value'] = pystache.render(templates['link'], {
+                    'href': 'https://musicbrainz.org/recording/' + value[0],
+                    'content': value[0],
+                })
+            if key == '__Actions__':
+                items[-1]['key'] = ''
+                items[-1]['value'] = '<br />'.join(value)
+        ## Render array of items into HTML table
         html += pystache.render(templates['metadata'], items)
-    # Close the lyrics container
+    ## Close the lyrics container
     html += '</div>'
     return html
 
@@ -341,7 +348,17 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                         recordingsLists[discNo][-1]['disc_no'] = lyricsMetadataDictionary['Disc no'][0]
                     if 'Year' in lyricsMetadataDictionary:
                         albumList[-1]['year'] = lyricsMetadataDictionary['Year'][0]
-                    ## Mark instrumental texts within the list
+                    ## Add action buttons
+                    if config['Site']['HasEditTextButton']:
+                        actionButton1 = pystache.render(templates['link'], {
+                            'class': 'a',
+                            'href': config['Source']['Repository']  + '/edit/' + \
+                                    config['Source']['DefaultBranch']  + '/database/' + \
+                                    letter + '/' + artist + '/' + album + '/' + song,
+                            'content': 'Suggest improvements for this text',
+                        })
+                        lyricsMetadataDictionary['__Actions__'] = [actionButton1]
+                    ## Mark instrumental texts within parent page's (album) list
                     if len(lyricsText) == 0:
                         recordingsLists[discNo][-1]['postfix'] = config['Site']['InstrumentalLabel']
                     else:
