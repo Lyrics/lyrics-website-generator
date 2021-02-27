@@ -106,7 +106,7 @@ b {
 @import "header.scss";
 @import "breadcrumbs.scss";
 @import "list.scss";
-@import "lyrics.scss";
+@import "lyrics-page.scss";
 
 // Mobile CSS
 @include mobile {
@@ -208,11 +208,13 @@ b {
     td {
         a {
             color: $dark-color-metadata-fg;
+        }
+    }
 
-            &.a {
-                background: $dark-color-metadata-fg;
-                color: $dark-color-metadata-bg;
-            }
+    #lyrics-actions {
+        a {
+            background: $dark-color-metadata-fg;
+            color: $dark-color-metadata-bg;
         }
     }
 }

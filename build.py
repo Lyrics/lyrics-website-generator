@@ -34,8 +34,8 @@ TYPE_ALBUM     = 3
 TYPE_RECORDING = 4
 
 ## Function for optimizing templates' code
-def shrinkwrapTemplate(code):
-    return re.sub(r'\n\s*', '', code)
+def shrinkwrapTemplate(markup):
+    return re.sub(r'\n\s*', '', markup)
 
 ## Function for reading and optimizing templates' code
 def getTemplateContents(templateFileName):
@@ -133,25 +133,17 @@ def parseMetadata(metadata):
       dictionary[key] = valuepartials
     return dictionary
 
-def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
+def formatLyricsAndMetadata(lyricsText, lyricsMetadataDict, lyricsActionsList):
     ## Separate text into paragraphs
-    lyricsText = re.sub('\n\n+', '<br/><span></span><br/><span></span>', lyricsText)
+    lyricsHTML = re.sub('\n\n+', '<br/><span></span><br/><span></span>', lyricsText)
     ## Convert newline characters into linebreaks
-    lyricsText = re.sub('\n', '\n<br/><span></span>', lyricsText)
-    ## Bring back newline paragraph separation
-    # lyricsText = re.sub('\r', '\n', lyricsText)
-    html = ''
-    ## Add margin for cli browsers
-    html += '<br/>'
-    html += '<div id="lyrics-container">'
-    ## Construct lyrics block
-    if len(lyricsText):
-        html += '<div id="lyrics">' + lyricsText + '<br/>' + '</div>'
-    ## Add metadata table below lyrics block
-    if len(lyricsMetadataDictionary) > 0:
-        html += '<hr/>'
+    lyricsHTML = re.sub('\n', '\n<br/><span></span>', lyricsHTML)
+
+    ## Proccess metadata keys and values
+    metadataHTML = None
+    if len(lyricsMetadataDict) > 0:
         items = []
-        for key, value in lyricsMetadataDictionary.items():
+        for key, value in lyricsMetadataDict.items():
             items.append({
                 'key': key,
                 'value': ',  '.join(value)
@@ -166,13 +158,18 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
                     'href': 'https://musicbrainz.org/recording/' + value[0],
                     'content': value[0],
                 })
-            if key == '__Actions__':
-                items[-1]['key'] = ''
-                items[-1]['value'] = '<br />'.join(value)
-        ## Render array of items into HTML table
-        html += pystache.render(templates['metadata'], items)
-    ## Close the lyrics container
-    html += '</div>'
+        metadataHTML = pystache.render(templates['metadata'], items)
+
+    ## Process action buttons
+    actionsHTML = None
+    if len(lyricsActionsList) > 0:
+        actionsHTML = '<br />'.join(lyricsActionsList)
+
+    html = pystache.render(templates['lyrics-page'], {
+        'lyrics': lyricsHTML,
+        'metadata': metadataHTML,
+        'actions': actionsHTML,
+    })
     return html
 
 ## Sorting function for album lists
@@ -349,15 +346,15 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     if 'Year' in lyricsMetadataDictionary:
                         albumList[-1]['year'] = lyricsMetadataDictionary['Year'][0]
                     ## Add action buttons
+                    lyricsActionsList = []
                     if config['Site']['HasEditTextButton']:
                         actionButton1 = pystache.render(templates['link'], {
-                            'class': 'a',
                             'href': config['Source']['Repository']  + '/edit/' + \
                                     config['Source']['DefaultBranch']  + '/database/' + \
                                     letter + '/' + artist + '/' + album + '/' + song,
                             'content': 'Suggest improvements for this text',
                         })
-                        lyricsMetadataDictionary['__Actions__'] = [actionButton1]
+                        lyricsActionsList.append(actionButton1)
                     ## Mark instrumental texts within parent page's (album) list
                     if len(lyricsText) == 0:
                         recordingsLists[discNo][-1]['postfix'] = config['Site']['InstrumentalLabel']
@@ -371,7 +368,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                         'navigation': abc,
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], recordingsLists[discNo][-1]),
                         'name': 'recording',
-                        'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary),
+                        'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary, lyricsActionsList),
                         'search': searchFileName,
                     })
                     songPathFile.write(html)
@@ -457,7 +454,10 @@ html = pystache.render(templates['layout'], {
     'description': "Web interface to Open Lyrics Database",
     'navigation': abc,
     'name': 'home',
-    'content': pystache.render(templates['home'], {'total': totalTextCount, 'db': config['Site']['DbPath']}),
+    'content': pystache.render(templates['home-page'], {
+        'db': config['Site']['DbPath'],
+        'total': totalTextCount,
+    }),
     'search': searchFileName,
 })
 homepageFile = mkfile()
