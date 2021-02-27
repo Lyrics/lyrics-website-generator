@@ -21,6 +21,15 @@ td {
     // Purpose: underline metadata links
     a {
         text-decoration: underline;
+
+        // Purpose: style action buttons
+        &.a {
+            background: $color-metadata-fg;
+            border-radius: 4px;
+            color: $color-metadata-bg;
+            padding: 3px 6px;
+            text-decoration: none;
+        }
     }
 }
 
