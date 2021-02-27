@@ -162,7 +162,10 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary):
             if key == 'Track no':
                 items[-1]['key'] = 'Track number'
             if key == 'MusicBrainz ID':
-                items[-1]['value'] = '<a href="https://musicbrainz.org/recording/' + value[0] + '">' + value[0] + '</a>'
+                items[-1]['value'] = pystache.render(templates['link'], {
+                    'href': 'https://musicbrainz.org/recording/' + value[0],
+                    'content': value[0],
+                })
             if key == '__Actions__':
                 items[-1]['key'] = ''
                 items[-1]['value'] = '<br />'.join(value)
@@ -347,9 +350,13 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                         albumList[-1]['year'] = lyricsMetadataDictionary['Year'][0]
                     ## Add action buttons
                     if config['Site']['HasEditTextButton']:
-                        actionButton1 = '<a class="a" href="' + config['Source']['Repository']  + '/edit/' + \
-                                        config['Source']['DefaultBranch']  + '/database/' + \
-                                        letter + '/' + artist + '/' + album + '/' + song + '">suggest improvement to this text</a>'
+                        actionButton1 = pystache.render(templates['link'], {
+                            'class': 'a',
+                            'href': config['Source']['Repository']  + '/edit/' + \
+                                    config['Source']['DefaultBranch']  + '/database/' + \
+                                    letter + '/' + artist + '/' + album + '/' + song,
+                            'content': 'Suggest improvements for this text',
+                        })
                         lyricsMetadataDictionary['__Actions__'] = [actionButton1]
                     ## Mark instrumental texts within parent page's (album) list
                     if len(lyricsText) == 0:
