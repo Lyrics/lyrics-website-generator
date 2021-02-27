@@ -349,7 +349,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     if config['Site']['HasEditTextButton']:
                         actionButton1 = '<a class="a" href="' + config['Source']['Repository']  + '/edit/' + \
                                         config['Source']['DefaultBranch']  + '/database/' + \
-                                        letter + '/' + artist + '/' + album + '/' + song + '">Edit or improve this text</a>'
+                                        letter + '/' + artist + '/' + album + '/' + song + '">suggest improvement to this text</a>'
                         lyricsMetadataDictionary['__Actions__'] = [actionButton1]
                     ## Mark instrumental texts within parent page's (album) list
                     if len(lyricsText) == 0:
