@@ -25,10 +25,11 @@ td {
         // Purpose: style action buttons
         &.a {
             background: $color-metadata-fg;
-            border-radius: 4px;
+            border-radius: 0.4em;
             color: $color-metadata-bg;
-            padding: 3px 6px;
+            padding: 0.2em 0.6em;
             text-decoration: none;
+            white-space: nowrap;
         }
     }
 }
