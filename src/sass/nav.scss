@@ -17,12 +17,12 @@ nav {
         min-width: 19px;
         padding: 12px 9px;
         text-align: center;
-    }
-}
 
-#home {
-    padding-left: 0;
-    padding-right: 10px;
+        &:first-child {
+            padding-left: 0;
+            padding-right: 10px;
+        }
+    }
 }
 
 // Mobile CSS
@@ -36,7 +36,7 @@ nav {
         &:before,
         &:after {
             content: '';
-            height: 4rem;
+            height: 4em;
             position: absolute;
             top: 0;
 
@@ -59,10 +59,9 @@ nav {
             font-weight: bold;
             margin-right: 3px;
             min-width: 40px;
-            padding: 1.3rem .5rem;
+            padding: 1.3em .5em;
 
-            &#home {
-                // padding: 1.3rem .5rem;
+            &:first-child {
                 padding-left: $mobile-horizontal-spacing;
             }
         }
