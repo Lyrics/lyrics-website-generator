@@ -6,6 +6,7 @@ import re
 import sys
 import configparser
 import pystache
+from itertools import chain
 from urllib.parse import quote
 
 scriptPath = os.path.dirname(os.path.realpath(__file__))
@@ -135,17 +136,17 @@ def parseMetadata(metadata):
 
 def formatLyricsAndMetadata(lyricsText, lyricsMetadataDict, lyricsActionsList):
     ## Separate text into paragraphs
-    lyricsHTML = re.sub('\n\n+', '<br/><span></span><br/><span></span>', lyricsText)
+    lyricsHtml = re.sub('\n\n+', '<br/><span></span><br/><span></span>', lyricsText)
     ## Convert newline characters into linebreaks
-    lyricsHTML = re.sub('\n', '\n<br/><span></span>', lyricsHTML)
+    lyricsHtml = re.sub('\n', '\n<br/><span></span>', lyricsHtml)
 
     ## Proccess metadata keys and values
-    metadataHTML = None
+    metadataHtml = None
     if len(lyricsMetadataDict) > 0:
         items = []
         for key, value in lyricsMetadataDict.items():
             items.append({
-                'key': key,
+                'key':   key,
                 'value': ',  '.join(value)
             })
             ## Post-process metadata keys and values
@@ -155,20 +156,20 @@ def formatLyricsAndMetadata(lyricsText, lyricsMetadataDict, lyricsActionsList):
                 items[-1]['key'] = 'Track number'
             if key == 'MusicBrainz ID':
                 items[-1]['value'] = pystache.render(templates['link'], {
-                    'href': 'https://musicbrainz.org/recording/' + value[0],
+                    'href':    'https://musicbrainz.org/recording/' + value[0],
                     'content': value[0],
                 })
-        metadataHTML = pystache.render(templates['metadata'], items)
+        metadataHtml = pystache.render(templates['metadata'], items)
 
     ## Process action buttons
-    actionsHTML = None
+    actionsHtml = None
     if len(lyricsActionsList) > 0:
-        actionsHTML = '<br />'.join(lyricsActionsList)
+        actionsHtml = '<br />'.join(lyricsActionsList)
 
     html = pystache.render(templates['lyrics-page'], {
-        'lyrics': lyricsHTML,
-        'metadata': metadataHTML,
-        'actions': actionsHTML,
+        'lyrics':   lyricsHtml,
+        'metadata': metadataHtml,
+        'actions':  actionsHtml,
     })
     return html
 
@@ -238,6 +239,13 @@ def fillTheGaps(recordings):
                 existingTrackNumbers.append(prevTrackNoStr)
     return recordings
 
+# Builds list of recording names out of 2D array of discs
+def flattenRecordingsLists(recordingsLists):
+    flattened = chain.from_iterable(recordingsLists)
+    filtered = list(filter(lambda link: len(link['label']) > 0, flattened))
+    namesOnly = list(map(lambda link: link['label'], filtered))
+    return namesOnly
+
 ## Read and store template files
 templates = {}
 templatesFileNames = next(os.walk(templatesPath))[2]
@@ -281,7 +289,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
     ## Create db/x/
     mkdir(safeLetterPath)
     ## Create db/x/index.html
-    letterPathFile = mkfile(safeLetterPath)
+    letterHtmlFile = mkfile(safeLetterPath)
     artists = sorted(next(os.walk(letterPath))[1], key=str.lower)
     artistList = []
 
@@ -293,7 +301,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
         ## Create db/x/artist/
         mkdir(safeArtistPath)
         ## Create db/x/artist/index.html
-        artistPathFile = mkfile(safeArtistPath)
+        artistHtmlFile = mkfile(safeArtistPath)
         ## Append artist link to db/x/index.html
         artistList.append(getLink(getSafePath(artist), artist, TYPE_ARTIST))
         albums = sorted(next(os.walk(artistPath))[1], key=str.lower)
@@ -307,26 +315,26 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
             ## Create db/x/artist/album/
             mkdir(safeAlbumPath)
             ## Create db/x/artist/album/index.html
-            albumPathFile = mkfile(safeAlbumPath)
+            albumHtmlFile = mkfile(safeAlbumPath)
             ## Append album link to db/x/artist/index.html
             albumList.append(getLink(getSafePath(album), album, TYPE_ALBUM))
-            songs = sorted(next(os.walk(albumPath))[2], key=str.lower)
+            recordings = sorted(next(os.walk(albumPath))[2], key=str.lower)
             recordingsLists = [[]] # One list per disc
 
             ## 4. Loop through songs
-            for song in songs:
-                songPath = os.path.join(albumPath, song)
-                if not os.path.isfile(songPath):
-                    print('Warning: ' + songPath + " is not a file!")
+            for recording in recordings:
+                recordingPath = os.path.join(albumPath, recording)
+                if not os.path.isfile(recordingPath):
+                    print('Warning: ' + recordingPath + " is not a file!")
                 else:
-                    safeSongPath = getSafePath(os.path.join(config['Site']['DbPath'], letter, artist, album, song))
-                    sitemapURLs.append(getSitemapURL(safeSongPath))
+                    safeRecordingPath = getSafePath(os.path.join(config['Site']['DbPath'], letter, artist, album, recording))
+                    sitemapURLs.append(getSitemapURL(safeRecordingPath))
                     ## Create db/x/artist/album/song/
-                    mkdir(safeSongPath)
+                    mkdir(safeRecordingPath)
                     ## Create db/x/artist/album/song/index.html
-                    songPathFile = mkfile(safeSongPath)
+                    recordingHtmlFile = mkfile(safeRecordingPath)
                     ## Read lyrics file
-                    lyricsFileContents = open(songPath, 'r').read().strip()
+                    lyricsFileContents = open(recordingPath, 'r').read().strip()
                     lyricsText = getText(lyricsFileContents)
                     lyricsMetadata = getMetadata(lyricsFileContents)
                     lyricsMetadataDictionary = parseMetadata(lyricsMetadata)
@@ -336,7 +344,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     while len(recordingsLists) <= discNo:
                         recordingsLists.append([])
                     ## Append recording link to db/x/artist/album/index.html
-                    recordingsLists[discNo].append(getLink(getSafePath(song), song, TYPE_RECORDING))
+                    recordingsLists[discNo].append(getLink(getSafePath(recording), recording, TYPE_RECORDING))
                     ## Make use of any available metadata values
                     if 'Name' in lyricsMetadataDictionary:
                         recordingsLists[discNo][-1]['label'] = lyricsMetadataDictionary['Name'][0]
@@ -356,7 +364,7 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                         actionButton1 = pystache.render(templates['link'], {
                             'href': config['Source']['Repository']  + '/edit/' + \
                                     config['Source']['DefaultBranch']  + '/database/' + \
-                                    letter + '/' + artist + '/' + album + '/' + song,
+                                    letter + '/' + artist + '/' + album + '/' + recording,
                             'content': 'Suggest improvements for this text',
                         })
                         lyricsActionsList.append(actionButton1)
@@ -368,22 +376,22 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                         totalTextCount += 1
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
-                        'title': artistList[-1]['label'] + ' – ' + recordingsLists[discNo][-1]['label'],
+                        'title':       artistList[-1]['label'] + ' – ' + recordingsLists[discNo][-1]['label'],
                         'description': getDescriptionText(lyricsText),
-                        'navigation': abc,
+                        'navigation':  abc,
                         'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1], recordingsLists[discNo][-1]),
-                        'name': 'recording',
-                        'content': formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary, lyricsActionsList),
-                        'search': searchFileName,
+                        'name':        'recording',
+                        'content':     formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary, lyricsActionsList),
+                        'search':      searchFileName,
                     })
-                    songPathFile.write(html)
-                    songPathFile.close()
+                    recordingHtmlFile.write(html)
+                    recordingHtmlFile.close()
 
             ## Make disc-less items appear after discs (on the bottom)
             if len(recordingsLists) > 1:
                 recordingsLists.append(recordingsLists.pop(0))
             ## Render lists of recordings
-            recordingsListHTML = ''
+            recordingsListHtml = ''
             for recordingsList in recordingsLists:
                 ## Skip if empty
                 if len(recordingsList) < 1: continue
@@ -405,65 +413,65 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                 ## Format song number/letter labels
                 recordingsList = list(map(formatRecordingNumber, recordingsList))
                 # Render list of recordings
-                recordingsListHTML += pystache.render(templates['list'], {'links': recordingsList})
+                recordingsListHtml += pystache.render(templates['list'], {'links': recordingsList})
             ## Render and write album page contents
             html = pystache.render(templates['layout'], {
-                'title': 'Album “' + albumList[-1]['label'] + '” by ' + artistList[-1]['label'],
-                'description': getDescriptionList(songs),
-                'navigation': abc,
+                'title':       'Album “' + albumList[-1]['label'] + '” by ' + artistList[-1]['label'],
+                'description': getDescriptionList(flattenRecordingsLists(recordingsLists)),
+                'navigation':  abc,
                 'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1], albumList[-1]),
-                'name': 'album',
-                'content': recordingsListHTML,
-                'search': searchFileName,
+                'name':        'album',
+                'content':     recordingsListHtml,
+                'search':      searchFileName,
             })
-            albumPathFile.write(html)
-            albumPathFile.close()
+            albumHtmlFile.write(html)
+            albumHtmlFile.close()
 
         ## Sort albums by year
         albumList.sort(key=sortAlbumsYear123)
         ## Wrap album years in parens
         albumList = list(map(formatAlbumYear, albumList))
         ## Render list of albums
-        albumsListHTML = pystache.render(templates['list'], {'links': albumList})
+        albumsListHtml = pystache.render(templates['list'], {'links': albumList})
         ## Render and write artist page contents
         html = pystache.render(templates['layout'], {
-            'title': 'Albums by ' + artistList[-1]['label'],
-            'description': getDescriptionList(albums),
-            'navigation': abc,
+            'title':       'Albums by ' + artistList[-1]['label'],
+            'description': getDescriptionList(list(map(lambda link: link['label'], albumList))),
+            'navigation':  abc,
             'breadcrumbs': getBreadcrumbs(letterLink, artistList[-1]),
-            'name': 'artist',
-            'content': albumsListHTML,
-            'search': searchFileName,
+            'name':        'artist',
+            'content':     albumsListHtml,
+            'search':      searchFileName,
         })
-        artistPathFile.write(html)
-        artistPathFile.close()
+        artistHtmlFile.write(html)
+        artistHtmlFile.close()
 
     ## Render list of artist
-    artistsListHTML = pystache.render(templates['list'], {'links': artistList})
+    artistsListHtml = pystache.render(templates['list'], {'links': artistList})
     ## Render and write letter page contents
     html = pystache.render(templates['layout'], {
-        'title': 'Artists starting with ' + letter,
+        'title':       'Artists starting with ' + letter,
         'description': getDescriptionList(artists),
-        'navigation': abc,
+        'navigation':  abc,
         'breadcrumbs': getBreadcrumbs(letterLink),
-        'name': 'letter',
-        'content': artistsListHTML,
-        'search': searchFileName,
+        'name':        'letter',
+        'content':     artistsListHtml,
+        'search':      searchFileName,
     })
-    letterPathFile.write(html)
-    letterPathFile.close()
+    letterHtmlFile.write(html)
+    letterHtmlFile.close()
 
 ## Create homepage index file
 html = pystache.render(templates['layout'], {
-    'title': config['Site']['Name'],
+    'title':       config['Site']['Name'],
     'description': "Web interface to Open Lyrics Database",
-    'navigation': abc,
-    'name': 'home',
-    'content': pystache.render(templates['home-page'], {
-        'db': config['Site']['DbPath'],
+    'navigation':  abc,
+    'name':        "home",
+    'content':     pystache.render(templates['home-page'], {
+        'db':    config['Site']['DbPath'],
         'total': totalTextCount,
     }),
-    'search': searchFileName,
+    'search':      searchFileName,
 })
 homepageFile = mkfile()
 homepageFile.write(html)
@@ -471,12 +479,12 @@ homepageFile.close()
 
 ## Create DB root index file
 html = pystache.render(templates['layout'], {
-    'title': config['Site']['Name'],
+    'title':       config['Site']['Name'],
     'description': "Index of top-level database directories",
-    'navigation': abc,
-    'name': 'db',
-    'content': pystache.render(templates['db'], {'letters': dbLetters}),
-    'search': searchFileName,
+    'navigation':  abc,
+    'name':        "db",
+    'content':     pystache.render(templates['db'], {'letters': dbLetters}),
+    'search':      searchFileName,
 })
 homepageFile = mkfile(config['Site']['DbPath'])
 homepageFile.write(html)
@@ -484,12 +492,12 @@ homepageFile.close()
 
 ## Create 404 page
 html = pystache.render(templates['layout'], {
-    'title': "Page not found",
+    'title':       "Page not found",
     'description': "Error 404: page not found",
-    'navigation': abc,
-    'name': 'error',
-    'content': pystache.render(templates['404']),
-    'search': searchFileName,
+    'navigation':  abc,
+    'name':        "error",
+    'content':     pystache.render(templates['404']),
+    'search':      searchFileName,
 })
 notFoundFile = mkfile('', notFoundFileName)
 notFoundFile.write(html)
@@ -497,12 +505,12 @@ notFoundFile.close()
 
 ## Create search page
 html = pystache.render(templates['layout'], {
-    'title': "Search",
+    'title':       "Search",
     'description': "Find lyrics using GitHub's code search engine",
-    'navigation': abc,
-    'name': 'search',
-    'content': pystache.render(templates['search']),
-    'search': searchFileName,
+    'navigation':  abc,
+    'name':        'search',
+    'content':     pystache.render(templates['search']),
+    'search':      searchFileName,
 })
 searchFile = mkfile('', searchFileName)
 searchFile.write(html)
