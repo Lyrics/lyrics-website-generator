@@ -93,7 +93,9 @@ td:first-child {
         background: $color-metadata-fg;
         border-radius: 0.4em;
         color: $color-metadata-bg;
-        padding: 0.2em 0.6em;
+        display: block;
+        padding: 0.4em 0.5em;
+        text-align: center;
         text-decoration: none;
         white-space: nowrap;
     }
@@ -140,6 +142,10 @@ td:first-child {
                 padding-bottom: $mobile-vertical-spacing;
             }
         }
+    }
+
+    #lyrics-actions {
+        padding: $mobile-vertical-spacing $mobile-horizontal-spacing;
     }
 }
 
