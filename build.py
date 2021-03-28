@@ -126,11 +126,11 @@ def parseMetadata(metadata):
         datalines.append(line)
     dictionary = {}
     for dataline in datalines:
-      partials = re.split('\s{2,}', dataline)
-      key = partials[0]
-      rawvalue = dataline[len(key):].strip()
-      valuepartials = re.split(',\s{2,}', rawvalue)
-      dictionary[key] = valuepartials
+        partials = re.split('\s{2,}', dataline)
+        key = partials[0]
+        rawvalue = dataline[len(key):].strip()
+        valuepartials = re.split(',\s{2,}', rawvalue)
+        dictionary[key] = valuepartials
     return dictionary
 
 def formatLyricsAndMetadata(lyricsText, lyricsMetadataDict, lyricsActionsList):
@@ -222,8 +222,13 @@ def fillTheGaps(recordings):
                 trackNo = int(recording['track_no'])
             else:
                 sideLetter = recording['track_no'][0]
-                trackNo = int(recording['track_no'][1:])
+                if len(recording['track_no']) > 1:
+                    trackNo = int(recording['track_no'][1:])
+                else:
+                    trackNo = 0
             def missingFilter(r):
+                if trackNo == 0:
+                    return False
                 prevTrackNo = trackNo - 1
                 return prevTrackNo > 0 and not sideLetter + str(prevTrackNo) in existingTrackNumbers
             while len(list(filter(missingFilter, recordings))) > 0:
