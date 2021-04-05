@@ -36,55 +36,7 @@ hr {
     display: none
 }
 
-// Purpose: make metadata look different from the song text
-table {
-    margin: 0;
-    text-align: left;
-    background-color: $color-metadata-bg;
-    color: $color-metadata-fg;
-    width: 100%;
-    border: 1px solid $color-metadata-bg;
-
-    border-collapse: collapse;
-}
-
-td {
-    padding: ($vertical-spacing / 2) $horizontal-spacing;
-
-    // Purpose: underline metadata links
-    a {
-        text-decoration: underline;
-    }
-}
-
-tr {
-    &:first-child {
-        td {
-            padding-top: $vertical-spacing;
-        }
-    }
-
-    &:last-child {
-        td {
-            padding-bottom: $vertical-spacing;
-        }
-    }
-}
-
-// Purpose: highlight item names by making them bold,
-//          add extra spacing between item names and item values
-td:first-child {
-    font-weight: bold;
-
-    // Purpose: make the left column as thin as possible
-    width: 1%;
-
-    // Purpose: ensure metadata headers are never wrapped
-    white-space: nowrap;
-
-    //
-    vertical-align: top;
-}
+@import "lyrics-metadata";
 
 #lyrics-actions {
     padding: ($vertical-spacing / 2) $horizontal-spacing;
@@ -122,28 +74,6 @@ td:first-child {
         margin: 0;
     }
 
-    table {
-        border: none;
-    }
-
-    td {
-        padding: ($mobile-vertical-spacing / 2) $mobile-horizontal-spacing;
-    }
-
-    tr {
-        &:first-child {
-            td {
-                padding-top: $mobile-vertical-spacing;
-            }
-        }
-
-        &:last-child {
-            td {
-                padding-bottom: $mobile-vertical-spacing;
-            }
-        }
-    }
-
     #lyrics-actions {
         padding: $mobile-vertical-spacing $mobile-horizontal-spacing;
     }
@@ -156,10 +86,6 @@ td:first-child {
         box-shadow: none;
         margin: 0;
         width: 100%;
-    }
-
-    table {
-        border: none;
     }
 
     #lyrics-actions {

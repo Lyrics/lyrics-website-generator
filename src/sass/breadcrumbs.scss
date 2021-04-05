@@ -35,7 +35,6 @@
 
 // Mobile CSS
 @include mobile {
-
     #breadcrumbs {
         line-height: 40px; // Purpose: give more space to links on smartphones
         padding-left: $mobile-horizontal-spacing;
@@ -83,14 +82,11 @@
             line-height: 36px;
         }
     }
-
 }
 
 // Paper CSS
 @include print {
-
     #breadcrumbs {
         display: none;
     }
-
 }
