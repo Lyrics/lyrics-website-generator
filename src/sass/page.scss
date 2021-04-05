@@ -1,0 +1,226 @@
+@import "vars";
+@import "mixins";
+
+html {
+    height: 100%;
+}
+
+body {
+    background: $color-bg;
+    color: $color-fg;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0;
+    min-height: 100%;
+
+    /*
+    * Purpose: always show the vertical scroll bar on the right
+    * for shitty browsers so that the X would not twitch
+    * every time Y overflow appears or goes away
+    *
+    */
+    overflow-y: scroll;
+
+    // Ensure the horizontal scrolling is never there
+    overflow-x: hidden;
+}
+
+form {
+    background-color: $color-navbar-bg;
+    font-size: 0;
+    line-height: 17px;
+    white-space: nowrap;
+}
+
+nav {
+    /* Purpose: hide selection highlight of items within the navigation bar */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* IE/Edge */
+    user-select: none;
+
+    margin: 0 auto;
+    width: $website-width;
+
+    a {
+        box-sizing: border-box;
+        color: $color-navbar-fg;
+        display: inline-block;
+        font-size: $header-font-size;
+        min-width: 19px;
+        padding: 12px 9px;
+        text-align: center;
+
+        &:first-child {
+            padding-left: 0;
+            padding-right: 10px;
+        }
+    }
+}
+
+input {
+    border: none;
+    border-radius: 1em;
+    font-size: $header-font-size;
+    outline: 0;
+    padding: .13em .7em;
+    margin: 0 0 8px 7px;
+    vertical-align: middle;
+    width: 130px;
+    -webkit-appearance: none;
+
+    // Purpose: make the navbar's inner shadow stay below the search field
+    position: relative;
+    z-index: 1;
+}
+
+ul {
+    margin: 0;
+    padding: 0 0 0 20px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+p {
+    margin-bottom: .5rem;
+    margin-top: 0;
+}
+
+#content {
+    margin: 0 auto;
+    position: relative;
+    width: $website-width;
+    box-sizing: border-box;
+
+    &.home {
+        text-align: left;
+
+        // Purpose: underline links on the home page
+        a {
+            text-decoration: underline;
+        }
+    }
+}
+
+b {
+    color: #414141;
+    display: inline-block;
+    font-weight: normal;
+    text-align: right;
+    width: 22px;
+}
+
+#view {
+    color: $color-fg;
+
+    // Purpose: add extra scroll travel to make it easy to read and tap items on tho bottom of the page
+    padding-bottom: $bottom-extra-space;
+}
+
+@import "breadcrumbs.scss";
+@import "link.scss";
+@import "list.scss";
+@import "lyrics-container.scss";
+
+// Mobile CSS
+@include mobile {
+    form {
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        /* Purpose: make the horizontal scrollbar invisible */
+        scrollbar-width: none; // FF
+        -ms-overflow-style: none; // IEdge
+        // Chrome, Safari and Opera
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    nav {
+        margin-right: $header-shadow-right-width + 10px;
+        text-align: left;
+
+        /* Purpose: add inner shadow to the right side of navbar to hint user that
+            they can scroll the alphabet horizontally on mobile */
+        &:before,
+        &:after {
+            content: '';
+            height: 4em;
+            position: absolute;
+            top: 0;
+
+            // Purpose: make it possible to click on alphabet letters beneath the shadow
+            pointer-events: none;
+        }
+        &:before {
+            background: linear-gradient(270deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            left: 0;
+            width: 9px;
+        }
+        &:after {
+            background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
+            right: 0;
+            width: $header-shadow-right-width;
+        }
+
+        a {
+            display: inline-block;
+            font-weight: bold;
+            margin-right: 3px;
+            min-width: 40px;
+            padding: 1.3em .5em;
+
+            &:first-child {
+                padding-left: $mobile-horizontal-spacing;
+            }
+        }
+    }
+
+    input {
+        margin-left: 1.5rem;
+        margin-right: 1rem;
+    }
+
+    #content {
+        background: inherit;
+        padding: 0;
+        width: 100%;
+
+        &.home {
+            padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
+        }
+    }
+}
+
+// Dark CSS
+@import "dark";
+
+// Paper CSS
+@include print {
+    body {
+        font-size: 14px;
+    }
+
+    form {
+        display: none;
+    }
+
+    #view {
+        padding: 0;
+    }
+
+    #content {
+        margin: 0;
+    }
+}

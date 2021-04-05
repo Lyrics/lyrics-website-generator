@@ -1,0 +1,86 @@
+@include dark {
+    body {
+        background-color: $dark-color-bg;
+    }
+
+    a {
+        color: $dark-color-link;
+    }
+
+    form {
+        background-color: $dark-color-navbar-bg;
+    }
+
+    @include mobile {
+        nav {
+            &:before {
+                background: linear-gradient(270deg, rgba($dark-color-navbar-bg, 0) 0%, $dark-color-navbar-bg 100%);
+            }
+            &:after {
+                background: linear-gradient(90deg, rgba($dark-color-navbar-bg, 0) 0%, $dark-color-navbar-bg 100%);
+            }
+        }
+    }
+
+    nav a {
+        color: $dark-color-navbar-fg;
+    }
+
+    #breadcrumbs > span:not(:first-child):before {
+        color: $dark-color-breadcrumbs-arrow;
+    }
+
+    @include mobile {
+        #breadcrumbs {
+            > span:first-child {
+                &:before {
+                    background: linear-gradient(270deg, rgba($dark-color-bg, 0) 0%, $dark-color-bg 100%);
+                }
+                &:after {
+                    background: linear-gradient(90deg, rgba($dark-color-bg, 0) 0%, $dark-color-bg 100%);
+                }
+            }
+        }
+    }
+
+    #view {
+        color: $dark-color-fg;
+    }
+
+    .l a span {
+        color: $dark-color-list-id;
+    }
+
+    #lyrics-container {
+        box-shadow: none;
+    }
+
+    #lyrics {
+        background: $dark-color-lyrics-bg;
+        color: $dark-color-lyrics-fg;
+        border-color: $dark-color-lyrics-border;
+
+        span {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+        }
+    }
+
+    table {
+        background-color: $dark-color-metadata-bg;
+        color: $dark-color-metadata-fg;
+        border-color: $dark-color-metadata-bg;
+    }
+
+    td {
+        a {
+            color: $dark-color-metadata-fg;
+        }
+    }
+
+    #lyrics-actions {
+        a {
+            background: $dark-color-metadata-fg;
+            color: $dark-color-metadata-bg;
+        }
+    }
+}

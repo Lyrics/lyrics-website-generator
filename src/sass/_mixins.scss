@@ -1,3 +1,9 @@
+@mixin dark {
+    @media (prefers-color-scheme: dark) {
+        @content;
+    }
+}
+
 @mixin mobile {
     @media only screen and (max-width: #{$mobile-breakpoint}) {
         @content;

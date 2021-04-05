@@ -27,7 +27,7 @@ $(WWW_DIR):
 
 $(CSS_FILE): $(WWW_DIR)
 	@which sassc > /dev/null &2> /dev/null && \
-        sassc ${SASS_OPTS} src/sass/main.scss $(CSS_FILE) ||  echo -n ''
+        sassc ${SASS_OPTS} src/sass/page.scss $(CSS_FILE) ||  echo -n ''
 
 $(FAVICON_FILE): $(WWW_DIR)
 	@cp ${ASSETS_DIR}/icons/$(FAVICON_FILE) $(WWW_DIR)/
