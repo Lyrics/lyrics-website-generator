@@ -268,9 +268,6 @@ for letter in list(map(chr, range(ord('A'), ord('Z')+1))):
 ## List of URLs to be added to the sitemap file
 sitemapURLs = []
 
-## Total amount of texts (for displaying it on the main page)
-totalTextCount = 0
-
 ## List of top-level directory names
 dbLetters = []
 
@@ -371,9 +368,6 @@ for letter in sorted(next(os.walk(config['Filesystem']['SourcePath']))[1]):
                     ## Mark instrumental texts within parent page's (album) list
                     if len(lyricsText) == 0:
                         recordingsLists[discNo][-1]['postfix'] = config['Site']['InstrumentalLabel']
-                    else:
-                        ## Increment total text counter
-                        totalTextCount += 1
                     ## Render and write song page contents
                     html = pystache.render(templates['layout'], {
                         'title':       artistList[-1]['label'] + ' – ' + recordingsLists[discNo][-1]['label'],
@@ -468,8 +462,7 @@ html = pystache.render(templates['layout'], {
     'navigation':  abc,
     'name':        "home",
     'content':     pystache.render(templates['home-page'], {
-        'db':    config['Site']['DbPath'],
-        'total': totalTextCount,
+        'db': config['Site']['DbPath'],
     }),
     'search':      searchFileName,
 })
