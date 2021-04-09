@@ -21,6 +21,7 @@ else:
     print("Error: config.ini does not exist")
     exit()
 config["Filesystem"]["SourcePath"] = os.path.join(scriptPath, config["Filesystem"]["SourcePath"])
+config["Filesystem"]["SourcePathTranslations"] = os.path.join(scriptPath, config["Filesystem"]["SourcePathTranslations"])
 
 ## File names
 indexFileName    = "index.html"
@@ -257,13 +258,17 @@ for templateFileName in templatesFileNames:
 #  The build process starts here  #
 ###################################
 
-## Create directories to accommodate website database path
+## Create directories to accommodate website database and translations paths
 mkdir(config["Site"]["DbPath"])
+mkdir(config["Site"]["TranslationsPath"])
 
 ## A-Z letter lihks for top navigation
 abc = []
-for letter in list(map(chr, range(ord("A"), ord("Z")+1))):
+for letter in list(map(chr, range(ord("A"), ord("Z") + 1))):
     abc.append(getLink("/" + config["Site"]["DbPath"] + "/" + letter, letter))
+
+## List of languages covered by text translations
+translationsLanguages = []
 
 ## List of URLs to be added to the sitemap file
 sitemapURLs = []
@@ -271,7 +276,133 @@ sitemapURLs = []
 ## List of top-level directory names
 dbLetters = []
 
-## 1. Loop through letters in the database
+##################
+## Translations ##
+##################
+
+## 1t.
+for language in sorted(next(os.walk(config["Filesystem"]["SourcePathTranslations"]))[1]):
+    translationsLanguages.append(language)
+
+    languagePath = os.path.join(config["Filesystem"]["SourcePathTranslations"], language)
+    safeLanguagePath = getSafePath(os.path.join(config["Site"]["TranslationsPath"], language))
+    languageLink = getLink(getSafePath(language), language)
+    sitemapURLs.append(getSitemapURL(safeLanguagePath))
+    ## Create tr/lang/
+    mkdir(safeLanguagePath)
+    ## Create tr/lang/index.html
+    languageHtmlFile = mkfile(safeLanguagePath)
+
+    ## 2t. Create index files for letter directories
+    lettersList = []
+    for letter in sorted(next(os.walk(languagePath))[1], key=str.lower):
+        letterPath = os.path.join(languagePath, letter)
+        safeLetterPath = getSafePath(os.path.join(config["Site"]["TranslationsPath"], language, letter))
+        letterLink = getLink(getSafePath(letter), letter)
+        sitemapURLs.append(getSitemapURL(safeLetterPath))
+        ## Create tr/lang/x/
+        mkdir(safeLetterPath)
+        ## Create tr/lang/x/index.html
+        letterHtmlFile = mkfile(safeLetterPath)
+
+        ## 3t.
+        artists = sorted(next(os.walk(letterPath))[1], key=str.lower)
+        artistList = []
+        for artist in artists:
+            artistPath = os.path.join(letterPath, artist)
+            safeArtistPath = getSafePath(os.path.join(config["Site"]["TranslationsPath"], language, letter, artist))
+            sitemapURLs.append(getSitemapURL(safeArtistPath))
+            ## Create tr/lang/x/artist/
+            mkdir(safeArtistPath)
+            ## Create tr/lang/x/artist/index.html
+            artistHtmlFile = mkfile(safeArtistPath)
+            ## Append artist link to tr/lang/x/index.html
+            artistList.append(getLink(getSafePath(artist), artist, TYPE_ARTIST))
+
+            ## 4t. Loop through artist’s albums
+            albums = sorted(next(os.walk(artistPath))[1], key=str.lower)
+            albumList = []
+            for album in albums:
+                albumPath = os.path.join(artistPath, album)
+                safeAlbumPath = getSafePath(os.path.join(config["Site"]["TranslationsPath"], language, letter, artist, album))
+                sitemapURLs.append(getSitemapURL(safeAlbumPath))
+                ## Create tr/lang/x/artist/album/
+                mkdir(safeAlbumPath)
+                ## Create tr/lang/x/artist/album/index.html
+                albumHtmlFile = mkfile(safeAlbumPath)
+                ## Append album link to tr/lang/x/artist/index.html
+                albumList.append(getLink(getSafePath(album), album, TYPE_ALBUM))
+
+                ## 5t. Loop through songs
+                recordings = sorted(next(os.walk(albumPath))[2], key=str.lower)
+                recordingsLists = [[]] # One list per disc
+                for recording in recordings:
+                    recordingPath = os.path.join(albumPath, recording)
+                    if not os.path.isfile(recordingPath):
+                        print("Warning: " + recordingPath + " is not a file!")
+                    else:
+                        safeRecordingPath = getSafePath(os.path.join(config["Site"]["TranslationsPath"], language, letter, artist, album, recording))
+                        sitemapURLs.append(getSitemapURL(safeRecordingPath))
+                        ## Create tr/lang/x/artist/album/song/
+                        mkdir(safeRecordingPath)
+                        ## Create tr/lang/x/artist/album/song/index.html
+                        recordingHtmlFile = mkfile(safeRecordingPath)
+                        ## Read lyrics file
+                        lyricsFileContents = open(recordingPath, "r").read().strip()
+                        lyricsText = getText(lyricsFileContents)
+                        lyricsMetadata = getMetadata(lyricsFileContents)
+                        lyricsMetadataDictionary = parseMetadata(lyricsMetadata)
+                        ## Determine disc number
+                        discNo = int(lyricsMetadataDictionary["Disc no"][0]) if "Disc no" in lyricsMetadataDictionary else 0
+                        ## Make sure there’s an array for this disc
+                        while len(recordingsLists) <= discNo:
+                            recordingsLists.append([])
+                        ## Append recording link to tr/lang/x/artist/album/index.html
+                        recordingsLists[discNo].append(getLink(getSafePath(recording), recording, TYPE_RECORDING))
+                        ## Make use of any available metadata values
+                        if "Name" in lyricsMetadataDictionary:
+                            recordingsLists[discNo][-1]["label"] = lyricsMetadataDictionary["Name"][0]
+                        if "Artist" in lyricsMetadataDictionary:
+                            artistList[-1]["label"] = lyricsMetadataDictionary["Artist"][0]
+                        if "Album" in lyricsMetadataDictionary:
+                            albumList[-1]["label"] = lyricsMetadataDictionary["Album"][0]
+                        if "Track no" in lyricsMetadataDictionary:
+                            recordingsLists[discNo][-1]["track_no"] = lyricsMetadataDictionary["Track no"][0]
+                        if "Disc no" in lyricsMetadataDictionary:
+                            recordingsLists[discNo][-1]["disc_no"] = lyricsMetadataDictionary["Disc no"][0]
+                        if "Year" in lyricsMetadataDictionary:
+                            albumList[-1]["year"] = lyricsMetadataDictionary["Year"][0]
+                        ## Add action buttons
+                        lyricsActionsList = []
+                        if config["Site"]["HasEditTextButton"]:
+                            actionButton1 = pystache.render(templates["link"], {
+                                "href": config["Source"]["Repository"]  + "/edit/" + \
+                                        config["Source"]["DefaultBranch"]  + "/database/" + \
+                                        letter + "/" + artist + "/" + album + "/" + recording,
+                                "content": "Suggest improvements for this translation",
+                            })
+                            lyricsActionsList.append(actionButton1)
+                        ## Mark instrumental texts within parent page’s (album) list
+                        if len(lyricsText) == 0:
+                            recordingsLists[discNo][-1]["postfix"] = config["Site"]["InstrumentalLabel"]
+                        ## Render and write song page contents
+                        html = pystache.render(templates["page"], {
+                            "title":       language + " translation of " + recordingsLists[discNo][-1]["label"] + " by " + artistList[-1]["label"],
+                            "description": getDescriptionText(lyricsText),
+                            "navigation":  abc,
+                            "breadcrumbs": getBreadcrumbs(languageLink, letterLink, artistList[-1], albumList[-1], recordingsLists[discNo][-1]),
+                            "name":        "recording",
+                            "content":     formatLyricsAndMetadata(lyricsText, lyricsMetadataDictionary, lyricsActionsList),
+                            "search":      searchFileName,
+                        })
+                        recordingHtmlFile.write(html)
+                        recordingHtmlFile.close()
+
+##############
+## Database ##
+##############
+
+## 1d. Loop through letters in the database
 for letter in sorted(next(os.walk(config["Filesystem"]["SourcePath"]))[1]):
     ## Output progress status
     print(letter, end=" ", file=sys.stderr)
@@ -287,10 +418,10 @@ for letter in sorted(next(os.walk(config["Filesystem"]["SourcePath"]))[1]):
     mkdir(safeLetterPath)
     ## Create db/x/index.html
     letterHtmlFile = mkfile(safeLetterPath)
+
+    ## 2d. Loop through artists starting with letter x
     artists = sorted(next(os.walk(letterPath))[1], key=str.lower)
     artistList = []
-
-    ## 2. Loop through artists starting with letter x
     for artist in artists:
         artistPath = os.path.join(letterPath, artist)
         safeArtistPath = getSafePath(os.path.join(config["Site"]["DbPath"], letter, artist))
@@ -301,10 +432,10 @@ for letter in sorted(next(os.walk(config["Filesystem"]["SourcePath"]))[1]):
         artistHtmlFile = mkfile(safeArtistPath)
         ## Append artist link to db/x/index.html
         artistList.append(getLink(getSafePath(artist), artist, TYPE_ARTIST))
+
+        ## 3d. Loop through artist’s albums
         albums = sorted(next(os.walk(artistPath))[1], key=str.lower)
         albumList = []
-
-        ## 3. Loop through artist’s albums
         for album in albums:
             albumPath = os.path.join(artistPath, album)
             safeAlbumPath = getSafePath(os.path.join(config["Site"]["DbPath"], letter, artist, album))
@@ -315,10 +446,10 @@ for letter in sorted(next(os.walk(config["Filesystem"]["SourcePath"]))[1]):
             albumHtmlFile = mkfile(safeAlbumPath)
             ## Append album link to db/x/artist/index.html
             albumList.append(getLink(getSafePath(album), album, TYPE_ALBUM))
+
+            ## 4d. Loop through songs
             recordings = sorted(next(os.walk(albumPath))[2], key=str.lower)
             recordingsLists = [[]] # One list per disc
-
-            ## 4. Loop through songs
             for recording in recordings:
                 recordingPath = os.path.join(albumPath, recording)
                 if not os.path.isfile(recordingPath):
@@ -472,16 +603,16 @@ homepageFile.close()
 
 ## Create DB root index file
 html = pystache.render(templates["page"], {
-    "title":       config["Site"]["Name"],
+    "title":       "Top-level index",
     "description": "Index of top-level database directories",
     "navigation":  abc,
     "name":        "db",
     "content":     pystache.render(templates["db-page-contents"], {"letters": dbLetters}),
     "search":      searchFileName,
 })
-homepageFile = mkfile(config["Site"]["DbPath"])
-homepageFile.write(html)
-homepageFile.close()
+databaseFile = mkfile(config["Site"]["DbPath"])
+databaseFile.write(html)
+databaseFile.close()
 
 ## Create 404 page
 html = pystache.render(templates["page"], {
@@ -508,6 +639,19 @@ html = pystache.render(templates["page"], {
 searchFile = mkfile("", searchFileName)
 searchFile.write(html)
 searchFile.close()
+
+## Create root index file for translations directory
+html = pystache.render(templates["page"], {
+    "title":       "Top-level translations index",
+    "description": "Index of top-level translations directories",
+    "navigation":  abc,
+    "name":        "db",
+    "content":     pystache.render(templates["db-page-contents"], {"letters": translationsLanguages}),
+    "search":      searchFileName,
+})
+translationsFile = mkfile(config["Site"]["TranslationsPath"])
+translationsFile.write(html)
+translationsFile.close()
 
 ## Add homepage URL to the sitemap
 sitemapURLs.append(getSitemapURL())
