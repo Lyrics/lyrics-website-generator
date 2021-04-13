@@ -42,9 +42,10 @@ hr {
     padding: ($vertical-spacing / 2) $horizontal-spacing;
 
     a {
-        background: $color-metadata-fg;
+        background-color: transparent;
+        border: 1px solid $color-metadata-fg;
         border-radius: 0.4em;
-        color: $color-metadata-bg;
+        color: $color-metadata-fg;
         display: block;
         padding: 0.4em 0.5em;
         text-align: center;

@@ -1,8 +1,8 @@
-<br/>
 <ul class="l">
     {{#links}}
     <li>
-        <a href="{{href}}" class="t{{type}}">{{#prefix}}<b>{{{prefix}}}</b> {{/prefix}}{{label}}{{#postfix}} <span>{{postfix}}</span>{{/postfix}}</a>
+        <a{{#href}} href="{{href}}"{{/href}} class="t{{type}}">{{#prefix}}<b>{{{prefix}}}</b> {{/prefix}}{{label}}{{#postfix}} <span>{{postfix}}</span>{{/postfix}}</a>
     </li>
     {{/links}}
 </ul>
+<br/>
