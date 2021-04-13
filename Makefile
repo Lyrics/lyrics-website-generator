@@ -2,17 +2,16 @@
 
 # Makefile for Open Lyrics Database website generator
 
-ASSETS_DIR = src/assets
 SASS_OPTS = --style compressed
 WWW_DIR=www
-CSS_FILE = $(WWW_DIR)/s.css
-FAVICON_FILE = favicon.ico
+CSS_FILE = $(WWW_DIR)/g.css
 CONFIG_FILE = config.ini
 
-build: $(CSS_FILE) $(FAVICON_FILE) $(CONFIG_FILE)
+all: build
+
+build: $(CSS_FILE) $(CONFIG_FILE)
 	@cd $(WWW_DIR) && \
-        python3 ../build.py && \
-        cp -r ../${ASSETS_DIR}/js .
+        python3 ../website-generator.py
 .PHONY: build
 
 $(CONFIG_FILE):
@@ -28,9 +27,6 @@ $(WWW_DIR):
 $(CSS_FILE): $(WWW_DIR)
 	@which sassc > /dev/null &2> /dev/null && \
         sassc ${SASS_OPTS} src/sass/page.scss $(CSS_FILE) ||  echo -n ''
-
-$(FAVICON_FILE): $(WWW_DIR)
-	@cp ${ASSETS_DIR}/icons/$(FAVICON_FILE) $(WWW_DIR)/
 
 serve: $(WWW_DIR)
 	@cd $(WWW_DIR) && \

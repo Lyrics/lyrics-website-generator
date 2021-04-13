@@ -2,7 +2,7 @@
     {{#breadcrumbs}}
         {{#href}}
             <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                <a href="{{href}}" class="t{{type}}" itemid="{{href}}" itemprop="item" itemscope itemtype="http://schema.org/Thing">
+                <a href="{{href}}"{{#type}} class="t{{type}}"{{/type}} itemid="{{href}}" itemprop="item" itemscope itemtype="http://schema.org/Thing">
                     {{#prefix}}<b>{{prefix}}</b> {{/prefix}}
                     <span itemprop="name">{{label}}</span>
                 </a>
@@ -12,3 +12,4 @@
         {{^href}} → {{/href}}
     {{/breadcrumbs}}
 </div>
+<br/>

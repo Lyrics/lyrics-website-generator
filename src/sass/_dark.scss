@@ -79,8 +79,8 @@
 
     #lyrics-actions {
         a {
-            background: $dark-color-metadata-fg;
-            color: $dark-color-metadata-bg;
+            border-color: $dark-color-metadata-fg;
+            color: $dark-color-metadata-fg;
         }
     }
 }
