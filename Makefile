@@ -2,10 +2,9 @@
 
 # Makefile for Open Lyrics Database website generator
 
-ASSETS_DIR = src/assets
 SASS_OPTS = --style compressed
 WWW_DIR=www
-CSS_FILE = $(WWW_DIR)/s.css
+CSS_FILE = $(WWW_DIR)/g.css
 CONFIG_FILE = config.ini
 
 all: build

@@ -21,8 +21,8 @@ def main(data):
     )
     ## Render HTML
     databaseIndexHtml = pystache.render(data["templates"]["page"], {
-        "title":       "Top-level database index",
-        "description": "Index of top-level database directories",
+        "title":       "Main database index page",
+        "description": "List of database artist groups",
         "navigation":  data["definitions"]["abc"],
         "search":      data["definitions"]["filenames"]["search"],
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, dbPathWebPageLink),

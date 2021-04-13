@@ -15,13 +15,13 @@ def main(data):
                         if "track_no" in recording and recording["track_no"].isdecimal():
                             isOrderDecimal = True
                             break
-                    ## Sort recording list within the album by track number/letter
+                    ## Sort recordings list within release by track number/letter
                     if isOrderDecimal:
                         # By number, for CDs and WEB releases
                         recordingGroup.sort(key=utils.sortRecordingsByTrackNumber)
                     else:
                         # By letter (or letter + number, e.g. A, B1, B2), for LPs and cassette tapes
                         recordingGroup.sort(key=utils.sortRecordingsByTrackLetter)
-                    ## Format song number/letter labels
+                    ## Assign recording number/letter labels
                     for recording in recordingGroup:
                         utils.formatRecordingNumber(recording)
