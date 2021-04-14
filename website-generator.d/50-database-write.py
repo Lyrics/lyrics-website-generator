@@ -178,7 +178,11 @@ def main(data):
                 for recordingGroup in release["recordings"]:
                     recordingGroupLinks = []
                     for recording in recordingGroup:
-                        link = utils.getWebPageLink(recording["name"] + "/", recording["printable_name"], data["definitions"]["link_types"]["recording"])
+                        link = utils.getWebPageLink(
+                            recording["name"] + "/" if len(recording["name"]) > 0 else "",
+                            recording["printable_name"],
+                            data["definitions"]["link_types"]["recording"]
+                        )
                         if "prefix" in recording:
                             link["prefix"] = recording["prefix"]
                         if "postfix" in recording:
