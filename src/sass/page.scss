@@ -104,12 +104,12 @@ p {
 
     &.home {
         text-align: left;
-
-        // Purpose: underline links on the home page
-        .homepage a {
-            text-decoration: underline;
-        }
     }
+}
+
+// Purpose: underline links on the home page
+.homepage a {
+    text-decoration: underline;
 }
 
 b {
@@ -196,10 +196,10 @@ b {
         background: inherit;
         padding: 0;
         width: 100%;
+    }
 
-        &.home {
-            padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
-        }
+    .homepage {
+        padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
     }
 }
 
