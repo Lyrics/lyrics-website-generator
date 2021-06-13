@@ -1,8 +1,10 @@
 <script>
+
 /* Automatically search the database for this resource in case its path was changed */
 var query = window.location.toString().substr(window.location.origin.length + 6);
 query = query.replace(/[\/-]/g, ' ').trim().replace(/\s+/g, '%20');
 window.location = document.forms[0].getAttribute('action') + '?q=' + query
+
 </script>
 <noscript>
     <div class="not-found">

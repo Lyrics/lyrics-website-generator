@@ -1,7 +1,3 @@
-import pystache
-
-import utils
-
 def main(data):
     ## Assign readable names to artists/releases/recordings
     for groupKey in data["database"]:

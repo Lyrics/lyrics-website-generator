@@ -5,25 +5,28 @@ import pystache
 import utils
 
 def main(data):
-    homePathWebPageLink = utils.getWebPageLink("/", "Home")
-
+    homePathWebPageLink = utils.getWebPageLink(".", "Home")
     ## Render HTML
-    pageLinks = []
-    link = utils.getWebPageLink("db" + "/", "Database")
-    pageLinks.append(link)
-    link = utils.getWebPageLink("tr" + "/", "Translations")
-    pageLinks.append(link)
-    listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
+    listHtml = pystache.render(data["templates"]["list"], {
+        "links": [
+            utils.getWebPageLink(data["config"]["Site"]["DbPath"] + "/", "Database"),
+            utils.getWebPageLink(data["config"]["Site"]["TranslationsPath"] + "/", "Translations"),
+        ],
+    })
     html = pystache.render(data["templates"]["page"], {
         "title":       data["config"]["Site"]["Name"],
         "description": "Web interface for Open Lyrics Database",
-        "navigation":  data["definitions"]["abc"],
+        "logo":        pystache.render(data["templates"]["link"], {
+            "href": ".",
+            "content": "Lyrics",
+        }),
+        "navigation":  utils.generateTopBarNavigation(data["config"]["Site"]["DbPath"] + "/"),
+        "css":         data["definitions"]["filenames"]["css"],
         "search":      data["definitions"]["filenames"]["search"],
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink),
         "name":        "home",
         "content":     listHtml + pystache.render(data["templates"]["home-page-contents"], {
-            "db": data["config"]["Site"]["DbPath"],
-            "tr": data["config"]["Site"]["TranslationsPath"],
+            "archiveLinkBranch": data["config"]["Source"]["DefaultBranch"],
         }),
     })
     homepageFile = utils.mkfile(
@@ -33,5 +36,6 @@ def main(data):
     )
     homepageFile.write(html)
     homepageFile.close()
-    ## Add home page relative path to sitemap
-    data["sitemap"].append("/")
+    ## Add home page link to sitemap
+    if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+        data["sitemap"].append("/")

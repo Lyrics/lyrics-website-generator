@@ -20,14 +20,28 @@ def main(data):
         data["config"]["Site"]["TranslationsPath"],
     )
     ## Create root index file for translations directory
+    translationsLinkList = []
+    for groupKey in data["translations"]:
+        link = pystache.render(data["templates"]["link"], {
+            "href": groupKey + "/",
+            "content": groupKey,
+        })
+        translationsLinkList.append(link)
     html = pystache.render(data["templates"]["page"], {
         "title":       "List of available translations languages",
         "description": utils.getDescriptionList(list(data["translations"].keys())),
-        "navigation":  data["definitions"]["abc"],
-        "search":      data["definitions"]["filenames"]["search"],
+        "logo":        pystache.render(data["templates"]["link"], {
+            "href": ".." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+            "content": "Lyrics",
+        }),
+        "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 1) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+        "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 1),
+        "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 1),
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink),
         "name":        "translations",
-        "content":     pystache.render(data["templates"]["db-page-contents"], { "links": list(data["translations"].keys()) }),
+        "content":     pystache.render(data["templates"]["db-page-contents"], {
+            "links": translationsLinkList,
+        }),
     })
     translationsFile = utils.mkfile(
         data["definitions"]["runtime"]["cwd"],
@@ -38,7 +52,8 @@ def main(data):
     translationsFile.write(html)
     translationsFile.close()
     ## Add relative path to list of sitemap items
-    data["sitemap"].append(data["config"]["Site"]["TranslationsPath"] + "/")
+    if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+        data["sitemap"].append(data["config"]["Site"]["TranslationsPath"] + "/")
 
     ## Loop through languages
     for languageKey in data["translations"]:
@@ -74,8 +89,13 @@ def main(data):
         html = pystache.render(data["templates"]["page"], {
             "title":       "Groups of artists containing " + languageKey + " translations",
             "description": utils.getDescriptionList(list(language.keys())),
-            "navigation":  data["definitions"]["abc"],
-            "search":      data["definitions"]["filenames"]["search"],
+            "logo":        pystache.render(data["templates"]["link"], {
+                "href": "../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+                "content": "Lyrics",
+            }),
+            "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 2) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+            "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 2),
+            "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 2),
             "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink),
             "name":        "language",
             "content":     listHtml,
@@ -91,7 +111,8 @@ def main(data):
         htmlFile.write(html)
         htmlFile.close()
         ## Add relative path to list of sitemap items
-        data["sitemap"].append(languagePathDestination + "/")
+        if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+            data["sitemap"].append(languagePathDestination + "/")
 
         ## Loop through groups
         for groupKey in language:
@@ -129,8 +150,13 @@ def main(data):
             html = pystache.render(data["templates"]["page"], {
                 "title":       "Artist group “" + groupKey + "” of " + languageKey + " translations",
                 "description": utils.getDescriptionList(list(group.keys())),
-                "navigation":  data["definitions"]["abc"],
-                "search":      data["definitions"]["filenames"]["search"],
+                "logo":        pystache.render(data["templates"]["link"], {
+                    "href": "../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+                    "content": "Lyrics",
+                }),
+                "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 3) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+                "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 3),
+                "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 3),
                 "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink, groupPathWebPageLink),
                 "name":        "group",
                 "content":     listHtml,
@@ -146,7 +172,8 @@ def main(data):
             htmlFile.write(html)
             htmlFile.close()
             ## Add relative path to list of sitemap items
-            data["sitemap"].append(groupPathDestination + "/")
+            if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+                data["sitemap"].append(groupPathDestination + "/")
 
             ## Loop through artists
             for artistKey in group:
@@ -186,8 +213,13 @@ def main(data):
                 html = pystache.render(data["templates"]["page"], {
                     "title":       "Releases by " + artist["printable_name"] + " containing " + languageKey + " translations",
                     "description": utils.getDescriptionList(list(map(lambda link: link["label"], pageLinks))),
-                    "navigation":  data["definitions"]["abc"],
-                    "search":      data["definitions"]["filenames"]["search"],
+                    "logo":        pystache.render(data["templates"]["link"], {
+                        "href": "../../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+                        "content": "Lyrics",
+                    }),
+                    "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 4) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+                    "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 4),
+                    "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 4),
                     "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink, groupPathWebPageLink, artistPathWebPageLink),
                     "name":        "artist",
                     "content":     listHtml,
@@ -203,7 +235,8 @@ def main(data):
                 htmlFile.write(html)
                 htmlFile.close()
                 ## Add relative path to list of sitemap items
-                data["sitemap"].append(artistPathDestination + "/")
+                if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+                    data["sitemap"].append(artistPathDestination + "/")
 
                 ## Loop through releases
                 for release in artist["releases"]:
@@ -243,8 +276,13 @@ def main(data):
                     html = pystache.render(data["templates"]["page"], {
                         "title":       artist["printable_name"] + " " + languageKey + " translations from “" + release["printable_name"] + "”",
                         "description": utils.getDescriptionList(list(map(lambda link: link["label"], pageLinks))),
-                        "navigation":  data["definitions"]["abc"],
-                        "search":      data["definitions"]["filenames"]["search"],
+                        "logo":        pystache.render(data["templates"]["link"], {
+                            "href": "../../../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+                            "content": "Lyrics",
+                        }),
+                        "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 5) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+                        "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 5),
+                        "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 5),
                         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink, groupPathWebPageLink, artistPathWebPageLink, releasePathWebPageLink),
                         "name":        "release",
                         "content":     listHtml,
@@ -260,7 +298,8 @@ def main(data):
                     htmlFile.write(html)
                     htmlFile.close()
                     ## Add relative path to list of sitemap items
-                    data["sitemap"].append(releasePathDestination + "/")
+                    if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+                        data["sitemap"].append(releasePathDestination + "/")
 
                     ## Loop through recordings
                     for recordingGroup in release["recordings"]:
@@ -296,7 +335,7 @@ def main(data):
                             )
                             ## Add action buttons
                             lyricsActionsList = []
-                            if data["config"]["Site"]["HasEditTextButton"]:
+                            if data["config"].getboolean("Site", "HasEditTextButton"):
                                 actionButton1 = pystache.render(data["templates"]["link"], {
                                     "href": data["config"]["Source"]["Repository"]  + "/edit/" + \
                                             data["config"]["Source"]["DefaultBranch"]  + "/translations/" + \
@@ -308,8 +347,13 @@ def main(data):
                             html = pystache.render(data["templates"]["page"], {
                                 "title":       languageKey + " translation of “" + recording["printable_name"] + "” by " + artist["printable_name"],
                                 "description": utils.getDescriptionText(recording["text"]),
-                                "navigation":  data["definitions"]["abc"],
-                                "search":      data["definitions"]["filenames"]["search"],
+                                "logo":        pystache.render(data["templates"]["link"], {
+                                    "href": "../../../../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
+                                    "content": "Lyrics",
+                                }),
+                                "navigation":  utils.generateTopBarNavigation(utils.giveLinkDepth(data["config"]["Site"]["DbPath"] + "/", 6) if data["config"].getboolean("Site", "UseRelativePaths") else "/" + data["config"]["Site"]["DbPath"] + "/"),
+                                "css":         utils.giveLinkDepth(data["definitions"]["filenames"]["css"], 6),
+                                "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 6),
                                 "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink, groupPathWebPageLink, artistPathWebPageLink, releasePathWebPageLink, recordingPathWebPageLink),
                                 "name":        "recording",
                                 "content":     utils.formatLyricsAndMetadata(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
@@ -325,4 +369,5 @@ def main(data):
                             htmlFile.write(html)
                             htmlFile.close()
                             ## Add relative path to list of sitemap items
-                            data["sitemap"].append(recordingPathDestination + "/")
+                            if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+                                data["sitemap"].append(recordingPathDestination + "/")

@@ -1,22 +1,26 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link rel="stylesheet" href="/g.css">
+<link rel="stylesheet" href="{{css}}">
 <title>{{title}}</title>
 <meta name="description" content="{{description}}">
 <meta name="google" content="notranslate">
-<form action="/{{search}}">
-    <nav><a href="/">Lyrics</a> {{#navigation}}<a href="{{href}}">{{label}}</a> {{/navigation}}</nav>
+<form action="{{search}}">
+    <nav>{{{logo}}} {{#navigation}}<a href="{{href}}">{{label}}</a> {{/navigation}}</nav>
 </form>
 <div id="content" class="{{name}}">
     <br />
     {{{breadcrumbs}}}
-    <div id="view">{{{content}}}</div>
+    <div id="view">
+        {{{content}}}
+    </div>
 </div>
 <script>
-    var i=document.createElement("input");
-    i.name="q";
-    i.type="search";
-    i.placeholder="Search";
-    document.forms[0].firstChild.appendChild(i)
+
+var i=document.createElement("input");
+i.name="q";
+i.type="search";
+i.placeholder="Search";
+document.forms[0].firstChild.appendChild(i)
+
 </script>
