@@ -1,7 +1,3 @@
-import pystache
-
-import utils
-
 def main(data):
     ## Take the unsorted 2D array of recordings, parse their metadata, and sort them into sub-arrays that represent discs
     for groupKey in data["database"]:

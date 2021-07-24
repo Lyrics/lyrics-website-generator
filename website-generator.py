@@ -6,8 +6,6 @@ import importlib.util
 import os
 import re
 
-import pystache
-
 import utils
 
 definitions = {
@@ -18,6 +16,7 @@ definitions = {
         "index":    "index.html",
         "notfound": "404.html",
         "search":   "s.htm",
+        "css":      "g.css",
         "sitemap":  "sitemap.xml",
     },
     "link_types": {
@@ -27,7 +26,6 @@ definitions = {
         "recording": 4,
         "language": 5,
     },
-    "abc": [],
 }
 
 ## Config
@@ -49,10 +47,6 @@ def getTemplateContents(templateFileName):
         return open(os.path.join(templatesPath, templateFileName), "r").read()
     else:
         return shrinkwrapTemplate(open(os.path.join(templatesPath, templateFileName), "r").read())
-
-## Populate A-Z letter lihks for top navigation
-for letter in list(map(chr, range(ord("A"), ord("Z") + 1))):
-    definitions["abc"].append(utils.getWebPageLink("/" + config["Site"]["DbPath"] + "/" + letter + "/", letter))
 
 ## Read and store template files
 templates = {}
@@ -98,8 +92,9 @@ data = {
     "database": {},
     "translations": {},
     "videos": {},
-    "sitemap": [],
 }
+if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
+    data["sitemap"] = []
 
 buildStagesDirectory = os.path.join(definitions["runtime"]["cwd"], os.path.splitext(os.path.basename(__file__))[0] + ".d")
 for buildStageFilename in sorted(os.listdir(buildStagesDirectory), key=str.lower):

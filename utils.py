@@ -139,6 +139,19 @@ def getWebPageLink(target, label, type=0):
         "type": type,
     }
 
+def giveLinkDepth(target, depth=0):
+    while depth > 0 :
+        target = "../" + target
+        depth -= 1
+    return target
+
+## A-Z letter links for top navigation
+def generateTopBarNavigation(dbPath=""):
+    abc = []
+    for letter in list(map(chr, range(ord("A"), ord("Z") + 1))):
+        abc.append(getWebPageLink(dbPath + letter + "/", letter))
+    return abc
+
 def indent(what="", amount=0):
     indentation = ""
     if amount > 0:

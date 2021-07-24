@@ -1,5 +1,3 @@
-import sys
-
 import utils
 
 def main(data):

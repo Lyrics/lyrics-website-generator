@@ -1,3 +1,6 @@
+## Responsible for creating empty .nojekyll file
+## That file tells GitHub pages to not treat these files as a Jekyll project
+
 import utils
 
 def main(data):
