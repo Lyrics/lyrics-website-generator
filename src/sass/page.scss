@@ -59,8 +59,10 @@ nav {
 }
 
 input {
+    background-color: $color-input-bg;
     border: none;
     border-radius: 1em;
+    color: $color-input-fg;
     font-size: $header-font-size;
     outline: 0;
     padding: .13em .7em;
@@ -72,6 +74,11 @@ input {
     // Purpose: make the navbar's inner shadow stay below the search field
     position: relative;
     z-index: 1;
+}
+
+::placeholder {
+  color: $color-input-placeholder;
+  opacity: 1; // Purpose: fix placeholder text opacity for Firefox
 }
 
 ul {
