@@ -26,6 +26,15 @@
         color: $dark-color-navbar-fg;
     }
 
+    input {
+        background-color: $dark-color-input-bg;
+        color: $dark-color-input-fg;
+    }
+
+    ::placeholder {
+      color: $dark-color-input-placeholder;
+    }
+
     #breadcrumbs > span:not(:first-child):before {
         color: $dark-color-breadcrumbs-arrow;
     }
