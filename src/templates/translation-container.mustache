@@ -1,0 +1,27 @@
+<div id="translation-container">
+    <table>
+        <tr>
+            {{#lyrics}}
+                <td>
+                    {{{lyrics}}}
+                    <br/>
+                </td>
+            {{/lyrics}}
+            {{#translation}}
+                <td>
+                    {{{translation}}}
+                    <br/>
+                </td>
+            {{/translation}}
+        </tr>
+    </table>
+    {{#metadata}}
+        <hr/>
+        {{{metadata}}}
+    {{/metadata}}
+    {{#actions}}
+        <div id="lyrics-actions">
+            {{{actions}}}
+        </div>
+    {{/actions}}
+</div>

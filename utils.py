@@ -34,12 +34,27 @@ def fillTheGaps(definitions, recordings):
                 recordings[-1]["printable_name"] = ""
                 existingTrackNumbers.append(prevTrackNoStr)
 
-def formatLyricsAndMetadata(templates, lyricsText, lyricsMetadataDict, lyricsActionsList):
+def formatActions(lyricsActionsList):
+    ## Process action buttons
+    actionsHtml = None
+    if len(lyricsActionsList) > 0:
+        actionsHtml = "<br />".join(lyricsActionsList)
+    return actionsHtml
+
+def formatLyricsPageContents(templates, lyricsText, lyricsMetadataDict, lyricsActionsList):
     ## Separate text into paragraphs
     lyricsHtml = re.sub("\n\n+", "<br/><span></span><br/><span></span>", lyricsText)
     ## Convert newline characters into linebreaks
     lyricsHtml = re.sub("\n", "\n<br/><span></span>", lyricsHtml)
 
+    html = pystache.render(templates["lyrics-container"], {
+        "lyrics":   lyricsHtml,
+        "metadata": formatMetadata(templates, lyricsMetadataDict),
+        "actions":  formatActions(lyricsActionsList),
+    })
+    return html
+
+def formatMetadata(templates, lyricsMetadataDict):
     ## Proccess metadata keys and values
     metadataHtml = None
     if len(lyricsMetadataDict) > 0:
@@ -60,18 +75,7 @@ def formatLyricsAndMetadata(templates, lyricsText, lyricsMetadataDict, lyricsAct
                     "content": value[0],
                 })
         metadataHtml = pystache.render(templates["lyrics-metadata"], items)
-
-    ## Process action buttons
-    actionsHtml = None
-    if len(lyricsActionsList) > 0:
-        actionsHtml = "<br />".join(lyricsActionsList)
-
-    html = pystache.render(templates["lyrics-container"], {
-        "lyrics":   lyricsHtml,
-        "metadata": metadataHtml,
-        "actions":  actionsHtml,
-    })
-    return html
+    return metadataHtml
 
 def formatRecordingNumber(recording):
     if "track_no" in recording:
@@ -81,6 +85,29 @@ def formatRecordingNumber(recording):
         if len(trackNoAsStr) < 2:
             leftPadding = "&nbsp;"
         recording["prefix"] = leftPadding + trackNoAsStr + "."
+
+def formatTranslationPageContents(templates, originalLyricsText, translationText, translationMap, lyricsMetadataDict, lyricsActionsList):
+    if originalLyricsText and translationText and translationMap:
+        ## Separate text into paragraphs
+        originalLyricsHtml = re.sub("\n\n+", "<br/><span></span><br/><span></span>", originalLyricsText)
+        ## Convert newline characters into linebreaks
+        originalLyricsHtml = re.sub("\n", "\n<br/><span></span>", originalLyricsHtml)
+
+        ## Separate translation text into paragraphs
+        translationHtml = re.sub("\n\n+", "<br/><span></span><br/><span></span>", translationText)
+        ## Convert newline characters into linebreaks
+        translationHtml = re.sub("\n", "\n<br/><span></span>", translationHtml)
+
+        html = pystache.render(templates["translation-container"], {
+            "lyrics":      originalLyricsHtml,
+            "translation": translationHtml,
+            "metadata":    formatMetadata(templates, lyricsMetadataDict),
+            "actions":     formatActions(lyricsActionsList),
+        })
+        return html
+    else:
+        ## Render it as a usual lyrics page
+        return formatLyricsPageContents(templates, translationText, lyricsMetadataDict, lyricsActionsList)
 
 def getBreadcrumbs(templates, *links):
     items = []

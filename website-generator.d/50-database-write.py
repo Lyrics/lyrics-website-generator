@@ -294,7 +294,7 @@ def main(data):
                             "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 5),
                             "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, dbPathWebPageLink, groupPathWebPageLink, groupArtistPathWebPageLink, groupArtistReleasePathWebPageLink, groupArtistReleaseRecordingPathWebPageLink),
                             "name":        "recording",
-                            "content":     utils.formatLyricsAndMetadata(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
+                            "content":     utils.formatLyricsPageContents(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
                         })
                         ## Create index HTML file
                         htmlFile = utils.mkfile(

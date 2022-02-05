@@ -20,11 +20,11 @@ definitions = {
         "sitemap":  "sitemap.xml",
     },
     "link_types": {
-        "group": 1,
-        "artist": 2,
-        "release": 3,
+        "group":     1,
+        "artist":    2,
+        "release":   3,
         "recording": 4,
-        "language": 5,
+        "language":  5,
     },
 }
 
@@ -86,12 +86,12 @@ for templateFileName in templatesFileNames:
 ##         }
 ##     }
 data = {
-    "definitions": definitions,
-    "config": config,
-    "templates": templates,
-    "database": {},
-    "translations": {},
-    "videos": {},
+    "definitions":    definitions,
+    "config":         config,
+    "templates":      templates,
+    "database":       {},
+    "translations":   {},
+    "video_versions": {},
 }
 if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
     data["sitemap"] = []
