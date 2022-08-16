@@ -1,7 +1,7 @@
 #translation-container {
     margin: 0 auto;
     box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
-    width: min-content;
+    width: fit-content;
     min-width: 50%;
     max-width: 100%;
 
@@ -15,6 +15,10 @@
 
     td {
         vertical-align: top;
+
+        &:empty::after{
+          content: "\00a0";
+        }
     }
 }
 

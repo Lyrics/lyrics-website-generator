@@ -1,19 +1,12 @@
 <div id="translation-container">
     <table>
+        {{#lines}}
         <tr>
-            {{#lyrics}}
-                <td>
-                    {{{lyrics}}}
-                    <br/>
-                </td>
-            {{/lyrics}}
-            {{#translation}}
-                <td>
-                    {{{translation}}}
-                    <br/>
-                </td>
-            {{/translation}}
+            {{#.}}
+            <td>{{.}}</td>
+            {{/.}}
         </tr>
+        {{/lines}}
     </table>
     {{#metadata}}
         <hr/>

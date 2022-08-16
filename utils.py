@@ -87,22 +87,23 @@ def formatRecordingNumber(recording):
         recording["prefix"] = leftPadding + trackNoAsStr + "."
 
 def formatTranslationPageContents(templates, originalLyricsText, translationText, translationMap, lyricsMetadataDict, lyricsActionsList):
-    if originalLyricsText and translationText and translationMap:
-        ## Separate text into paragraphs
-        originalLyricsHtml = re.sub("\n\n+", "<br/><span></span><br/><span></span>", originalLyricsText)
-        ## Convert newline characters into linebreaks
-        originalLyricsHtml = re.sub("\n", "\n<br/><span></span>", originalLyricsHtml)
+    if originalLyricsText and translationText:
+        origLines = originalLyricsText.splitlines()
+        transLines = translationText.splitlines()
 
-        ## Separate translation text into paragraphs
-        translationHtml = re.sub("\n\n+", "<br/><span></span><br/><span></span>", translationText)
-        ## Convert newline characters into linebreaks
-        translationHtml = re.sub("\n", "\n<br/><span></span>", translationHtml)
+        maxNumberOfLines = len(origLines) if (len(origLines) > len(transLines)) else len(transLines)
+
+        tableData = list()
+        for i in range(maxNumberOfLines):
+            tableData.append((
+                origLines[i] if (len(origLines)-1 >= i) else "",
+                transLines[i] if (len(transLines)-1 >= i) else "")
+            )
 
         html = pystache.render(templates["translation-container"], {
-            "lyrics":      originalLyricsHtml,
-            "translation": translationHtml,
-            "metadata":    formatMetadata(templates, lyricsMetadataDict),
-            "actions":     formatActions(lyricsActionsList),
+            "lines":    tableData,
+            "metadata": formatMetadata(templates, lyricsMetadataDict),
+            "actions":  formatActions(lyricsActionsList),
         })
         return html
     else:
