@@ -1,5 +1,5 @@
 // Purpose: make metadata look different from the song text
-table {
+#metadata {
     margin: 0;
     text-align: left;
     background-color: $color-metadata-bg;
@@ -8,66 +8,66 @@ table {
     border: 1px solid $color-metadata-bg;
 
     border-collapse: collapse;
-}
-
-td {
-    padding: ($vertical-spacing / 2) $horizontal-spacing;
-
-    // Purpose: underline metadata links
-    a {
-        text-decoration: underline;
-    }
-}
-
-tr {
-    &:first-child {
-        td {
-            padding-top: $vertical-spacing;
-        }
-    }
-
-    &:last-child {
-        td {
-            padding-bottom: $vertical-spacing;
-        }
-    }
-}
-
-// Purpose: highlight item names by making them bold,
-//          add extra spacing between item names and item values
-td:first-child {
-    font-weight: bold;
-
-    // Purpose: make the left column as thin as possible
-    width: 1%;
-
-    // Purpose: ensure metadata headers are never wrapped
-    white-space: nowrap;
-
-    //
-    vertical-align: top;
-}
-
-// Mobile CSS
-@include mobile {
-    table {
-        border: none;
-    }
 
     td {
-        padding: ($mobile-vertical-spacing / 2) $mobile-horizontal-spacing;
+        padding: ($vertical-spacing / 2) $horizontal-spacing;
+
+        // Purpose: underline metadata links
+        a {
+            text-decoration: underline;
+        }
     }
 
     tr {
         &:first-child {
             td {
-                padding-top: $mobile-vertical-spacing;
+                padding-top: $vertical-spacing;
             }
         }
 
         &:last-child {
             td {
-                padding-bottom: $mobile-vertical-spacing;
+                padding-bottom: $vertical-spacing;
+            }
+        }
+    }
+
+    // Purpose: highlight item names by making them bold,
+    //          add extra spacing between item names and item values
+    td:first-child {
+        font-weight: bold;
+
+        // Purpose: make the left column as thin as possible
+        width: 1%;
+
+        // Purpose: ensure metadata headers are never wrapped
+        white-space: nowrap;
+
+        //
+        vertical-align: top;
+    }
+}
+
+// Mobile CSS
+@include mobile {
+    #metadata {
+        border: none;
+
+        td {
+            padding: ($mobile-vertical-spacing / 2) $mobile-horizontal-spacing;
+        }
+
+        tr {
+            &:first-child {
+                td {
+                    padding-top: $mobile-vertical-spacing;
+                }
+            }
+
+            &:last-child {
+                td {
+                    padding-bottom: $mobile-vertical-spacing;
+                }
             }
         }
     }
@@ -75,7 +75,7 @@ td:first-child {
 
 // Paper CSS
 @include print {
-    table {
+    #metadata {
         border: none;
     }
 }

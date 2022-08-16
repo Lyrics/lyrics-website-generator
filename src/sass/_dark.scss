@@ -74,15 +74,15 @@
         }
     }
 
-    table {
+    #metadata {
         background-color: $dark-color-metadata-bg;
         color: $dark-color-metadata-fg;
         border-color: $dark-color-metadata-bg;
-    }
 
-    td {
-        a {
-            color: $dark-color-metadata-fg;
+        td {
+            a {
+                color: $dark-color-metadata-fg;
+            }
         }
     }
 

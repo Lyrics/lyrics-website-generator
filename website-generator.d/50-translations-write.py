@@ -9,7 +9,7 @@ def main(data):
     homePathWebPageLink = utils.getWebPageLink("/", "Home")
 
     ## Output progress status
-    print(utils.indent("Website translation HTML files"), file=sys.stderr)
+    print("Website translation HTML files", file=sys.stderr)
     sys.stderr.flush()
     ## Generate link
     trPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["TranslationsPath"] + "/", "Translations")
@@ -356,7 +356,7 @@ def main(data):
                                 "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 6),
                                 "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink, languagePathWebPageLink, groupPathWebPageLink, artistPathWebPageLink, releasePathWebPageLink, recordingPathWebPageLink),
                                 "name":        "recording",
-                                "content":     utils.formatLyricsAndMetadata(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
+                                "content":     utils.formatTranslationPageContents(data["templates"], recording["original_text"], recording["text"], recording["map"], recording["metadata"], lyricsActionsList),
                             })
                             ## Create index HTML file
                             htmlFile = utils.mkfile(

@@ -1,0 +1,32 @@
+#translation-container {
+    margin: 0 auto;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.04);
+    width: fit-content;
+    min-width: 50%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    table {
+        background: $color-lyrics-bg;
+        color: $color-lyrics-fg;
+    }
+
+    td {
+        vertical-align: top;
+
+        &:empty::after{
+          content: "\00a0";
+        }
+    }
+}
+
+@include dark {
+    #translation-container {
+        table {
+            background: $dark-color-lyrics-bg;
+            color: $dark-color-lyrics-fg;
+        }
+    }
+}
