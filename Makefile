@@ -26,7 +26,7 @@ $(WWW_DIR):
 
 $(CSS_FILE): $(WWW_DIR)
 	@which sassc > /dev/null &2> /dev/null && \
-        sassc ${SASS_OPTS} src/sass/page.scss $(CSS_FILE) ||  echo -n ''
+        sassc ${SASS_OPTS} src/styles/page.scss $(CSS_FILE) ||  echo -n ''
 
 serve: $(WWW_DIR)
 	@cd $(WWW_DIR) && \
