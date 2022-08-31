@@ -1,8 +1,8 @@
 .l {
+    line-height: 150%;
     list-style: none;
     margin-top: -6px; // Purpose: less space between breadcrumbs and list items
     padding: 0;
-    line-height: 150%;
     text-align: left;
 
     li {
@@ -10,25 +10,25 @@
     }
 
     a {
-        display: inline-block;
         box-sizing: border-box;
+        display: inline-block;
 
         // Purpose: make it easier to click on short list items
         min-width: $list-item-min-width;
+    }
 
-        // Purpose: make track number look different
-        b {
-            color: $color-list-id;
-            display: inline-block;
-            font-weight: normal;
-            text-align: right;
-            width: 22px;
-        }
+    // Purpose: make track number look different
+    b {
+        color: $color-list-id;
+        display: inline-block;
+        font-weight: normal;
+        text-align: right;
+        width: 22px;
+    }
 
-        // Purpose: make album year look different
-        span {
-            color: $color-list-id;
-        }
+    // Purpose: make album year look different
+    span {
+        color: $color-list-id;
     }
 }
 
@@ -45,16 +45,6 @@
             // line-height: 40px;
             padding-top: 10px;
             padding-bottom: 10px;
-
-            // Purpose: make track number
-            b {
-                color: $dark-color-list-id;
-            }
-
-            // Purpose: make album year look different
-            span {
-                color: $dark-color-list-id;
-            }
         }
     }
 }
