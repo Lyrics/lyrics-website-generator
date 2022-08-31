@@ -119,16 +119,10 @@ p {
 }
 
 // Purpose: underline links on the home page
-.homepage a {
-    text-decoration: underline;
-}
-
-b {
-    color: #414141;
-    display: inline-block;
-    font-weight: normal;
-    text-align: right;
-    width: 22px;
+.homepage {
+    a {
+        text-decoration: underline;
+    }
 }
 
 #view {

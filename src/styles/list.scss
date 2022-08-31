@@ -13,10 +13,19 @@
         display: inline-block;
         box-sizing: border-box;
 
-        // Purpose: make it easier to click short list items
+        // Purpose: make it easier to click on short list items
         min-width: $list-item-min-width;
 
-        // Purpose: make the album year look different
+        // Purpose: make track number look different
+        b {
+            color: $color-list-id;
+            display: inline-block;
+            font-weight: normal;
+            text-align: right;
+            width: 22px;
+        }
+
+        // Purpose: make album year look different
         span {
             color: $color-list-id;
         }
@@ -36,6 +45,16 @@
             // line-height: 40px;
             padding-top: 10px;
             padding-bottom: 10px;
+
+            // Purpose: make track number
+            b {
+                color: $dark-color-list-id;
+            }
+
+            // Purpose: make album year look different
+            span {
+                color: $dark-color-list-id;
+            }
         }
     }
 }
