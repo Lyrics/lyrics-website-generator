@@ -56,8 +56,11 @@
         color: $dark-color-fg;
     }
 
-    .l a span {
-        color: $dark-color-list-id;
+    .l {
+        b,
+        span {
+            color: $dark-color-list-id;
+        }
     }
 
     #lyrics-container {
