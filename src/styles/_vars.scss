@@ -8,7 +8,7 @@ $color-navbar-fg: #fff;
 $color-input-bg: #fff;
 $color-input-fg: #222;
 $color-input-placeholder: #999;
-$color-breadcrumbs-arrow: rgba(0, 0, 0, .3);
+$color-breadcrumbs-arrow: rgba($color-fg, .5);
 $color-lyrics-bg: #fff;
 $color-lyrics-fg: #222;
 $color-lyrics-border: #f2f2f2;
@@ -25,12 +25,12 @@ $dark-color-navbar-fg: #fff;
 $dark-color-input-bg: #1a1a1a;
 $dark-color-input-fg: #eee;
 $dark-color-input-placeholder: #555;
-$dark-color-breadcrumbs-arrow: rgba(255, 255, 255, .3);
+$dark-color-breadcrumbs-arrow: rgba($dark-color-fg, .5);
 $dark-color-lyrics-bg: #050505;
 $dark-color-lyrics-fg: #e5e5e5;
 $dark-color-lyrics-border: #111;
 $dark-color-metadata-bg: #030303;
-$dark-color-metadata-fg: #5a5a5a;
+$dark-color-metadata-fg: #777;
 
 // Global
 $font-size: 16px; // Base font size for the website
