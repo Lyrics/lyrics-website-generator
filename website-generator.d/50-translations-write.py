@@ -14,12 +14,6 @@ def main(data):
     sys.stderr.flush()
     ## Generate link
     trPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["TranslationsPath"] + "/", "Translations")
-    ## Create containing directory
-    utils.mkdir(
-        data["definitions"]["runtime"]["cwd"],
-        data["config"]["Filesystem"]["DestinationDirPath"],
-        data["config"]["Site"]["TranslationsPath"],
-    )
     ## Create root index file for translations directory
     translationsLinkList = []
     for groupKey in data["translations"]:
@@ -44,6 +38,13 @@ def main(data):
             "links": translationsLinkList,
         }),
     })
+    ## Create containing directory
+    utils.mkdir(
+        data["definitions"]["runtime"]["cwd"],
+        data["config"]["Filesystem"]["DestinationDirPath"],
+        data["config"]["Site"]["TranslationsPath"],
+    )
+    ## Create index HTML file
     translationsFile = utils.mkfile(
         data["definitions"]["runtime"]["cwd"],
         data["config"]["Filesystem"]["DestinationDirPath"],
@@ -75,12 +76,6 @@ def main(data):
         )
         ## Generate link
         languagePathWebPageLink = utils.getWebPageLink(languageKey + "/", languageKey, data["definitions"]["link_types"]["language"])
-        ## Create containing directory
-        utils.mkdir(
-            data["definitions"]["runtime"]["cwd"],
-            data["config"]["Filesystem"]["DestinationDirPath"],
-            languagePathDestination,
-        )
         ## Render HTML
         pageLinks = []
         for groupKey in language:
@@ -101,6 +96,12 @@ def main(data):
             "name":        "language",
             "content":     listHtml,
         })
+        ## Create containing directory
+        utils.mkdir(
+            data["definitions"]["runtime"]["cwd"],
+            data["config"]["Filesystem"]["DestinationDirPath"],
+            languagePathDestination,
+        )
         ## Create index HTML file
         htmlFile = utils.mkfile(
             data["definitions"]["runtime"]["cwd"],
@@ -136,12 +137,6 @@ def main(data):
             )
             ## Generate link
             groupPathWebPageLink = utils.getWebPageLink(groupKey + "/", groupKey, data["definitions"]["link_types"]["group"])
-            ## Create containing directory
-            utils.mkdir(
-                data["definitions"]["runtime"]["cwd"],
-                data["config"]["Filesystem"]["DestinationDirPath"],
-                groupPathDestination,
-            )
             ## Render HTML
             pageLinks = []
             for artistKey in group:
@@ -162,6 +157,12 @@ def main(data):
                 "name":        "group",
                 "content":     listHtml,
             })
+            ## Create containing directory
+            utils.mkdir(
+                data["definitions"]["runtime"]["cwd"],
+                data["config"]["Filesystem"]["DestinationDirPath"],
+                groupPathDestination,
+            )
             ## Create index HTML file
             htmlFile = utils.mkfile(
                 data["definitions"]["runtime"]["cwd"],
@@ -199,12 +200,6 @@ def main(data):
                 )
                 ## Generate link
                 artistPathWebPageLink = utils.getWebPageLink(artistKey + "/", artistKey, data["definitions"]["link_types"]["artist"])
-                ## Create containing directory
-                utils.mkdir(
-                    data["definitions"]["runtime"]["cwd"],
-                    data["config"]["Filesystem"]["DestinationDirPath"],
-                    artistPathDestination,
-                )
                 ## Render HTML
                 pageLinks = []
                 for release in artist["releases"]:
@@ -225,6 +220,12 @@ def main(data):
                     "name":        "artist",
                     "content":     listHtml,
                 })
+                ## Create containing directory
+                utils.mkdir(
+                    data["definitions"]["runtime"]["cwd"],
+                    data["config"]["Filesystem"]["DestinationDirPath"],
+                    artistPathDestination,
+                )
                 ## Create index HTML file
                 htmlFile = utils.mkfile(
                     data["definitions"]["runtime"]["cwd"],
@@ -260,23 +261,30 @@ def main(data):
                         artistKey,
                         release["name"],
                     )
-                    ## Generate link
+                    ## Generate breadcrumbs link to this page
                     releasePathWebPageLink = utils.getWebPageLink(release["name"] + "/", release["printable_name"], data["definitions"]["link_types"]["release"])
-                    ## Create containing directory
-                    utils.mkdir(
-                        data["definitions"]["runtime"]["cwd"],
-                        data["config"]["Filesystem"]["DestinationDirPath"],
-                        releasePathDestination,
-                    )
-                    ## Render HTML
-                    pageLinks = []
-                    for recording in release["recordings"]:
-                        link = utils.getWebPageLink(recording["name"] + "/", recording["printable_name"], data["definitions"]["link_types"]["recording"])
-                        pageLinks.append(link)
-                    listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
+                    ## Render items list HTML
+                    listHtml = ""
+                    metaDescriptionLinks = []
+                    for recordingGroup in release["recordings"]:
+                        recordingGroupLinks = []
+                        for recording in recordingGroup:
+                            link = utils.getWebPageLink(
+                                recording["name"] + "/" if len(recording["name"]) > 0 else "",
+                                recording["printable_name"],
+                                data["definitions"]["link_types"]["recording"]
+                            )
+                            if "prefix" in recording:
+                                link["prefix"] = recording["prefix"]
+                            if "postfix" in recording:
+                                link["postfix"] = recording["postfix"]
+                            recordingGroupLinks.append(link)
+                            metaDescriptionLinks.append(link)
+                        listHtml += pystache.render(data["templates"]["list"], { "links": recordingGroupLinks })
+                    ## Render page HTML
                     html = pystache.render(data["templates"]["page"], {
                         "title":       artist["printable_name"] + " " + languageKey + " translations from “" + release["printable_name"] + "”",
-                        "description": utils.getDescriptionList(list(map(lambda link: link["label"], pageLinks))),
+                        "description": utils.getDescriptionList(list(map(lambda link: link["label"], metaDescriptionLinks))),
                         "logo":        pystache.render(data["templates"]["link"], {
                             "href": "../../../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
                             "content": "Lyrics",
@@ -288,6 +296,12 @@ def main(data):
                         "name":        "release",
                         "content":     listHtml,
                     })
+                    ## Create containing directory
+                    utils.mkdir(
+                        data["definitions"]["runtime"]["cwd"],
+                        data["config"]["Filesystem"]["DestinationDirPath"],
+                        releasePathDestination,
+                    )
                     ## Create index HTML file
                     htmlFile = utils.mkfile(
                         data["definitions"]["runtime"]["cwd"],
@@ -328,12 +342,6 @@ def main(data):
                             )
                             ## Generate link
                             recordingPathWebPageLink = utils.getWebPageLink(recording["name"] + "/", recording["printable_name"], data["definitions"]["link_types"]["recording"])
-                            ## Create containing directory
-                            utils.mkdir(
-                                data["definitions"]["runtime"]["cwd"],
-                                data["config"]["Filesystem"]["DestinationDirPath"],
-                                recordingPathDestination,
-                            )
                             ## Add action buttons
                             lyricsActionsList = []
                             if data["config"].getboolean("Site", "HasEditTextButton"):
@@ -359,6 +367,12 @@ def main(data):
                                 "name":        "recording",
                                 "content":     utils.formatLyricsAndMetadata(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
                             })
+                            ## Create containing directory
+                            utils.mkdir(
+                                data["definitions"]["runtime"]["cwd"],
+                                data["config"]["Filesystem"]["DestinationDirPath"],
+                                recordingPathDestination,
+                            )
                             ## Create index HTML file
                             htmlFile = utils.mkfile(
                                 data["definitions"]["runtime"]["cwd"],

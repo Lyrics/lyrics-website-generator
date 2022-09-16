@@ -60,12 +60,14 @@ for templateFileName in templatesFileNames:
 ##
 ## data:
 ##     "database": {
-##         Group {
+##         LetterGroup {
 ##             Artist {
 ##                 "name": String,
 ##                 "printable_name": String,
 ##                 "releases": [
 ##                     {
+##                         "name": String,
+##                         "printable_name": String,
 ##                         "recordings": [
 ##                             [
 ##                                 {
@@ -82,6 +84,32 @@ for templateFileName in templatesFileNames:
 ##                         "year": Int
 ##                     }
 ##                 ]
+##             }
+##         }
+##     }
+##     "translations": {
+##         Language {
+##             LetterGroup {
+##                 Artist {
+##                     "name": String,
+##                     "printable_name": String,
+##                     "releases": [
+##                         {
+##                             "name": String,
+##                             "printable_name": String,
+##                             "recordings": [
+##                                 [
+##                                     {
+##                                         "name": String,
+##                                         "printable_name": String,
+##                                         "text": String,
+##                                         "metadata": {},
+##                                     }
+##                                 ]
+##                             ]
+##                         }
+##                     ]
+##                 }
 ##             }
 ##         }
 ##     }
