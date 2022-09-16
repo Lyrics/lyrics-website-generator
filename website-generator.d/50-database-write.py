@@ -7,6 +7,7 @@ import utils
 
 def main(data):
     homePathWebPageLink = utils.getWebPageLink("/", "Home")
+    indexFileName = data["definitions"]["filenames"]["index"]
 
     ## Output progress status
     print(utils.indent("Website database HTML files"), file=sys.stderr)
@@ -48,7 +49,7 @@ def main(data):
         data["definitions"]["runtime"]["cwd"],
         data["config"]["Filesystem"]["DestinationDirPath"],
         data["config"]["Site"]["DbPath"],
-        data["definitions"]["filenames"]["index"],
+        indexFileName,
     )
     ## Write rendered HTML into index HTML file
     htmlFile.write(html)
@@ -57,7 +58,7 @@ def main(data):
     if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
         data["sitemap"].append(data["config"]["Site"]["DbPath"] + "/")
 
-    ## Loop through groups
+    ## Loop through letter groups
     for groupKey in data["database"]:
         ## Output progress status
         print(utils.indent(groupKey, 1), file=sys.stderr)
@@ -107,7 +108,7 @@ def main(data):
             data["definitions"]["runtime"]["cwd"],
             data["config"]["Filesystem"]["DestinationDirPath"],
             groupPathDestination,
-            data["definitions"]["filenames"]["index"],
+            indexFileName,
         )
         ## Write rendered HTML into the index HTML file
         htmlFile.write(html)
@@ -168,7 +169,7 @@ def main(data):
                 data["definitions"]["runtime"]["cwd"],
                 data["config"]["Filesystem"]["DestinationDirPath"],
                 groupArtistPathDestination,
-                data["definitions"]["filenames"]["index"],
+                indexFileName,
             )
             ## Write rendered HTML into the index HTML file
             htmlFile.write(html)
@@ -237,7 +238,7 @@ def main(data):
                     data["definitions"]["runtime"]["cwd"],
                     data["config"]["Filesystem"]["DestinationDirPath"],
                     groupArtistReleasePathDestination,
-                    data["definitions"]["filenames"]["index"],
+                    indexFileName,
                 )
                 ## Write rendered HTML into the index HTML file
                 htmlFile.write(html)
@@ -301,7 +302,7 @@ def main(data):
                             data["definitions"]["runtime"]["cwd"],
                             data["config"]["Filesystem"]["DestinationDirPath"],
                             groupArtistReleaseRecordingPathDestination,
-                            data["definitions"]["filenames"]["index"],
+                            indexFileName,
                         )
                         ## Write rendered HTML into the index HTML file
                         htmlFile.write(html)

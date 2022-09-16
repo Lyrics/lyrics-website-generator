@@ -7,6 +7,7 @@ import utils
 
 def main(data):
     homePathWebPageLink = utils.getWebPageLink("/", "Home")
+    indexFileName = data["definitions"]["filenames"]["index"]
 
     ## Output progress status
     print(utils.indent("Website translation HTML files"), file=sys.stderr)
@@ -47,7 +48,7 @@ def main(data):
         data["definitions"]["runtime"]["cwd"],
         data["config"]["Filesystem"]["DestinationDirPath"],
         data["config"]["Site"]["TranslationsPath"],
-        data["definitions"]["filenames"]["index"],
+        indexFileName,
     )
     translationsFile.write(html)
     translationsFile.close()
@@ -105,7 +106,7 @@ def main(data):
             data["definitions"]["runtime"]["cwd"],
             data["config"]["Filesystem"]["DestinationDirPath"],
             languagePathDestination,
-            data["definitions"]["filenames"]["index"],
+            indexFileName,
         )
         ## Write rendered HTML into the index HTML file
         htmlFile.write(html)
@@ -114,7 +115,7 @@ def main(data):
         if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
             data["sitemap"].append(languagePathDestination + "/")
 
-        ## Loop through groups
+        ## Loop through letter groups
         for groupKey in language:
             ## Output progress status
             print(utils.indent(groupKey, 2), file=sys.stderr)
@@ -166,7 +167,7 @@ def main(data):
                 data["definitions"]["runtime"]["cwd"],
                 data["config"]["Filesystem"]["DestinationDirPath"],
                 groupPathDestination,
-                data["definitions"]["filenames"]["index"],
+                indexFileName,
             )
             ## Write rendered HTML into the index HTML file
             htmlFile.write(html)
@@ -229,7 +230,7 @@ def main(data):
                     data["definitions"]["runtime"]["cwd"],
                     data["config"]["Filesystem"]["DestinationDirPath"],
                     artistPathDestination,
-                    data["definitions"]["filenames"]["index"],
+                    indexFileName,
                 )
                 ## Write rendered HTML into the index HTML file
                 htmlFile.write(html)
@@ -270,7 +271,7 @@ def main(data):
                     ## Render HTML
                     pageLinks = []
                     for recording in release["recordings"]:
-                        link = utils.getWebPageLink(release["name"] + "/", release["printable_name"], data["definitions"]["link_types"]["recording"])
+                        link = utils.getWebPageLink(recording["name"] + "/", recording["printable_name"], data["definitions"]["link_types"]["recording"])
                         pageLinks.append(link)
                     listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
                     html = pystache.render(data["templates"]["page"], {
@@ -292,7 +293,7 @@ def main(data):
                         data["definitions"]["runtime"]["cwd"],
                         data["config"]["Filesystem"]["DestinationDirPath"],
                         releasePathDestination,
-                        data["definitions"]["filenames"]["index"],
+                        indexFileName,
                     )
                     ## Write rendered HTML into the index HTML file
                     htmlFile.write(html)
@@ -363,7 +364,7 @@ def main(data):
                                 data["definitions"]["runtime"]["cwd"],
                                 data["config"]["Filesystem"]["DestinationDirPath"],
                                 recordingPathDestination,
-                                data["definitions"]["filenames"]["index"],
+                                indexFileName,
                             )
                             ## Write rendered HTML into the index HTML file
                             htmlFile.write(html)
