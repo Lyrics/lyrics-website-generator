@@ -12,20 +12,14 @@ def main(data):
     ## Output progress status
     print(utils.indent("Website database HTML files"), file=sys.stderr)
     sys.stderr.flush()
-    ## Generate link
+    ## Generate breadcrumbs link to this page
     dbPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["DbPath"] + "/", "Database")
-    ## Create containing directory
-    utils.mkdir(
-        data["definitions"]["runtime"]["cwd"],
-        data["config"]["Filesystem"]["DestinationDirPath"],
-        data["config"]["Site"]["DbPath"],
-    )
     ## Render HTML
     databaseLinkList = []
-    for groupKey in data["database"]:
+    for letterGroupKey in data["database"]:
         link = pystache.render(data["templates"]["link"], {
-            "href": groupKey + "/",
-            "content": groupKey,
+            "href": letterGroupKey + "/",
+            "content": letterGroupKey,
         })
         databaseLinkList.append(link)
     html = pystache.render(data["templates"]["page"], {
@@ -44,6 +38,12 @@ def main(data):
             "links": databaseLinkList,
         }),
     })
+    ## Create containing directory
+    utils.mkdir(
+        data["definitions"]["runtime"]["cwd"],
+        data["config"]["Filesystem"]["DestinationDirPath"],
+        data["config"]["Site"]["DbPath"],
+    )
     ## Create index HTML file
     htmlFile = utils.mkfile(
         data["definitions"]["runtime"]["cwd"],
@@ -58,31 +58,25 @@ def main(data):
     if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
         data["sitemap"].append(data["config"]["Site"]["DbPath"] + "/")
 
-    ## Loop through letter groups
-    for groupKey in data["database"]:
+    ## Loop through letter groups (e.g. "X")
+    for letterGroupKey in data["database"]:
         ## Output progress status
-        print(utils.indent(groupKey, 1), file=sys.stderr)
+        print(utils.indent(letterGroupKey, 1), file=sys.stderr)
         sys.stderr.flush()
         ## Assign variables
-        group = data["database"][groupKey]
+        group = data["database"][letterGroupKey]
         ## Resolve paths
         groupPathSource = os.path.join(
             data["definitions"]["runtime"]["cwd"],
             data["config"]["Filesystem"]["SourcePath"],
-            groupKey,
+            letterGroupKey,
         )
         groupPathDestination = os.path.join(
             data["config"]["Site"]["DbPath"],
-            groupKey,
+            letterGroupKey,
         )
-        ## Generate link
-        groupPathWebPageLink = utils.getWebPageLink(groupKey + "/", groupKey)
-        ## Create containing directory
-        utils.mkdir(
-            data["definitions"]["runtime"]["cwd"],
-            data["config"]["Filesystem"]["DestinationDirPath"],
-            groupPathDestination,
-        )
+        ## Generate breadcrumbs link to this page
+        groupPathWebPageLink = utils.getWebPageLink(letterGroupKey + "/", letterGroupKey)
         ## Render HTML
         pageLinks = []
         for artistKey in group:
@@ -90,7 +84,7 @@ def main(data):
             pageLinks.append(link)
         listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
         html = pystache.render(data["templates"]["page"], {
-            "title":       "Artists starting with “" + groupKey + "”",
+            "title":       "Artists starting with “" + letterGroupKey + "”",
             "description": utils.getDescriptionList(list(group.keys())),
             "logo":        pystache.render(data["templates"]["link"], {
                 "href": "../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
@@ -103,6 +97,12 @@ def main(data):
             "name":        "group",
             "content":     listHtml,
         })
+        ## Create containing directory
+        utils.mkdir(
+            data["definitions"]["runtime"]["cwd"],
+            data["config"]["Filesystem"]["DestinationDirPath"],
+            groupPathDestination,
+        )
         ## Create index HTML file
         htmlFile = utils.mkfile(
             data["definitions"]["runtime"]["cwd"],
@@ -117,7 +117,7 @@ def main(data):
         if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
             data["sitemap"].append(groupPathDestination + "/")
 
-        ## Loop through artists
+        ## Loop through artists that are part of the letter group "X"
         for artistKey in group:
             ## Output progress status
             print(utils.indent(artistKey, 2), file=sys.stderr)
@@ -133,14 +133,8 @@ def main(data):
                 groupPathDestination,
                 artistKey,
             )
-            ## Generate link
+            ## Generate breadcrumbs link to this page
             groupArtistPathWebPageLink = utils.getWebPageLink(artistKey + "/", artist["printable_name"], data["definitions"]["link_types"]["artist"])
-            ## Create containing directory
-            utils.mkdir(
-                data["definitions"]["runtime"]["cwd"],
-                data["config"]["Filesystem"]["DestinationDirPath"],
-                groupArtistPathDestination,
-            )
             ## Render items list HTML
             pageLinks = []
             for release in artist["releases"]:
@@ -149,7 +143,7 @@ def main(data):
                     link["postfix"] = "(" + str(release["year"]) + ")"
                 pageLinks.append(link)
             listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
-            ## Render page HTML
+            ## Render HTML
             html = pystache.render(data["templates"]["page"], {
                 "title":       "Albums by " + artist["printable_name"],
                 "description": utils.getDescriptionList(list(map(lambda link: link["label"], pageLinks))),
@@ -164,6 +158,12 @@ def main(data):
                 "name":        "artist",
                 "content":     listHtml,
             })
+            ## Create containing directory
+            utils.mkdir(
+                data["definitions"]["runtime"]["cwd"],
+                data["config"]["Filesystem"]["DestinationDirPath"],
+                groupArtistPathDestination,
+            )
             ## Create index HTML file
             htmlFile = utils.mkfile(
                 data["definitions"]["runtime"]["cwd"],
@@ -192,14 +192,8 @@ def main(data):
                     groupArtistPathDestination,
                     release["name"],
                 )
-                ## Generate link
+                ## Generate breadcrumbs link to this page
                 groupArtistReleasePathWebPageLink = utils.getWebPageLink(release["name"] + "/", release["printable_name"], data["definitions"]["link_types"]["release"])
-                ## Create containing directory
-                utils.mkdir(
-                    data["definitions"]["runtime"]["cwd"],
-                    data["config"]["Filesystem"]["DestinationDirPath"],
-                    groupArtistReleasePathDestination,
-                )
                 ## Render items list HTML
                 listHtml = ""
                 metaDescriptionLinks = []
@@ -218,7 +212,7 @@ def main(data):
                         recordingGroupLinks.append(link)
                         metaDescriptionLinks.append(link)
                     listHtml += pystache.render(data["templates"]["list"], { "links": recordingGroupLinks })
-                ## Render page HTML
+                ## Render HTML
                 html = pystache.render(data["templates"]["page"], {
                     "title":       "Release “" + release["printable_name"] + "” by " + artist["printable_name"],
                     "description": utils.getDescriptionList(list(map(lambda link: link["label"], metaDescriptionLinks))),
@@ -233,6 +227,12 @@ def main(data):
                     "name":        "release",
                     "content":     listHtml,
                 })
+                ## Create containing directory
+                utils.mkdir(
+                    data["definitions"]["runtime"]["cwd"],
+                    data["config"]["Filesystem"]["DestinationDirPath"],
+                    groupArtistReleasePathDestination,
+                )
                 ## Create index HTML file
                 htmlFile = utils.mkfile(
                     data["definitions"]["runtime"]["cwd"],
@@ -264,21 +264,15 @@ def main(data):
                             groupArtistReleasePathDestination,
                             recording["name"],
                         )
-                        ## Generate link
+                        ## Generate breadcrumbs link to this page
                         groupArtistReleaseRecordingPathWebPageLink = utils.getWebPageLink(recording["name"] + "/", recording["printable_name"], data["definitions"]["link_types"]["recording"])
-                        ## Create containing directory
-                        utils.mkdir(
-                            data["definitions"]["runtime"]["cwd"],
-                            data["config"]["Filesystem"]["DestinationDirPath"],
-                            groupArtistReleaseRecordingPathDestination,
-                        )
                         ## Add action buttons
                         lyricsActionsList = []
                         if data["config"].getboolean("Site", "HasEditTextButton"):
                             actionButton1 = pystache.render(data["templates"]["link"], {
                                 "href": data["config"]["Source"]["Repository"]  + "/edit/" + \
                                         data["config"]["Source"]["DefaultBranch"]  + "/database/" + \
-                                        groupKey + "/" + artistKey + "/" + release["name"] + "/" + recording["name"],
+                                        letterGroupKey + "/" + artistKey + "/" + release["name"] + "/" + recording["name"],
                                 "content": "Suggest improvements for this text",
                             })
                             lyricsActionsList.append(actionButton1)
@@ -297,6 +291,12 @@ def main(data):
                             "name":        "recording",
                             "content":     utils.formatLyricsAndMetadata(data["templates"], recording["text"], recording["metadata"], lyricsActionsList),
                         })
+                        ## Create containing directory
+                        utils.mkdir(
+                            data["definitions"]["runtime"]["cwd"],
+                            data["config"]["Filesystem"]["DestinationDirPath"],
+                            groupArtistReleaseRecordingPathDestination,
+                        )
                         ## Create index HTML file
                         htmlFile = utils.mkfile(
                             data["definitions"]["runtime"]["cwd"],
