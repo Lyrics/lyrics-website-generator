@@ -31,7 +31,6 @@ body {
 form {
     background-color: $color-navbar-bg;
     font-size: 0;
-    line-height: 17px;
     white-space: nowrap;
 }
 
@@ -69,8 +68,8 @@ input {
     color: $color-input-fg;
     font-size: $header-font-size;
     outline: 0;
-    padding: .13em .7em;
-    margin: 0 0 8px 7px;
+    padding: .33em .7em;
+    margin: 0 0 10px 7px;
     vertical-align: middle;
     width: 130px;
     -webkit-appearance: none;
@@ -142,26 +141,22 @@ p {
     form {
         overflow-x: auto;
         overflow-y: hidden;
+        position: relative;
 
         /* Purpose: make the horizontal scrollbar invisible */
         scrollbar-width: none; // FF
         -ms-overflow-style: none; // IEdge
-        // Chrome, Safari and Opera
+        // Chrome, Safari
         &::-webkit-scrollbar {
             display: none;
         }
-    }
-
-    nav {
-        margin-right: $header-shadow-right-width + 10px;
-        text-align: left;
 
         /* Purpose: add inner shadow to the right side of navbar to hint user that
             they can scroll the alphabet horizontally on mobile */
         &:before,
         &:after {
+            bottom: 0;
             content: '';
-            height: 4em;
             position: absolute;
             top: 0;
 
@@ -171,19 +166,24 @@ p {
         &:before {
             background: linear-gradient(270deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             left: 0;
-            width: 9px;
+            width: 10px;
         }
         &:after {
             background: linear-gradient(90deg, rgba($color-navbar-bg, 0) 0%, $color-navbar-bg 100%);
             right: 0;
             width: $header-shadow-right-width;
         }
+    }
+
+    nav {
+        margin-right: $header-shadow-right-width + 10px;
+        text-align: left;
 
         a {
             display: inline-block;
             font-weight: bold;
             margin-right: 3px;
-            min-width: 40px;
+            min-width: 40px; // Make it easier to tap
             padding: 1.3em .5em;
 
             &:first-child {
@@ -193,7 +193,7 @@ p {
     }
 
     input {
-        margin-left: 1.5rem;
+        margin-left: 1.3rem;
         margin-right: 1rem;
     }
 

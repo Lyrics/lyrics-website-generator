@@ -12,7 +12,7 @@
     }
 
     @include mobile {
-        nav {
+        form {
             &:before {
                 background: linear-gradient(270deg, rgba($dark-color-navbar-bg, 0) 0%, $dark-color-navbar-bg 100%);
             }
