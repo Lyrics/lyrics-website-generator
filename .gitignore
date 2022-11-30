@@ -1,7 +1,9 @@
+*~
+.DS_Store
+.directory
+
+__pycache__/
+lyrics/
 www/
 
-.DS_Store
-
 config.ini
-
-__pycache__
