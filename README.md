@@ -6,17 +6,17 @@ Suite capable of building static HTML website out of [Open Lyrics Database](http
 ## How to run in development mode (requires [Docker](https://www.docker.com) or [Podman](https://podman.io)):
 
 ```shell
-    make all
+make all
 ```
 
 
 ## How to run in production mode:
 
 ```shell
-    sudo apt-get install python3-setuptools sassc
-    make INSTALL_DEPENDENCIES
-    make BUILD
-    make SERVE
+sudo apt-get install python3-setuptools sassc
+make INSTALL_DEPENDENCIES
+make BUILD
+make SERVE
 ```
 
 
