@@ -3,20 +3,21 @@
 Suite capable of building static HTML website out of [Open Lyrics Database](https://github.com/Lyrics/lyrics).
 
 
-## Installing dependencies
+## How to run in development mode (requires [Docker](https://www.docker.com) or [Podman](https://podman.io)):
 
-    sudo apt-get install sassc
-    pip3 install --user pystache simple-http-server
-
-
-## Build
-
-    make clean build
+```shell
+    make all
+```
 
 
-## Run local web server
+## How to run in production mode:
 
-    make serve
+```shell
+    sudo apt-get install python3-setuptools sassc
+    make INSTALL_DEPENDENCIES
+    make BUILD
+    make SERVE
+```
 
 
 ## Checklist

@@ -1,0 +1,2 @@
+pystache==0.6.0
+simple-http-server==0.18.3

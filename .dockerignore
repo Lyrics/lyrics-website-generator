@@ -1,0 +1,6 @@
+.github/
+__pycache__/
+www/
+
+.DS_Store
+README.md
