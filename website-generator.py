@@ -20,6 +20,7 @@ definitions = {
         "sitemap":  "sitemap.xml",
     },
     "link_types": {
+        "default": 0,
         "group": 1,
         "artist": 2,
         "release": 3,

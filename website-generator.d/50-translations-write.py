@@ -17,10 +17,7 @@ def main(data):
     ## Create root index file for translations directory
     translationsLinkList = []
     for groupKey in data["translations"]:
-        link = pystache.render(data["templates"]["link"], {
-            "href": groupKey + "/",
-            "content": groupKey,
-        })
+        link = utils.getWebPageLink(groupKey + "/", groupKey, data["definitions"]["link_types"]["default"])
         translationsLinkList.append(link)
     html = pystache.render(data["templates"]["page"], {
         "title":       "List of available translations languages",
@@ -34,7 +31,7 @@ def main(data):
         "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 1),
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, trPathWebPageLink),
         "name":        "translations",
-        "content":     pystache.render(data["templates"]["db-page-contents"], {
+        "content":     pystache.render(data["templates"]["list"], {
             "links": translationsLinkList,
         }),
     })
@@ -81,7 +78,10 @@ def main(data):
         for groupKey in language:
             link = utils.getWebPageLink(groupKey + "/", groupKey, data["definitions"]["link_types"]["group"])
             pageLinks.append(link)
-        listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
+        listHtml = pystache.render(data["templates"]["list"], {
+            "class": "g",
+            "links": pageLinks,
+        })
         html = pystache.render(data["templates"]["page"], {
             "title":       "Groups of artists containing " + languageKey + " translations",
             "description": utils.getDescriptionList(list(language.keys())),
@@ -144,7 +144,7 @@ def main(data):
                 pageLinks.append(link)
             listHtml = pystache.render(data["templates"]["list"], { "links": pageLinks })
             html = pystache.render(data["templates"]["page"], {
-                "title":       "Artist group “" + groupKey + "” of " + languageKey + " translations",
+                "title":       "" + languageKey + " translations for artists that begin with “" + groupKey + "”",
                 "description": utils.getDescriptionList(list(group.keys())),
                 "logo":        pystache.render(data["templates"]["link"], {
                     "href": "../../.." if data["config"].getboolean("Site", "UseRelativePaths", fallback=False) else "/",
