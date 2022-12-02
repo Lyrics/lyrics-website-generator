@@ -61,6 +61,15 @@
         span {
             color: $dark-color-list-id;
         }
+
+        &.g {
+            li {
+                a {
+                    background-color: $dark-color-input-bg;
+                    color: $dark-color-input-fg;
+                }
+            }
+        }
     }
 
     #lyrics-container {

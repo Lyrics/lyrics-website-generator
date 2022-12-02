@@ -17,10 +17,7 @@ def main(data):
     ## Render HTML
     databaseLinkList = []
     for letterGroupKey in data["database"]:
-        link = pystache.render(data["templates"]["link"], {
-            "href": letterGroupKey + "/",
-            "content": letterGroupKey,
-        })
+        link = utils.getWebPageLink(letterGroupKey + "/", letterGroupKey, data["definitions"]["link_types"]["group"])
         databaseLinkList.append(link)
     html = pystache.render(data["templates"]["page"], {
         "title":       "Main database index page",
@@ -34,7 +31,8 @@ def main(data):
         "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 1),
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, dbPathWebPageLink),
         "name":        "db",
-        "content":     pystache.render(data["templates"]["db-page-contents"], {
+        "content":     pystache.render(data["templates"]["list"], {
+            "class": "g",
             "links": databaseLinkList,
         }),
     })

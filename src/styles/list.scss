@@ -30,6 +30,24 @@
     span {
         color: $color-list-id;
     }
+
+    &.g {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: flex-start;
+
+        li {
+            text-align: center;
+
+            a {
+                border-radius: .5rem;
+                background-color: $color-input-bg;
+                color: $color-input-fg;
+                padding: 1rem;
+            }
+        }
+    }
 }
 
 // Mobile CSS
