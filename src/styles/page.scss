@@ -139,17 +139,8 @@ p {
 // Mobile CSS
 @include mobile {
     form {
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow: hidden;
         position: relative;
-
-        /* Purpose: make the horizontal scrollbar invisible */
-        scrollbar-width: none; // FF
-        -ms-overflow-style: none; // IEdge
-        // Chrome, Safari
-        &::-webkit-scrollbar {
-            display: none;
-        }
 
         /* Purpose: add inner shadow to the right side of navbar to hint user that
             they can scroll the alphabet horizontally on mobile */
@@ -176,8 +167,19 @@ p {
     }
 
     nav {
+        overflow-x: auto;
+        overflow-y: hidden;
         margin-right: $header-shadow-right-width + 10px;
         text-align: left;
+        width: 100%;
+
+        /* Purpose: make the horizontal scrollbar invisible */
+        scrollbar-width: none; // FF
+        -ms-overflow-style: none; // IEdge
+        // Chrome, Safari
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         a {
             display: inline-block;
