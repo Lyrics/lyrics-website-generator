@@ -216,4 +216,4 @@ def sortReleasesByYear123(link, key="year"):
         return sys.maxsize
 
 def splitLyricsIntoTextAndMetadata(lyricsFileContents):
-    return re.split("_+", lyricsFileContents)
+    return re.split('(?m)^_+$', lyricsFileContents)
