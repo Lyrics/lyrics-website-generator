@@ -182,9 +182,9 @@ def parseMetadata(metadata):
     for dataline in datalines:
         partials = re.split("\s{2,}", dataline)
         key = partials[0]
-        rawvalue = dataline[len(key):].strip()
-        valuepartials = re.split(",\s{2,}", rawvalue)
-        dictionary[key] = valuepartials
+        rawValue = dataline[len(key):].strip()
+        valuePartials = re.split(",\s{2,}", rawValue)
+        dictionary[key] = valuePartials
     return dictionary
 
 def resolveURL(base, url):

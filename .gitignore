@@ -3,7 +3,7 @@
 .directory
 
 __pycache__/
-lyrics/
+lyrics-database/
 www/
 
 config.ini

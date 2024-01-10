@@ -1,4 +1,5 @@
 import os
+import re
 
 import utils
 
@@ -50,9 +51,31 @@ def main(data):
                     rawContents = open(dbGroupArtistReleaseRecordingPath, "r").read().strip()
                     rawText = utils.getText(rawContents)
                     rawMetadata = utils.getMetadata(rawContents)
+                    metadata = utils.parseMetadata(rawMetadata)
                     data["database"][groupKey][artistKey]["releases"][-1]["recordings"][0].append({
                         "name": recordingKey,
                         "printable_name": recordingKey,
                         "text":           rawText,
-                        "metadata":       utils.parseMetadata(rawMetadata),
+                        "metadata":       metadata,
                     })
+                    ## Index path and keywords
+                    data["paths"].append(groupKey + "/" +artistKey + "/" + releaseKey + "/" + recordingKey)
+                    textKeywords = re.findall(r'\w+', rawText, re.UNICODE)
+                    for textKeyword in textKeywords:
+                        textKeywordLowercase = textKeyword.lower()
+                        if textKeywordLowercase in data["keywords"]:
+                            data["keywords"][textKeywordLowercase].append(len(data["paths"]) - 1)
+                        else:
+                            data["keywords"][textKeywordLowercase] = [len(data["paths"]) - 1]
+                    ## Index metadata values in addition to text keywords
+                    for metadataKey in metadata:
+                        if metadataKey == "Name" or metadataKey == "Artist" or metadataKey == "Album":
+                            metadataValues = metadata[metadataKey]
+                            for metadataValue in metadataValues:
+                                metadataValueKeywords = re.findall(r'\w+', metadataValue, re.UNICODE)
+                                for metadataValueKeyword in metadataValueKeywords:
+                                    metadataValueKeywordLowercase = metadataValueKeyword.lower()
+                                    if metadataValueKeywordLowercase in data["keywords"]:
+                                        data["keywords"][metadataValueKeywordLowercase].append(len(data["paths"]) - 1)
+                                    else:
+                                        data["keywords"][metadataValueKeywordLowercase] = [len(data["paths"]) - 1]
