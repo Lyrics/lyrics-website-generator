@@ -60,6 +60,7 @@ for templateFileName in templatesFileNames:
 ## Schema
 ##
 ## data:
+##     [...]
 ##     "database": {
 ##         LetterGroup {
 ##             Artist {
@@ -114,6 +115,9 @@ for templateFileName in templatesFileNames:
 ##             }
 ##         }
 ##     }
+##     "paths": String[]
+##     "keywords": {}
+##
 data = {
     "definitions": definitions,
     "config": config,
@@ -121,6 +125,8 @@ data = {
     "database": {},
     "translations": {},
     "videos": {},
+    "paths": [],
+    "keywords": {},
 }
 if data["config"].getboolean("Site", "CreateSitemap", fallback=False):
     data["sitemap"] = []
