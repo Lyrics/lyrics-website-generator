@@ -17,9 +17,9 @@ def main(data):
     keywordGroups = {}
     for keyword in data["keywords"]:
         if keyword[0] in keywordGroups:
-            keywordGroups[keyword[0]].append({ keyword: data["keywords"][keyword] })
+            keywordGroups[keyword[0]][keyword] = data["keywords"][keyword]
         else:
-            keywordGroups[keyword[0]] = [ { keyword: data["keywords"][keyword] } ]
+            keywordGroups[keyword[0]] = { keyword: data["keywords"][keyword] }
     for keywordGroup in keywordGroups:
         keywordGroupJson = json.dumps(keywordGroups[keywordGroup], separators=(',', ':'))
         searchKeywordsGroupFile = utils.mkfile(
