@@ -126,11 +126,13 @@ try {
         let requestCount = 0;
 
         matches.forEach(match => {
-            if (obtainedKeywordGroups.includes(match[0])) {
+            const matchLowercase = match.toLowerCase();
+
+            if (obtainedKeywordGroups.includes(matchLowercase[0])) {
                 requestCount++; /* Count skipped requests */
 
                 for (const keyword in keywords) {
-                    if (keyword === match.toLowerCase()) {
+                    if (keyword === matchLowercase) {
                         /* Discard previously found paths that don't intersect with newly discovered paths */
                         if (pathsIndexes.length === 0) {
                             pathsIndexes = keywords[keyword];
@@ -151,18 +153,18 @@ try {
                     }
                 }
             } else {
-                makeHttpRequest(`/s/${match[0]}.json`)
+                makeHttpRequest(`/s/${matchLowercase[0]}.json`)
                     .then(newKeywords => {
                         for (newKeyword in newKeywords) {
                             keywords[newKeyword] = newKeywords[newKeyword];
                         }
 
-                        obtainedKeywordGroups.push(match[0]);
+                        obtainedKeywordGroups.push(matchLowercase[0]);
 
                         requestCount++;
 
                         for (const keyword in keywords) {
-                            if (keyword === match.toLowerCase()) {
+                            if (keyword === matchLowercase) {
                                 /* Discard previously found paths that don't intersect with newly discovered paths */
                                 if (pathsIndexes.length === 0) {
                                     pathsIndexes = keywords[keyword];
