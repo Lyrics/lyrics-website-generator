@@ -15,10 +15,29 @@ def main(data):
     ## Generate breadcrumbs link to this page
     dbPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["DbPath"] + "/", "Database")
     ## Render HTML
-    databaseLinkList = []
+    groups = [
+        ## Latin
+        ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+        ## Numbers
+        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+        ## Japanese (Hiragana)
+        ["あ", "け", "す", "た", "ぶ", "も"],  ## TODO: complete this to include all of Hiragana syllabary
+        ## Everything else (misfits)
+        [],
+    ]
+    databaseLinkList = list(map(lambda x: [], groups))
     for letterGroupKey in data["database"]:
         link = utils.getWebPageLink(letterGroupKey + "/", letterGroupKey, data["definitions"]["link_types"]["group"])
-        databaseLinkList.append(link)
+        for i, group in enumerate(groups):
+            if letterGroupKey in group:
+                databaseLinkList[i].append(link)
+                break
+        else:
+            databaseLinkList[-1].append(link)
+    content = map(lambda groupedDatabaseLinkList: pystache.render(data["templates"]["list"], {
+        "class": "g",
+        "links": groupedDatabaseLinkList,
+    }), databaseLinkList)
     html = pystache.render(data["templates"]["page"], {
         "title":       "Main database index page",
         "description": "List of database artist groups",
@@ -31,10 +50,7 @@ def main(data):
         "search":      utils.giveLinkDepth(data["definitions"]["filenames"]["search"], 1),
         "breadcrumbs": utils.getBreadcrumbs(data["templates"], homePathWebPageLink, dbPathWebPageLink),
         "name":        "db",
-        "content":     pystache.render(data["templates"]["list"], {
-            "class": "g",
-            "links": databaseLinkList,
-        }),
+        "content":     "".join(filter(lambda subset: len(subset) > 0, content)),
     })
     ## Create containing directory
     utils.mkdir(
