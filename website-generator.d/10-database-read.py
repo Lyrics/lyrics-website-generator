@@ -63,10 +63,11 @@ def main(data):
                     textKeywords = re.findall(r'\w+', rawText, re.UNICODE)
                     for textKeyword in textKeywords:
                         textKeywordLowercase = textKeyword.lower()
-                        if textKeywordLowercase in data["keywords"]:
-                            data["keywords"][textKeywordLowercase].append(len(data["paths"]) - 1)
-                        else:
-                            data["keywords"][textKeywordLowercase] = [len(data["paths"]) - 1]
+                        if not textKeywordLowercase in data["keywords"]:
+                            data["keywords"][textKeywordLowercase] = []
+                        pathIndex = len(data["paths"]) - 1
+                        if not pathIndex in data["keywords"][textKeywordLowercase]:
+                            data["keywords"][textKeywordLowercase].append(pathIndex)
                     ## Index metadata values in addition to text keywords
                     for metadataKey in metadata:
                         if metadataKey in ["Name", "Artist", "Album", "Year", "Original text by"]:
