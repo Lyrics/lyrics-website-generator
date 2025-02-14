@@ -16,12 +16,14 @@ def main(data):
     dbPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["DbPath"] + "/", "Database")
     ## Render HTML
     groups = [
-        ## Latin
-        ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
         ## Numbers
         ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+        ## Latin
+        ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
         ## Japanese (Hiragana)
         ["あ", "け", "す", "た", "ぶ", "も"],  ## TODO: complete this to include all of Hiragana syllabary
+        ## Punjabi (Gurmukhi)
+        ["ੳ", "ਅ", "ੲ", "ਸ", "ਹ", "ਕ", "ਖ", "ਗ", "ਘ", "ਙ", "ਚ", "ਛ", "ਜ", "ਝ", "ਞ", "ਟ", "ਠ", "ਡ", "ਢ", "ਣ", "ਤ", "ਥ", "ਦ", "ਧ", "ਨ", "ਪ", "ਫ", "ਬ", "ਭ", "ਮ", "ਯ", "ਰ", "ਲ", "ਵ", "ੜ", "ਸ਼", "ਖ਼", "ਗ਼", "ਜ਼", "ਫ਼", "ਲ਼"],
         ## Everything else (misfits)
         [],
     ]
@@ -34,6 +36,9 @@ def main(data):
                 break
         else:
             databaseLinkList[-1].append(link)
+    for i in databaseLinkList[:]:
+        if len(i) < 1:
+            databaseLinkList.remove(i)
     content = map(lambda groupedDatabaseLinkList: pystache.render(data["templates"]["list"], {
         "class": "g",
         "links": groupedDatabaseLinkList,
