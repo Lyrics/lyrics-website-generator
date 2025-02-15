@@ -5,10 +5,10 @@
 <script>
 
 /* Remove the above NOSCRIPT DOM element */
-var noscriptNode = document.getElementsByTagName("noscript")[0];
+const noscriptNode = document.getElementsByTagName("noscript")[0];
 noscriptNode.parentNode.removeChild(noscriptNode);
 /* Remove this very SCRIPT DOM element */
-var scriptNode = document.getElementsByTagName("script")[0];
+const scriptNode = document.getElementsByTagName("script")[0];
 scriptNode.parentNode.removeChild(scriptNode)
 
 </script>
@@ -17,9 +17,9 @@ scriptNode.parentNode.removeChild(scriptNode)
 
 <script>
 
-var appNode = document.getElementById("app");
+const appNode = document.getElementById("app");
 
-var dBWebsitePrefix = "db";
+const dBWebsitePrefix = "db";
 
 function formatURL(input) {
     input = encodeURI(input).replace(/\?/g, "%3F");
@@ -38,7 +38,7 @@ function reset() {
 function displayLoading() {
     reset();
 
-    var loadingNode = document.createElement("div");
+    const loadingNode = document.createElement("div");
     loadingNode.className = "loading";
     loadingNode.innerText = "Loading…";
 
@@ -48,7 +48,7 @@ function displayLoading() {
 function displayError(reason) {
     reset();
 
-    var errorNode = document.createElement("div");
+    const errorNode = document.createElement("div");
     errorNode.className = "error";
     errorNode.innerText = reason;
 
@@ -58,18 +58,18 @@ function displayError(reason) {
 function displayResults(items) {
     reset();
 
-    var contentNode = document.createElement("div");
+    const contentNode = document.createElement("div");
     contentNode.className = "content";
 
     if (items.length > 0) {
         var listNode = document.createElement("ul");
         listNode.className = "l";
 
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
 
-            var listItemNode = document.createElement("li");
-            var listItemAnchorNode = document.createElement("a");
+            const listItemNode = document.createElement("li");
+            const listItemAnchorNode = document.createElement("a");
 
             listItemAnchorNode.className = "t4";
             listItemAnchorNode.innerText = item.split("/")[1] + " – " + item.split("/")[3];
@@ -81,7 +81,7 @@ function displayResults(items) {
 
         contentNode.appendChild(listNode);
     } else {
-        var noResultsNode = document.createElement("p");
+        const noResultsNode = document.createElement("p");
         noResultsNode.innerText = "No results";
         contentNode.appendChild(noResultsNode);
     }
@@ -91,7 +91,7 @@ function displayResults(items) {
 
 function makeHttpRequest(url) {
     return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.onreadystatechange = processHttpResponse;
         xhr.open("GET", url);
         xhr.send();
@@ -108,9 +108,9 @@ function makeHttpRequest(url) {
   });
 }
 
-var queryString = getQueryVariable("q") || "";
+const queryString = (getQueryVariable("q") || "").trim();
 
-/* Need to wait for the search field to be appended to the DOM tree */
+/* Need to wait for the search field to be added to the DOM tree (one tick) */
 setTimeout(() => document.forms[0].firstChild.lastChild.value = queryString);
 
 /* Proceed to retrieving results from the server */
@@ -119,77 +119,89 @@ try {
         /* Put the loading indicator up */
         displayLoading();
 
+        let matches = queryString.toLowerCase().split(" ");
+        /* Dedupe */
+        matches = [...new Set(matches)];
+        /* Remove empty strings */
+        matches = matches.filter(m => m.length > 0);
+
+        /* Array of first letters/numbers/symbols; e.g.: ["h", "l"] */
         const obtainedKeywordGroups = [];
+        /* Object of all keyword & indexes; e.g.: { hate: [620, 9850], love: [620] } */
         const keywords = {};
-        const matches = queryString.match(/\w+/g);
-        var pathsIndexes = [];
-        let requestCount = 0;
+        /* Array of filesystem paths, each item is referred to by its index */
+        let pathsIndexes = [];
 
-        matches.forEach(match => {
-            const matchLowercase = match.toLowerCase();
+        function finalStage() {
+            if (pathsIndexes.length > 0) {
+                /* Finally, we retrieve the file that contains array of paths */
+                makeHttpRequest("s.json")
+                    .then(pathsArray => displayResults(pathsIndexes.map(pi => pathsArray[pi])));
+            } else {
+                displayResults([]);
+            }
+        }
 
-            if (obtainedKeywordGroups.includes(matchLowercase[0])) {
-                requestCount++; /* Count skipped requests */
+        function makeMatchRequest(matches) {
+            const match = matches.shift();
+            const matchFirstSymbol = match[0];
 
+            if (obtainedKeywordGroups.includes(matchFirstSymbol)) {
                 for (const keyword in keywords) {
-                    if (keyword === matchLowercase) {
+                    if (keyword === match) {
                         /* Discard previously found paths that don’t intersect with newly discovered paths */
                         if (pathsIndexes.length === 0) {
                             pathsIndexes = keywords[keyword];
                         } else {
                             pathsIndexes = keywords[keyword].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
                         }
-                        /* Make unique */
+
+                        /* Dedupe */
                         pathsIndexes = [...new Set(pathsIndexes)];
                     }
                 }
 
-                if (requestCount === matches.length) {
-                    if (pathsIndexes.length > 0) {
-                        makeHttpRequest(`/s.json`)
-                            .then(pathsArray => displayResults(pathsIndexes.map(pi => pathsArray[pi])));
-                    } else {
-                        displayResults([]);
-                    }
+                if (pathsIndexes.length === 0 || matches.length === 0) {
+                    finalStage();
+                } else {
+                    makeMatchRequest(matches);
                 }
             } else {
-                makeHttpRequest(`/s/${matchLowercase[0]}.json`)
+                makeHttpRequest("s/" + matchFirstSymbol + ".json")
                     .then(newKeywords => {
                         for (newKeyword in newKeywords) {
                             keywords[newKeyword] = newKeywords[newKeyword];
                         }
 
-                        obtainedKeywordGroups.push(matchLowercase[0]);
-
-                        requestCount++;
+                        obtainedKeywordGroups.push(matchFirstSymbol);
 
                         for (const keyword in keywords) {
-                            if (keyword === matchLowercase) {
+                            if (keyword === match) {
                                 /* Discard previously found paths that don’t intersect with newly discovered paths */
                                 if (pathsIndexes.length === 0) {
                                     pathsIndexes = keywords[keyword];
                                 } else {
                                     pathsIndexes = keywords[keyword].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
                                 }
-                                /* Make unique */
+
+                                /* Dedupe */
                                 pathsIndexes = [...new Set(pathsIndexes)];
                             }
                         }
 
-                        if (requestCount === matches.length) {
-                            if (pathsIndexes.length > 0) {
-                                makeHttpRequest(`/s.json`)
-                                    .then(pathsArray => displayResults(pathsIndexes.map(pi => pathsArray[pi])));
-                            } else {
-                                displayResults([]);
-                            }
+                        if (pathsIndexes.length === 0 || matches.length === 0) {
+                            finalStage();
+                        } else {
+                            makeMatchRequest(matches);
                         }
                     })
                     .catch(() => {
-                        displayError("something went wrong");
+                        throw new Error("something went wrong");
                     });
             }
-        });
+        }
+
+        makeMatchRequest(matches);
     } else {
         throw new Error("query can’t be empty");
     }
