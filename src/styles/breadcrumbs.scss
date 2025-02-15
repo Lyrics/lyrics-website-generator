@@ -1,8 +1,7 @@
-#breadcrumbs {
+#b {
     display: block;
     font-size: 0;
     line-height: 30px;
-    list-style: none;
 
     > span {
         display: inline-block;
@@ -31,11 +30,17 @@
     a {
         display: inline-block;
     }
+
+    // Purpose: hide arrows
+    b {
+        display: none;
+    }
 }
+
 
 // Mobile CSS
 @include mobile {
-    #breadcrumbs {
+    #b {
         line-height: 40px; // Purpose: give more space to links on smartphones
 
         // Purpose: make horizontally scrollable
@@ -50,13 +55,17 @@
             display: none;
         }
 
+        // Purpose: compensate for horizontal padding from container
+        margin: 0 -$mobile-horizontal-spacing;
+        padding: 0 $mobile-horizontal-spacing;
+
         /* Purpose: add inner shadow to the right side of breadcrumbs to hint user that
             they can scroll it horizontally on mobile */
         > span:first-child {
             &:before,
             &:after {
                 content: '';
-                height: 30px;
+                height: 40px;
                 position: absolute;
                 width: $mobile-horizontal-spacing;
                 z-index: 1;
@@ -82,9 +91,10 @@
     }
 }
 
+
 // Paper CSS
 @include print {
-    #breadcrumbs {
+    #b {
         display: none;
     }
 }

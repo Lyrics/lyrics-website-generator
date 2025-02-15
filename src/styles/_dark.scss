@@ -35,12 +35,12 @@
       color: $dark-color-input-placeholder;
     }
 
-    #breadcrumbs > span:not(:first-child):before {
+    #b > span:not(:first-child):before {
         color: $dark-color-breadcrumbs-arrow;
     }
 
     @include mobile {
-        #breadcrumbs {
+        #b {
             > span:first-child {
                 &:before {
                     background: linear-gradient(270deg, rgba($dark-color-bg, 0) 0%, $dark-color-bg 100%);

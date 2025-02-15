@@ -5,7 +5,7 @@ import utils
 
 def main(data):
     ## Output progress status
-    print(utils.indent("Writing search index file"), file=sys.stderr)
+    print(utils.indent("Writing search index file"), file=sys.stdout)
     sys.stderr.flush()
     ## Create search index JSON file
     indexJson = json.dumps(data["paths"], separators=(',', ':'), ensure_ascii=False)

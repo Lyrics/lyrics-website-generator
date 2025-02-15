@@ -10,7 +10,7 @@ def main(data):
     indexFileName = data["definitions"]["filenames"]["index"]
 
     ## Output progress status
-    print(utils.indent("Writing translation HTML files"), file=sys.stderr)
+    print(utils.indent("Writing translation HTML files"), file=sys.stdout)
     sys.stderr.flush()
     ## Generate link
     trPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["TranslationsPath"] + "/", "Translations")
