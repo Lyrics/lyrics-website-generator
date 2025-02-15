@@ -21,7 +21,7 @@ def main(data):
         else:
             keywordGroups[keyword[0]] = { keyword: data["keywords"][keyword] }
     for keywordGroup in keywordGroups:
-        keywordGroupJson = json.dumps(keywordGroups[keywordGroup], separators=(',', ':'))
+        keywordGroupJson = json.dumps(keywordGroups[keywordGroup], separators=(',', ':'), ensure_ascii=False)
         searchKeywordsGroupFile = utils.mkfile(
             data["definitions"]["runtime"]["cwd"],
             data["config"]["Filesystem"]["DestinationDirPath"],

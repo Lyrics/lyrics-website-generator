@@ -1,5 +1,4 @@
 import os
-import re
 
 import utils
 
@@ -60,7 +59,7 @@ def main(data):
                     })
                     ## Index path and keywords
                     data["paths"].append(groupKey + "/" +artistKey + "/" + releaseKey + "/" + recordingKey)
-                    textKeywords = re.findall(r'\w+', rawText, re.UNICODE)
+                    textKeywords = rawText.split()
                     for textKeyword in textKeywords:
                         textKeywordLowercase = textKeyword.lower()
                         if not textKeywordLowercase in data["keywords"]:
@@ -73,7 +72,7 @@ def main(data):
                         if metadataKey in ["Name", "Artist", "Album", "Year", "Original text by"]:
                             metadataValues = metadata[metadataKey]
                             for metadataValue in metadataValues:
-                                metadataValueKeywords = re.findall(r'\w+', metadataValue, re.UNICODE)
+                                metadataValueKeywords = metadataValue.split()
                                 for metadataValueKeyword in metadataValueKeywords:
                                     metadataValueKeywordLowercase = metadataValueKeyword.lower()
                                     if metadataValueKeywordLowercase in data["keywords"]:
