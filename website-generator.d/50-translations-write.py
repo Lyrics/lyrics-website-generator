@@ -10,7 +10,7 @@ def main(data):
     indexFileName = data["definitions"]["filenames"]["index"]
 
     ## Output progress status
-    print(utils.indent("Website translation HTML files"), file=sys.stderr)
+    print(utils.indent("Writing translation HTML files"), file=sys.stderr)
     sys.stderr.flush()
     ## Generate link
     trPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["TranslationsPath"] + "/", "Translations")
@@ -57,7 +57,7 @@ def main(data):
     ## Loop through languages
     for languageKey in data["translations"]:
         ## Output progress status
-        print(utils.indent(languageKey, 1), file=sys.stderr)
+        # print(utils.indent(languageKey, 1), file=sys.stderr)
         sys.stderr.flush()
         ## Assign variables
         language = data["translations"][languageKey]
@@ -119,7 +119,7 @@ def main(data):
         ## Loop through letter groups
         for groupKey in language:
             ## Output progress status
-            print(utils.indent(groupKey, 2), file=sys.stderr)
+            # print(utils.indent(groupKey, 2), file=sys.stderr)
             sys.stderr.flush()
             ## Assign variables
             group = data["translations"][languageKey][groupKey]
@@ -180,7 +180,7 @@ def main(data):
             ## Loop through artists
             for artistKey in group:
                 ## Output progress status
-                print(utils.indent(artistKey, 3), file=sys.stderr)
+                # print(utils.indent(artistKey, 3), file=sys.stderr)
                 sys.stderr.flush()
                 ## Assign variables
                 artist = group[artistKey]
@@ -243,7 +243,7 @@ def main(data):
                 ## Loop through releases
                 for release in artist["releases"]:
                     ## Output progress status
-                    print(utils.indent(release["name"], 4), file=sys.stderr)
+                    # print(utils.indent(release["name"], 4), file=sys.stderr)
                     sys.stderr.flush()
                     ## Resolve paths
                     releasePathSource = os.path.join(
@@ -320,7 +320,7 @@ def main(data):
                     for recordingGroup in release["recordings"]:
                         for recording in recordingGroup:
                             ## Output progress status
-                            print(utils.indent(recording["name"], 5), file=sys.stderr)
+                            # print(utils.indent(recording["name"], 5), file=sys.stderr)
                             sys.stderr.flush()
                             ## Resolve paths
                             recordingPathSource = os.path.join(

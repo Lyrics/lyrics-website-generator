@@ -10,7 +10,7 @@ def main(data):
     indexFileName = data["definitions"]["filenames"]["index"]
 
     ## Output progress status
-    print(utils.indent("Website database HTML files"), file=sys.stderr)
+    print(utils.indent("Writing database HTML files"), file=sys.stdout)
     sys.stderr.flush()
     ## Generate breadcrumbs link to this page
     dbPathWebPageLink = utils.getWebPageLink(data["config"]["Site"]["DbPath"] + "/", "Database")
@@ -80,7 +80,7 @@ def main(data):
     ## Loop through letter groups (e.g. "X")
     for letterGroupKey in data["database"]:
         ## Output progress status
-        print(utils.indent(letterGroupKey, 1), file=sys.stderr)
+        # print(utils.indent(letterGroupKey, 1), file=sys.stderr)
         sys.stderr.flush()
         ## Assign variables
         group = data["database"][letterGroupKey]
@@ -139,7 +139,7 @@ def main(data):
         ## Loop through artists that are part of the letter group "X"
         for artistKey in group:
             ## Output progress status
-            print(utils.indent(artistKey, 2), file=sys.stderr)
+            # print(utils.indent(artistKey, 2), file=sys.stderr)
             sys.stderr.flush()
             ## Assign variables
             artist = group[artistKey]
@@ -200,7 +200,7 @@ def main(data):
             ## Loop through releases
             for release in artist["releases"]:
                 ## Output progress status
-                print(utils.indent(release["name"], 3), file=sys.stderr)
+                # print(utils.indent(release["name"], 3), file=sys.stderr)
                 sys.stderr.flush()
                 ## Resolve paths
                 groupArtistReleasePathSource = os.path.join(
@@ -272,7 +272,7 @@ def main(data):
                         ## Skip empty (gap) items
                         if len(recording["name"]) == 0: continue
                         ## Output progress status
-                        print(utils.indent(recording["name"], 4), file=sys.stderr)
+                        # print(utils.indent(recording["name"], 4), file=sys.stderr)
                         sys.stderr.flush()
                         ## Resolve paths
                         groupArtistReleaseRecordingPathSource = os.path.join(

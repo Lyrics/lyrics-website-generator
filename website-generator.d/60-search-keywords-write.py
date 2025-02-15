@@ -5,7 +5,7 @@ import utils
 
 def main(data):
     ## Output progress status
-    print(utils.indent("Writing website search keywords files"), file=sys.stderr)
+    print(utils.indent("Writing search keywords files"), file=sys.stderr)
     sys.stderr.flush()
     ## Create directory that will contain search keywords files
     utils.mkdir(

@@ -1,6 +1,6 @@
 <noscript>
     <p>Sadly, but the search has to rely on JavaScript in order to function inside the browser.</p>
-    <p>Please feel free to <a href="https://github.com/Lyrics/lyrics/archive/{{archiveLinkBranch}}.zip">download the database</a> or clone git repository git@github.com:Lyrics/lyrics.git, in case you’d like to search through it locally.</p>
+    <p>Please feel free to <a href="https://github.com/Lyrics/lyrics-database/archive/{{archiveLinkBranch}}.zip">download the database</a> or clone git repository git@github.com:Lyrics/lyrics-database.git, in case you’d like to search through it locally.</p>
 </noscript>
 <script>
 
@@ -133,7 +133,7 @@ try {
 
                 for (const keyword in keywords) {
                     if (keyword === matchLowercase) {
-                        /* Discard previously found paths that don't intersect with newly discovered paths */
+                        /* Discard previously found paths that don’t intersect with newly discovered paths */
                         if (pathsIndexes.length === 0) {
                             pathsIndexes = keywords[keyword];
                         } else {
@@ -165,7 +165,7 @@ try {
 
                         for (const keyword in keywords) {
                             if (keyword === matchLowercase) {
-                                /* Discard previously found paths that don't intersect with newly discovered paths */
+                                /* Discard previously found paths that don’t intersect with newly discovered paths */
                                 if (pathsIndexes.length === 0) {
                                     pathsIndexes = keywords[keyword];
                                 } else {
@@ -191,7 +191,7 @@ try {
             }
         });
     } else {
-        throw new Error("query can't be empty");
+        throw new Error("query can’t be empty");
     }
 } catch(error) {
     displayError(error);

@@ -60,6 +60,9 @@ hr {
         // Purpose: hide the paper sheet's shadow on mobile
         box-shadow: none;
 
+        // Purpose: compensate for horizontal padding from container
+        margin: 0 -$mobile-horizontal-spacing;
+
         width: 100%;
     }
 

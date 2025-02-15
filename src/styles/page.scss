@@ -201,12 +201,8 @@ p {
 
     #content {
         background: inherit;
-        padding: 0;
+        padding: 0 $mobile-horizontal-spacing;
         width: 100%;
-    }
-
-    .homepage {
-        padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
     }
 }
 

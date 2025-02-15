@@ -54,8 +54,6 @@
 // Mobile CSS
 @include mobile {
     .l {
-        padding: 0 $mobile-horizontal-spacing 0 $mobile-horizontal-spacing;
-
         a {
             // Purpose: make it easier to tap list items on small screens
             min-width: $mobile-list-item-min-width;

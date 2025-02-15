@@ -37,8 +37,6 @@
 @include mobile {
     #breadcrumbs {
         line-height: 40px; // Purpose: give more space to links on smartphones
-        padding-left: $mobile-horizontal-spacing;
-        padding-right: $mobile-horizontal-spacing;
 
         // Purpose: make horizontally scrollable
         overflow-x: auto;
