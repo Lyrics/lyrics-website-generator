@@ -119,11 +119,15 @@ try {
         /* Put the loading indicator up */
         displayLoading();
 
-        let matches = queryString.toLowerCase().split(" ");
+        var matches = queryString.toLowerCase();
+        /* Replace useless and dangerous characters with spaces */
+        "/.,;&".split("").forEach(c => {
+                matches = matches.replace(c, " ");
+            });
+        /* Split and remove empty strings */
+        matches = matches.split(" ").filter(m => m.length > 0);
         /* Dedupe */
         matches = [...new Set(matches)];
-        /* Remove empty strings */
-        matches = matches.filter(m => m.length > 0);
 
         /* Array of first letters/numbers/symbols; e.g.: ["h", "l"] */
         const obtainedKeywordGroups = [];

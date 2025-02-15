@@ -59,7 +59,10 @@ def main(data):
                     })
                     ## Index path and keywords
                     data["paths"].append(groupKey + "/" +artistKey + "/" + releaseKey + "/" + recordingKey)
-                    ## Split while getting rid of empty strings
+                    ## Replace useless and dangerous characters with spaces
+                    for c in list("/.,;&"):
+                        rawText = rawText.replace(c, " ")
+                    ## Split and remove empty strings
                     textKeywords = list(filter(None, rawText.split()))
                     for textKeyword in textKeywords:
                         textKeywordLowercase = textKeyword.lower()
@@ -73,7 +76,10 @@ def main(data):
                         if metadataKey in ["Name", "Artist", "Album", "Year", "Original text by"]:
                             metadataValues = metadata[metadataKey]
                             for metadataValue in metadataValues:
-                                ## Split while getting rid of empty strings
+                                ## Replace useless and dangerous characters with spaces
+                                for c in list("/.,;&"):
+                                    metadataValue = metadataValue.replace(c, " ")
+                                ## Split and remove empty strings
                                 metadataValueKeywords = list(filter(None, metadataValue.split()))
                                 for metadataValueKeyword in metadataValueKeywords:
                                     metadataValueKeywordLowercase = metadataValueKeyword.lower()
