@@ -224,7 +224,7 @@ def main(data):
                             recording["printable_name"],
                             data["definitions"]["link_types"]["recording"]
                         )
-                        if "prefix" in recording:
+                        if "prefix" in recording and len(recording["name"]) > 0:
                             link["prefix"] = recording["prefix"]
                         if "postfix" in recording:
                             link["postfix"] = recording["postfix"]
