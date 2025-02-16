@@ -151,18 +151,19 @@ try {
             const matchFirstSymbol = match[0];
 
             if (obtainedKeywordGroups.includes(matchFirstSymbol)) {
-                for (const keyword in keywords) {
-                    if (keyword === match) {
-                        /* Discard previously found paths that don’t intersect with newly discovered paths */
-                        if (pathsIndexes.length === 0) {
-                            pathsIndexes = keywords[keyword];
-                        } else {
-                            pathsIndexes = keywords[keyword].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
-                        }
-
-                        /* Dedupe */
-                        pathsIndexes = [...new Set(pathsIndexes)];
+                if (match in keywords) {
+                    /* Discard previously found paths that don’t intersect with newly discovered paths */
+                    if (pathsIndexes.length === 0) {
+                        pathsIndexes = keywords[match];
+                    } else {
+                        pathsIndexes = keywords[match].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
                     }
+
+                    /* Dedupe */
+                    pathsIndexes = [...new Set(pathsIndexes)];
+                } else {
+                    /* Keyword not found */
+                    pathsIndexes = [];
                 }
 
                 if (pathsIndexes.length === 0 || matches.length === 0) {
@@ -179,18 +180,19 @@ try {
 
                         obtainedKeywordGroups.push(matchFirstSymbol);
 
-                        for (const keyword in keywords) {
-                            if (keyword === match) {
-                                /* Discard previously found paths that don’t intersect with newly discovered paths */
-                                if (pathsIndexes.length === 0) {
-                                    pathsIndexes = keywords[keyword];
-                                } else {
-                                    pathsIndexes = keywords[keyword].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
-                                }
-
-                                /* Dedupe */
-                                pathsIndexes = [...new Set(pathsIndexes)];
+                        if (match in keywords) {
+                            /* Discard previously found paths that don’t intersect with newly discovered paths */
+                            if (pathsIndexes.length === 0) {
+                                pathsIndexes = keywords[match];
+                            } else {
+                                pathsIndexes = keywords[match].filter(existingPathIndex => pathsIndexes.includes(existingPathIndex));
                             }
+
+                            /* Dedupe */
+                            pathsIndexes = [...new Set(pathsIndexes)];
+                        } else {
+                            /* Keyword not found */
+                            pathsIndexes = [];
                         }
 
                         if (pathsIndexes.length === 0 || matches.length === 0) {
