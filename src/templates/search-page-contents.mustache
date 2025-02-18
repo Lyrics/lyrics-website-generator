@@ -121,7 +121,7 @@ try {
 
         var matches = queryString.toLowerCase();
         /* Replace useless and dangerous characters with spaces */
-        "/.,;&".split("").forEach(c => {
+        "`~!@#$%^&*()-_=+[]{}\\|;:'\",.<>/?…’“”".split("").forEach(c => {
                 matches = matches.replace(c, " ");
             });
         /* Split and remove empty strings */
