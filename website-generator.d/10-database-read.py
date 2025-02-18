@@ -60,7 +60,7 @@ def main(data):
                     ## Index path and keywords
                     data["paths"].append(groupKey + "/" +artistKey + "/" + releaseKey + "/" + recordingKey)
                     ## Replace useless and dangerous characters with spaces
-                    for c in list("`~!@#$%^&*()-_=+[]{}\\|;:'\",.<>/?…’“”"):
+                    for c in list("`~!@#$%^&*()-_=+[]{}\\|;:'\",.<>/?…’“”–—∕№€（）꞉"):
                         rawText = rawText.replace(c, " ")
                     ## Split and remove empty strings
                     textKeywords = list(filter(None, rawText.split()))
@@ -77,7 +77,7 @@ def main(data):
                             metadataValues = metadata[metadataKey]
                             for metadataValue in metadataValues:
                                 ## Replace useless and dangerous characters with spaces
-                                for c in list("`~!@#$%^&*()-_=+[]{}\\|;:'\",.<>/?…’“”"):
+                                for c in list("`~!@#$%^&*()-_=+[]{}\\|;:'\",.<>/?…’“”–—∕№€（）꞉"):
                                     metadataValue = metadataValue.replace(c, " ")
                                 ## Split and remove empty strings
                                 metadataValueKeywords = list(filter(None, metadataValue.split()))
