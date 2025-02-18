@@ -1,5 +1,7 @@
 ## Creates search page along with its JS file
 
+import time
+
 import pystache
 
 import utils
@@ -22,6 +24,7 @@ def main(data):
         "name":        "search",
         "content":     pystache.render(data["templates"]["search-page-contents"], {
             "archiveLinkBranch": data["config"]["Source"]["DefaultBranch"],
+            "timestamp": time.time(),
         }),
     })
     searchFile = utils.mkfile(

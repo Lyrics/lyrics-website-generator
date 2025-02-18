@@ -13,11 +13,12 @@ scriptNode.parentNode.removeChild(scriptNode)
 
 </script>
 
-<div id="app"></div>
+<div id="app"{{#timestamp}} data-timestamp="{{timestamp}}"{{/timestamp}}></div>
 
 <script>
 
 const appNode = document.getElementById("app");
+const cacheKiller = appNode.hasAttribute("data-timestamp") ? "?" + appNode.getAttribute("data-timestamp") : "";
 
 const dBWebsitePrefix = "db";
 
@@ -139,7 +140,7 @@ try {
         function finalStage() {
             if (pathsIndexes.length > 0) {
                 /* Finally, we retrieve the file that contains array of paths */
-                makeHttpRequest("s.json")
+                makeHttpRequest("s.json" + cacheKiller)
                     .then(pathsArray => displayResults(pathsIndexes.map(pi => pathsArray[pi])));
             } else {
                 displayResults([]);
@@ -172,7 +173,7 @@ try {
                     makeMatchRequest(matches);
                 }
             } else {
-                makeHttpRequest("s/" + matchFirstSymbol + ".json")
+                makeHttpRequest("s/" + matchFirstSymbol + ".json" + cacheKiller)
                     .then(newKeywords => {
                         for (newKeyword in newKeywords) {
                             keywords[newKeyword] = newKeywords[newKeyword];
