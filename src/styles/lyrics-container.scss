@@ -63,7 +63,8 @@ hr {
         // Purpose: compensate for horizontal padding from container
         margin: 0 -$mobile-horizontal-spacing;
 
-        width: 100%;
+        min-width: calc(100% + #{$mobile-horizontal-spacing * 2});
+        max-width: calc(100% + #{$mobile-horizontal-spacing * 2});
     }
 
     #lyrics {
